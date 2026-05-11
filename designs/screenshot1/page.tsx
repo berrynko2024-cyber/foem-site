@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { artworks, artists, artistVideos } from "@/lib/mockData";
-import VideoGrid from "@/components/VideoGrid";
+import { artworks, artists } from "@/lib/mockData";
 
 export default function HomePage() {
   const galleryItems = artworks.slice(0, 5);
@@ -9,30 +8,30 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero — fullscreen centered typography */}
-      <section className="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-6 text-center">
-        {/* Main title */}
-        <h1
-          className="text-[38vw] md:text-[32vw] leading-[0.88] uppercase text-[#268042] text-center"
-          style={{
-            fontFamily: "var(--font-oswald)",
-            letterSpacing: "-0.03em",
-          }}
-        >
-          FOEM
-        </h1>
+      {/* Hero — split layout */}
+      <section className="max-w-7xl mx-auto px-6 pt-16 pb-8 md:pt-20 md:pb-12">
+        <div className="flex flex-col md:flex-row md:items-end min-h-[65vh]">
+          {/* Left: small description + scroll */}
+          <div className="md:w-[35%] flex flex-col justify-end pb-4 mb-12 md:mb-0">
+            <p className="text-[11px] tracking-[0.2em] uppercase text-[#1A1A1A] leading-relaxed mb-10 max-w-[220px]">
+              A global platform connecting independent artists and collectors worldwide.
+            </p>
+            <span className="text-[10px] tracking-[0.35em] uppercase text-[#9A9A9A]">Scroll</span>
+          </div>
 
-        {/* Bottom subtitle */}
-        <p
-          className="text-[11px] md:text-[13px] tracking-[0.5em] uppercase text-[#268042] mt-12 md:mt-16"
-          style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
-        >
-          FIELD OF EMOTIONS
-        </p>
+          {/* Right: massive headline */}
+          <div className="md:w-[65%] flex items-end justify-end">
+            <h1
+              className="text-[22vw] md:text-[17vw] leading-[0.86] text-[#1A1A1A] uppercase text-right"
+              style={{ fontFamily: "var(--font-bebas)" }}
+            >
+              Field<br />
+              of<br />
+              Emotions
+            </h1>
+          </div>
+        </div>
       </section>
-
-      {/* Video Grid */}
-      <VideoGrid videos={artistVideos} />
 
       {/* Horizontal Image Gallery */}
       <section className="pb-24 md:pb-36">
@@ -58,18 +57,18 @@ export default function HomePage() {
       </section>
 
       {/* Artists Section */}
-      <section className="border-t border-[#d4e8da]">
+      <section className="border-t border-[#E5E5E5]">
         <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
           <div className="flex items-end justify-between mb-12">
             <h2
-              className="text-3xl md:text-4xl font-normal text-[#268042]"
+              className="text-3xl md:text-4xl font-normal text-[#1A1A1A]"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
               The artists
             </h2>
             <Link
               href="/artists"
-              className="text-xs tracking-[0.15em] uppercase text-[#5a9e72] hover:text-[#268042] transition-colors duration-200"
+              className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] hover:text-[#1A1A1A] transition-colors duration-200"
             >
               All artists →
             </Link>
@@ -78,7 +77,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredArtists.map((artist) => (
               <Link key={artist.id} href={`/artists/${artist.slug}`} className="group">
-                <div className="relative aspect-[4/5] overflow-hidden bg-[#e8f0eb] mb-4">
+                <div className="relative aspect-[4/5] overflow-hidden bg-[#F0EFED] mb-4">
                   <Image
                     src={artist.photo}
                     alt={artist.name}
@@ -86,11 +85,11 @@ export default function HomePage() {
                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                   />
                 </div>
-                <p className="text-[11px] tracking-[0.15em] uppercase text-[#5a9e72] mb-1">
+                <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-1">
                   {artist.artworkCount} works
                 </p>
                 <h3
-                  className="text-xl font-normal text-[#268042]"
+                  className="text-xl font-normal text-[#1A1A1A]"
                   style={{ fontFamily: "var(--font-playfair)" }}
                 >
                   {artist.name}
@@ -105,12 +104,12 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-6 py-24 md:py-32">
         <div className="max-w-2xl">
           <p
-            className="text-2xl md:text-3xl font-normal text-[#268042] leading-relaxed"
+            className="text-2xl md:text-3xl font-normal text-[#1A1A1A] leading-relaxed"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             &ldquo;Every work on FOEM is an original — made by hand, shaped by feeling, carried by intention.&rdquo;
           </p>
-          <div className="mt-8 h-px w-16 bg-[#268042]" />
+          <div className="mt-8 h-px w-16 bg-[#1A1A1A]" />
         </div>
       </section>
     </div>

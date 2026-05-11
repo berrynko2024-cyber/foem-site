@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Bebas_Neue, Oswald, Barlow_Condensed } from "next/font/google";
+import { Inter, Playfair_Display, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -24,20 +24,6 @@ const bebasNeue = Bebas_Neue({
   display: "swap",
 });
 
-const oswald = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin"],
-  weight: ["700"],
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-barlow",
-  subsets: ["latin"],
-  weight: ["900"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "FOEM — Field of Emotion",
   description: "A multi-artist platform showcasing and selling original artworks — paintings, photographs, and crafts.",
@@ -55,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable} ${oswald.variable} ${barlowCondensed.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable}`}>
       <body className="min-h-screen flex flex-col bg-foem-cream text-foem-dark">
         <CartProvider>
           <Header />
