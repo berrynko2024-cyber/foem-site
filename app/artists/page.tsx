@@ -8,8 +8,8 @@ export default function ArtistsPage() {
       <div className="mb-14">
         <p className="text-xs tracking-[0.2em] uppercase text-[#9A9A9A] mb-4">FOEM</p>
         <h1
-          className="text-4xl md:text-5xl font-normal text-[#1A1A1A]"
-          style={{ fontFamily: "var(--font-playfair)" }}
+          className="text-6xl md:text-8xl font-bold uppercase text-[#1A1A1A] leading-[1.0]"
+          style={{ fontFamily: "var(--font-oswald)" }}
         >
           Artists
         </h1>

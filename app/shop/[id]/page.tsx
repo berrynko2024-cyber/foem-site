@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getArtworkById, artworks } from "@/lib/mockData";
+import { getArtworkById, artworks, artists } from "@/lib/mockData";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export function generateStaticParams() {
@@ -19,7 +19,7 @@ export default async function ArtworkPage({
   if (!work) notFound();
 
   const related = artworks
-    .filter((a) => a.category === work.category && a.id !== work.id)
+    .filter((a) => a.category === work.category && a.id !== work.id && a.images[0].startsWith('/artworks/'))
     .slice(0, 3);
 
   return (
@@ -37,12 +37,12 @@ export default async function ArtworkPage({
         {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image */}
-          <div className="relative aspect-[4/5] bg-[#E8E6E2] overflow-hidden">
+          <div className={`relative ${work.orientation === 'landscape' ? 'aspect-[3/2]' : work.orientation === 'square' ? 'aspect-square' : 'aspect-[4/5]'} bg-[#E8E6E2] overflow-hidden`}>
             <Image
               src={work.images[0]}
               alt={work.title}
               fill
-              className="object-cover"
+              className={work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'}
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
@@ -56,35 +56,28 @@ export default async function ArtworkPage({
           {/* Details */}
           <div className="lg:sticky lg:top-24">
             <Link
-              href={`/artists/${work.artistId === "a1" ? "betty-moon" : work.artistId === "a2" ? "james-park" : "sora-kim"}`}
+              href={`/artists/${artists.find((a) => a.id === work.artistId)?.slug ?? ""}`}
               className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] hover:text-[#1A1A1A] transition-colors mb-3 block"
             >
               {work.artistName}
             </Link>
 
             <h1
-              className="text-3xl md:text-4xl font-normal text-[#1A1A1A] mb-2"
+              className="text-3xl md:text-4xl font-normal text-[#1A1A1A] mb-6"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
               {work.title}
             </h1>
 
-            <p
-              className="text-lg text-[#4A4A4A] mb-6 italic"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              {work.title_ko}
-            </p>
-
             <p className="text-2xl font-medium text-[#1A1A1A] mb-8">
-              {work.price.toLocaleString("ko-KR")}원
+              {work.isSold ? "Sold Out" : `${work.price.toLocaleString("ko-KR")}원`}
             </p>
 
             {/* Metadata */}
             <div className="border-t border-[#E8E6E2] py-6 grid grid-cols-2 gap-4 mb-8">
               {[
                 { label: "Year", value: String(work.year) },
-                { label: "Category", value: work.category.charAt(0).toUpperCase() + work.category.slice(1) },
+                ...(work.medium ? [{ label: "Medium", value: work.medium }] : []),
                 ...(work.dimensions ? [{ label: "Dimensions", value: work.dimensions }] : []),
                 { label: "Availability", value: work.isSold ? "Sold" : work.stock > 1 ? `${work.stock} available` : "1 of 1" },
               ].map(({ label, value }) => (
@@ -97,11 +90,8 @@ export default async function ArtworkPage({
 
             {/* Description */}
             <div className="mb-8">
-              <p className="text-sm text-[#4A4A4A] leading-relaxed mb-3">
+              <p className="text-sm text-[#4A4A4A] leading-relaxed">
                 {work.description}
-              </p>
-              <p className="text-sm text-[#9A9A9A] leading-relaxed">
-                {work.description_ko}
               </p>
             </div>
 
@@ -139,7 +129,7 @@ export default async function ArtworkPage({
                       src={r.images[0]}
                       alt={r.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      className={`${r.orientation === 'landscape' || r.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                       sizes="(max-width: 640px) 100vw, 33vw"
                     />
                   </div>
@@ -151,7 +141,9 @@ export default async function ArtworkPage({
                     >
                       {r.title}
                     </h3>
-                    <p className="text-sm text-[#4A4A4A] mt-1">{r.price.toLocaleString("ko-KR")}원</p>
+                    <p className="text-sm text-[#4A4A4A] mt-1">
+                      {r.isSold ? "Sold Out" : r.priceDisplay ?? `${r.price.toLocaleString("ko-KR")}원`}
+                    </p>
                   </div>
                 </Link>
               ))}

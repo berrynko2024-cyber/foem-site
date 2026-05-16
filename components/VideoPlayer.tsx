@@ -62,7 +62,7 @@ export default function VideoPlayer({ video }: { video: ArtistVideo }) {
         >
           {video.title}
         </p>
-        <p className="text-[11px] text-[#5a9e72] mt-1 tracking-wide">{video.duration}</p>
+        {video.duration && <p className="text-[11px] text-[#5a9e72] mt-1 tracking-wide">{video.duration}</p>}
       </div>
     </div>
   );

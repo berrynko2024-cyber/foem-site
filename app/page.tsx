@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { artworks, artists, artistVideos } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
+import WorksGrid from "@/components/WorksGrid";
 
 export default function HomePage() {
-  const galleryItems = artworks.slice(0, 5);
+  const galleryItems = artworks.filter(a => a.images[0].startsWith('/artworks/'));
   const featuredArtists = artists;
 
   return (
@@ -34,27 +35,24 @@ export default function HomePage() {
       {/* Video Grid */}
       <VideoGrid videos={artistVideos} />
 
-      {/* Horizontal Image Gallery */}
-      <section className="pb-24 md:pb-36">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex gap-2.5">
-            {galleryItems.map((artwork) => (
-              <Link
-                key={artwork.id}
-                href={`/shop/${artwork.id}`}
-                className="group relative flex-1 overflow-hidden"
-                style={{ aspectRatio: "3/4" }}
-              >
-                <Image
-                  src={artwork.images[0]}
-                  alt={artwork.title}
-                  fill
-                  className="object-cover group-hover:scale-[1.04] transition-transform duration-500"
-                />
-              </Link>
-            ))}
-          </div>
+      {/* Curated Works Grid */}
+      <section className="max-w-[65vw] mx-auto pb-24 md:pb-36">
+        <div className="flex items-end justify-between mb-8">
+          <p
+            className="text-[10px] tracking-[0.3em] uppercase text-[#268042]"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
+          >
+            Works
+          </p>
+          <Link
+            href="/shop"
+            className="text-xs tracking-[0.15em] uppercase text-[#5a9e72] hover:text-[#268042] transition-colors duration-200"
+          >
+            Shop all →
+          </Link>
         </div>
+
+        <WorksGrid items={galleryItems} />
       </section>
 
       {/* Artists Section */}

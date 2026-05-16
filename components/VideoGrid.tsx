@@ -36,7 +36,7 @@ function FilmIcon({ className }: { className?: string }) {
   );
 }
 
-function VideoCard({
+export function VideoCard({
   video,
   className = "",
 }: {
@@ -132,18 +132,20 @@ function VideoCard({
         </div>
       )}
 
-      <div className="absolute top-3 right-3 z-20">
-        <span
-          className={`text-[10px] tracking-[0.1em] px-1.5 py-0.5 ${
-            imgLoaded
-              ? "text-white/80 bg-black/40"
-              : "text-[#5a9e72] bg-[#d4e8da]"
-          }`}
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
-          {video.duration}
-        </span>
-      </div>
+      {video.duration && (
+        <div className="absolute top-3 right-3 z-20">
+          <span
+            className={`text-[10px] tracking-[0.1em] px-1.5 py-0.5 ${
+              imgLoaded
+                ? "text-white/80 bg-black/40"
+                : "text-[#5a9e72] bg-[#d4e8da]"
+            }`}
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            {video.duration}
+          </span>
+        </div>
+      )}
     </Link>
   );
 }
@@ -164,12 +166,14 @@ export default function VideoGrid({ videos }: { videos: ArtistVideo[] }) {
         </p>
       </div>
 
-      <VideoCard video={featured} className="w-full aspect-video" />
+      {featured && <VideoCard video={featured} className="w-full aspect-video" />}
 
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2.5 mt-2.5">
-        <VideoCard video={bottomLeft} className="aspect-video" />
-        <VideoCard video={tall} className="aspect-video md:aspect-auto" />
-      </div>
+      {(bottomLeft || tall) && (
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2.5 mt-2.5">
+          {bottomLeft && <VideoCard video={bottomLeft} className="aspect-video" />}
+          {tall && <VideoCard video={tall} className="aspect-video md:aspect-auto" />}
+        </div>
+      )}
     </section>
   );
 }

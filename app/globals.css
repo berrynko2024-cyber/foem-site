@@ -32,3 +32,11 @@ h1, h2, h3, h4 {
   background-color: #268042;
   color: #F6F4EB;
 }
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

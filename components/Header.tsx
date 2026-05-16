@@ -8,11 +8,14 @@ const NAV_LEFT = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/artists", label: "Artists" },
+  { href: "/video", label: "Video" },
+  { href: "/art-fair", label: "Art Fair" },
+  { href: "/exhibitions", label: "Exhibitions" },
+  { href: "/about", label: "About" },
 ];
 
 const NAV_RIGHT = [
   { href: "mailto:hello@foem.art", label: "Email", external: false },
-  { href: "https://instagram.com/foem.art", label: "Instagram", external: true },
 ];
 
 const navLinkClass =
@@ -73,7 +76,6 @@ export default function Header() {
               ...NAV_LEFT,
               { href: "/cart", label: `Cart (${totalItems})` },
               { href: "mailto:hello@foem.art", label: "Email" },
-              { href: "https://instagram.com/foem.art", label: "Instagram" },
             ].map(({ href, label }) => (
               <Link
                 key={href}
