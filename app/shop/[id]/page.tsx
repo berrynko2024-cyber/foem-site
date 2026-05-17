@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getArtworkById, artworks, artists } from "@/lib/mockData";
-import AddToCartButton from "@/components/AddToCartButton";
+import ArtworkCTA from "@/components/ArtworkCTA";
 
 export function generateStaticParams() {
   return artworks.map((a) => ({ id: a.id }));
@@ -70,7 +70,9 @@ export default async function ArtworkPage({
             </h1>
 
             <p className="text-2xl font-medium text-[#1A1A1A] mb-8">
-              {work.isSold ? "Sold Out" : `${work.price.toLocaleString("ko-KR")}원`}
+              {work.isSold
+                ? "Sold Out"
+                : work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
             </p>
 
             {/* Metadata */}
@@ -96,13 +98,7 @@ export default async function ArtworkPage({
             </div>
 
             {/* CTA */}
-            {!work.isSold ? (
-              <AddToCartButton work={work} />
-            ) : (
-              <div className="w-full py-4 text-center text-xs tracking-[0.15em] uppercase text-[#9A9A9A] border border-[#E8E6E2]">
-                This work has been sold
-              </div>
-            )}
+            <ArtworkCTA work={work} />
 
             <p className="text-[11px] text-[#9A9A9A] mt-4 text-center">
               Worldwide shipping · Certificate of authenticity included
