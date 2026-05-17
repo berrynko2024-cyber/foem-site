@@ -111,9 +111,11 @@ export default function AdminPage() {
       {/* Quick links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#E8E6E2]">
         {[
+          { href: "/admin/inquiries", label: "Artwork inquiries", description: "View and manage artwork purchase inquiries" },
+          { href: "/admin/subscribers", label: "Mailing list", description: "View all mailing list subscribers" },
+          { href: "/admin/orders", label: "Orders", description: "Track and manage customer orders" },
           { href: "/admin/artworks", label: "Manage artworks", description: "Add, edit, or remove works from the shop" },
           { href: "/admin/artists", label: "Manage artists", description: "Add new artists and update profiles" },
-          { href: "/admin/orders", label: "View orders", description: "Track and manage customer orders" },
         ].map(({ href, label, description }) => (
           <Link
             key={href}
