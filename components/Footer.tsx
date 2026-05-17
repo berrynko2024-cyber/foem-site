@@ -50,10 +50,10 @@ export default function Footer() {
                 Worldwide shipping available.
               </p>
               <a
-                href="mailto:hello@foem.art"
+                href="mailto:berrynko2024@gmail.com"
                 className="text-xs text-[#268042] hover:opacity-60 transition-opacity duration-200"
               >
-                hello@foem.art
+                berrynko2024@gmail.com
               </a>
             </div>
           </div>
