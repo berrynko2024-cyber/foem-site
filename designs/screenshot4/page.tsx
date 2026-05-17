@@ -85,7 +85,7 @@ export default function HomePage() {
               {/* Thumbnail */}
               <div className="relative aspect-video overflow-hidden bg-[#1A1A1A] mb-4">
                 <Image
-                  src={video.thumbnail}
+                  src={video.thumbnail ?? ''}
                   alt={video.title}
                   fill
                   className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-[1.03] transition-transform"
