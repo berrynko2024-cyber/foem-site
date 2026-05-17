@@ -15,7 +15,7 @@ const NAV_LEFT = [
 ];
 
 const NAV_RIGHT = [
-  { href: "mailto:hello@foem.art", label: "Email", external: false },
+  { href: "mailto:berrynko2024@gmail.com", label: "Email", external: false },
 ];
 
 const navLinkClass =
@@ -75,7 +75,7 @@ export default function Header() {
             {[
               ...NAV_LEFT,
               { href: "/cart", label: `Cart (${totalItems})` },
-              { href: "mailto:hello@foem.art", label: "Email" },
+              { href: "mailto:berrynko2024@gmail.com", label: "Email" },
             ].map(({ href, label }) => (
               <Link
                 key={href}
