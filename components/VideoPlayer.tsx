@@ -24,9 +24,10 @@ export default function VideoPlayer({ video }: { video: ArtistVideo }) {
         {playing && youtubeId ? (
           <iframe
             key={youtubeId}
-            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+            src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
             className="w-full h-full"
           />
         ) : (
