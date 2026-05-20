@@ -112,6 +112,7 @@ export default function AdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#E8E6E2]">
         {[
           { href: "/admin/inquiries", label: "Artwork inquiries", description: "View and manage artwork purchase inquiries" },
+          { href: "/admin/consulting", label: "Consulting requests", description: "View and manage art consulting applications" },
           { href: "/admin/subscribers", label: "Mailing list", description: "View all mailing list subscribers" },
           { href: "/admin/orders", label: "Orders", description: "Track and manage customer orders" },
           { href: "/admin/artworks", label: "Manage artworks", description: "Add, edit, or remove works from the shop" },

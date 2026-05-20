@@ -6,11 +6,12 @@ import { useCart } from "@/store/CartContext";
 
 const NAV_LEFT = [
   { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/artists", label: "Artists" },
   { href: "/video", label: "Video" },
+  { href: "/artists", label: "Artists" },
   { href: "/art-fair", label: "Art Fair" },
   { href: "/exhibitions", label: "Exhibitions" },
+  { href: "/consulting", label: "Consulting" },
+  { href: "/shop", label: "Shop" },
   { href: "/about", label: "About" },
 ];
 
@@ -20,7 +21,7 @@ const NAV_RIGHT = [
 ];
 
 const navLinkClass =
-  "text-[10px] tracking-[0.22em] uppercase text-[#268042] hover:opacity-60 transition-opacity duration-200";
+  "text-[12px] tracking-[0.18em] uppercase text-[#1a5c30] hover:opacity-60 transition-opacity duration-200";
 
 export default function Header() {
   const { totalItems } = useCart();
