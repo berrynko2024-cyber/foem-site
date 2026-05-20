@@ -16,7 +16,6 @@ const NAV_LEFT = [
 ];
 
 const NAV_RIGHT = [
-  { href: "mailto:berrynko2024@gmail.com", label: "Email", external: false },
   { href: "https://www.instagram.com/we_are_tide/", label: "Instagram", external: true },
 ];
 
@@ -77,7 +76,6 @@ export default function Header() {
             {[
               ...NAV_LEFT,
               { href: "/cart", label: `Cart (${totalItems})` },
-              { href: "mailto:berrynko2024@gmail.com", label: "Email" },
             ].map(({ href, label }) => (
               <Link
                 key={href}
