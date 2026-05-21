@@ -2,6 +2,7 @@ export type Artist = {
   id: string;
   slug: string;
   name: string;
+  name_ko?: string;
   bio: string;
   bio_ko: string;
   photo: string;
@@ -37,6 +38,7 @@ export const artists: Artist[] = [
     id: "a1",
     slug: "betty-moon",
     name: "Betty Moon",
+    name_ko: "베티문 베티 문유경",
     bio: "I believe that a unique energy flows through all things. Therefore, when taking a photograph, I first wait for that quiet moment of communion with the object's energy. It is that brief instant when the texture of the air subtly shifts, and light and color organically change their direction. Only then does the connection with the object begin. The warm eye contact a horse silently offered me when I lifted my head on a Jeju Oreum. The single, gentle light waiting for me amidst the sunset when I returned to a remote lodge in the California desert. And those scenes that halted me as the flow of the air instantaneously changed. I follow these subtle signals of change, pressing the shutter hundreds of times. And finally, I arrive at that one single frame where both our moods are perfectly superimposed. Ultimately, photography is the act of capturing the moment when my senses and the world's senses most naturally communicate and resonate.",
     bio_ko: "나는 모든 사물에 고유한 에너지가 흐른다고 믿는다. 그래서 사진을 찍을 때, 먼저 그 에너지와 조용히 교감하는 순간을 기다린다. 공기의 결이 부드럽게 바뀌고, 빛과 색이 스스로 방향을 틀어가는 아주 짧은 순간 — 그때 비로소 대상과의 연결이 시작된다. 제주 오름에서 고개를 들었을 때 말 한 마리가 아무 말 없이 건네던 따뜻한 눈맞춤. 캘리포니아 사막에서, 인적이 드문 숙소로 돌아왔을 때 석양 사이로 기다리던 한 줄기의 따뜻한 불빛. 그리고 공기의 흐름이 순간적으로 바뀌며 나를 멈춰 세웠던 그 장면들. 나는 이런 미세한 변화의 신호를 따라 수백 번 셔터를 누른다. 그리고 마침내 서로의 무드가 완전히 포개지는 단 하나의 장면에 다다른다. 사진은 결국, 나와 세계의 감각이 가장 자연스럽게 교감하는 순간을 붙잡는 일이다.",
     photo: "/artists/betty-moon.jpg",
@@ -49,6 +51,7 @@ export const artists: Artist[] = [
     id: "a2",
     slug: "uiyeong-park",
     name: "Uiyeong Park",
+    name_ko: "박의영 의영",
     bio: "My residency in Normandy, France became the starting point for my attention to the region's traditional stripe patterns. I regard these patterns not as mere decoration, but as cultural markers shaped by accumulated time and place, and I adopt them as the structural core of my work. Through variations in color, shifts in line thickness, and asymmetrical arrangements, I construct rhythm and tension within the canvas, placing Blue at its center. For me, Blue embodies both stillness and solitude, evoking contemplation while forming a sensory field in which I explore my inner self. The stripe does not emerge from repetition, but from a question about boundaries. By adjusting the intervals and directions of lines, I intentionally unsettle fixed orders and balances. These formal decisions stem from a reflection on the invisible boundaries between self and other, past and present, individual and society.",
     bio_ko: "프랑스 노르망디 레지던시 경험은 지역의 전통적인 스트라이프 패턴에 주목하게 한 계기가 되었다. 나는 이 패턴을 단순한 장식이 아닌, 시간과 장소가 축적된 문화적 표식으로 바라보며 작업의 핵심 구조로 삼았다. 색의 변화와 선의 굵기, 비대칭적 배열을 통해 화면에 리듬과 긴장을 형성하고, 그 중심에 블루를 배치했다. 블루는 평온과 고독, 사유의 감정을 동시에 내포하며 내면을 탐색하는 감각적 장을 만든다. 스트라이프는 반복이 아니라 경계에 대한 질문에서 출발하며, 나는 선의 간격과 방향을 조정해 고정된 질서를 흔든다. 이러한 조형적 선택은 자아와 타자, 과거와 현재, 개인과 사회 사이의 보이지 않는 경계를 사유하는 과정이다. 서로 다른 재료와 다층적 구조를 통해 감정과 사고의 여러 층위를 드러내고, 긴장 속 공존의 가능성을 탐색한다. 이 작업은 어딘가에 속하고자 하는 안정과 틀을 벗어나고자 하는 욕망 사이에서 균형을 모색하는, 여전히 진행 중인 질문에 대한 응답이다.",
     photo: "/artists/uiyeong-park.jpg",
@@ -59,6 +62,7 @@ export const artists: Artist[] = [
     id: "a4",
     slug: "harin-j",
     name: "Harin J",
+    name_ko: "제은숙 하린",
     bio: "My work is a process of reconstructing on canvas the trajectory of 'Difference', a path endlessly deferred and unsettled between presence and absence. The texture of memory, the density of emotion, and the afterglow of light are not fixed entities but traces that continually slip away and transform. For me, abstraction is neither a rule nor a limitation aimed at formal completion, but a vessel that embraces the indefinable fragments of life and truth of vanishing moments. Ultimately, my practice moves beyond constrained form to create a new field where what is fading may finally dwell. Within this space of warm hospitality toward the disappearing, we are invited to encounter our own authentic landscapes.",
     bio_ko: "나의 작업은 현시(Presence)와 부재(Absence) 사이에 끊임없이 미뤄지고 흔들리는 '차연(Difference)'의 궤적을 화면위에 재구성하는 과정이다. 캔버스 위에 새겨진 기억의 결, 감정의 밀도, 빛의 잔향은 고정된 실체가 아니라 미끄러지고 변화하는 흔적들이다. 나에게 추상이란 형식의 완결을 지향하는 규칙이나 제한이 아니라, 규정할 수 없는 삶의 파편들과 사라져가는 순간의 진실을 수용하는 '그릇'이다. 결국 나의 작업은 얽매인 형식에서 벗어나 소멸하는 것들이 비로소 머물 수 있는 새로운 장(Field)을 마련하는 일이며, 사라져가는 것들을 향한 이 따뜻한 환대의 공간 안에서 우리는 비로소 각자의 진실한 정경과 마주하게 된다.",
     photo: "/artists/harin-j.jpg",
@@ -69,6 +73,7 @@ export const artists: Artist[] = [
     id: "a5",
     slug: "sung-eun-park",
     name: "Sung Eun Park",
+    name_ko: "박성은",
     bio: "The 'Golden Horse' series embodies the ultimate form of spiritual freedom that artist Sung Eun Park has long explored. To the artist, the horse is not merely a creature that runs, but a symbol of the self and a totem of liberation. The golden horse in this series no longer treads upon the earth; instead, it floats as if swimming across traditional landscape paintings, expressing the boundless freedom of a weightless existence. The horse in the artwork has transcended desire and fear, reaching a state of enlightenment where it accepts itself just as it is. The pure gold adorning its body symbolizes an unchanging inner resolve and self-esteem, revealing the innate power of simply existing, without the need to race toward any specific destination. 'Golden Horse' is the culmination of the artist's spiritual journey. Originating from the core of the self, this journey transcends the boundaries of reality and fantasy, navigating through time and landscapes, scars and dreams, ultimately expanding into a modern mythos.",
     bio_ko: "'Golden Horse' 시리즈는 작가 박성은이 오랜 시간 탐구해온 정신적 자유의 궁극적인 형상을 담고 있다. 작가에게 말(馬)은 단지 달리는 존재가 아니라, 자아의 상징이자 해방의 토템이다. 이 시리즈에 등장하는 금빛 말은 더 이상 땅을 딛지 않고, 산수화 위를 유영하듯 부유하며 무게감 없는 존재의 자유로움을 표현한다. 작품 속 말은 욕망과 두려움을 지나, 자기 자신을 있는 그대로 받아들이는 깨달음의 상태에 이르러 있다. 그 몸에 입혀진 순금의 색은 변하지 않는 내면의 결의와 자존감을 상징하며, 어디론가 향하지 않아도 충분한 존재 그 자체의 힘을 드러낸다. 'Golden Horse'는 자아의 중심에서 출발한 작가의 정신적 여정이 현실과 환상의 경계를 넘어 시간과 풍경, 상처와 꿈을 통과하며 현대적인 신화(Mythos)로 확장된 결과물이다.",
     photo: "/artists/sung-eun-park.jpg",
@@ -78,6 +83,7 @@ export const artists: Artist[] = [
     id: "a6",
     slug: "byeong-gwan-seo",
     name: "Byeong Gwan Seo",
+    name_ko: "서병관",
     bio: "Byeong Gwan Seo explores structure and absence through sculpture and spatial practice.",
     bio_ko: "서병관은 조각과 공간 실천을 통해 구조와 부재를 탐구합니다.",
     photo: "/artists/byeong-gwan-seo.jpg",
@@ -87,6 +93,7 @@ export const artists: Artist[] = [
     id: "a7",
     slug: "jae-eun-jeong",
     name: "Jae Eun Jeong",
+    name_ko: "정재은",
     bio: "Jae Eun Jeong's paintings hold suspended time — moments caught between breath and stillness.",
     bio_ko: "정재은의 회화는 정지된 시간을 품습니다 — 숨과 고요 사이에 포착된 순간들.",
     photo: "/artists/jae-eun-jeong.jpg",

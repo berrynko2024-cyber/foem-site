@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,6 +7,31 @@ import VideoPlayer from "@/components/VideoPlayer";
 
 export function generateStaticParams() {
   return artists.map((a) => ({ slug: a.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const artist = getArtistBySlug(slug);
+  if (!artist) return {};
+
+  const description = artist.bio.slice(0, 155) + "…";
+  const koKeywords = artist.name_ko ? artist.name_ko.split(" ") : [];
+
+  return {
+    title: artist.name,
+    description,
+    keywords: [artist.name, ...koKeywords, "FOEM", "아트갤러리", "현대미술", "원화"],
+    openGraph: {
+      title: `${artist.name} — FOEM`,
+      description,
+      url: `https://www.foem.co.kr/artists/${slug}`,
+      images: artist.photo ? [{ url: artist.photo, alt: artist.name }] : [],
+    },
+  };
 }
 
 export default async function ArtistPage({
@@ -22,8 +48,29 @@ export default async function ArtistPage({
   const videos = getVideosByArtist(artist.id);
   const featuredVideo = videos[0] ?? null;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: artist.name,
+    description: artist.bio,
+    url: `https://www.foem.co.kr/artists/${artist.slug}`,
+    image: artist.photo ? `https://www.foem.co.kr${artist.photo}` : undefined,
+    sameAs: artist.instagram
+      ? [`https://www.instagram.com/${artist.instagram.replace("@", "")}`]
+      : [],
+    memberOf: {
+      "@type": "Organization",
+      name: "FOEM",
+      url: "https://www.foem.co.kr",
+    },
+  };
+
   return (
     <div className="bg-[#F6F4EB]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
 
         {/* Breadcrumb */}

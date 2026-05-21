@@ -1,7 +1,14 @@
 import ConsultingForm from "./ConsultingForm";
 
 export const metadata = {
-  title: "Art Consulting — FOEM",
+  title: "Art Consulting",
+  description: "FOEM offers personalized art consulting — helping you find the right artwork for your space, taste, and budget. 아트 컨설팅, 그림 추천, 공간 맞춤 작품 제안.",
+  keywords: ["아트컨설팅", "아트 컨설팅", "그림 추천", "인테리어 그림", "원화 구매 상담", "art consulting", "FOEM"],
+  openGraph: {
+    title: "Art Consulting — FOEM",
+    description: "Personalized art consulting to find the right artwork for your space and taste.",
+    url: "https://www.foem.co.kr/consulting",
+  },
 };
 
 export default function ConsultingPage() {

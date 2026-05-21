@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,6 +7,33 @@ import ArtworkCTA from "@/components/ArtworkCTA";
 
 export function generateStaticParams() {
   return artworks.map((a) => ({ id: a.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const work = getArtworkById(id);
+  if (!work) return {};
+
+  const priceText = work.isSold
+    ? "Sold"
+    : work.priceDisplay ?? `₩${work.price.toLocaleString()}`;
+
+  return {
+    title: `${work.title} — ${work.artistName}`,
+    description: `${work.title} by ${work.artistName}. ${work.medium ?? ""} ${work.dimensions ?? ""}. ${priceText}.`.trim(),
+    openGraph: {
+      title: `${work.title} by ${work.artistName}`,
+      description: `${work.medium ?? ""} ${work.dimensions ?? ""}. ${priceText}.`.trim(),
+      url: `https://www.foem.co.kr/shop/${id}`,
+      images: work.images[0]?.startsWith("/artworks/")
+        ? [{ url: work.images[0], alt: work.title }]
+        : [],
+    },
+  };
 }
 
 export default async function ArtworkPage({
@@ -22,8 +50,33 @@ export default async function ArtworkPage({
     .filter((a) => a.category === work.category && a.id !== work.id && a.images[0].startsWith('/artworks/'))
     .slice(0, 3);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: work.title,
+    description: work.description || `${work.title} by ${work.artistName}`,
+    image: work.images[0]?.startsWith("/artworks/")
+      ? `https://www.foem.co.kr${work.images[0]}`
+      : undefined,
+    brand: { "@type": "Brand", name: "FOEM" },
+    creator: { "@type": "Person", name: work.artistName },
+    offers: {
+      "@type": "Offer",
+      availability: work.isSold
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
+      price: work.isSold ? undefined : work.price,
+      priceCurrency: "KRW",
+      url: `https://www.foem.co.kr/shop/${id}`,
+    },
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-10">

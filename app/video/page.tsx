@@ -1,5 +1,16 @@
+import { Metadata } from "next";
 import { artistVideos } from "@/lib/mockData";
 import { VideoCard } from "@/components/VideoGrid";
+
+export const metadata: Metadata = {
+  title: "Video",
+  description: "Watch artist films and studio videos from FOEM artists.",
+  openGraph: {
+    title: "Video — FOEM",
+    description: "Artist films and studio videos from FOEM.",
+    url: "https://www.foem.co.kr/video",
+  },
+};
 
 export default function VideoPage() {
   return (

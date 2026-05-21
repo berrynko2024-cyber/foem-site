@@ -1,5 +1,16 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import { artFairs, type ArtFair } from "@/lib/mockData";
+
+export const metadata: Metadata = {
+  title: "Art Fair",
+  description: "FOEM participates in international art fairs. Discover where to find us — KIAF, Frieze Seoul, Art Busan, and more.",
+  openGraph: {
+    title: "Art Fair — FOEM",
+    description: "FOEM at international art fairs — KIAF, Frieze Seoul, Art Busan, and more.",
+    url: "https://www.foem.co.kr/art-fair",
+  },
+};
 
 function formatDateRange(start: string, end: string): string {
   const s = new Date(start);

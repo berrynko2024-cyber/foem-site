@@ -1,4 +1,15 @@
+import { Metadata } from "next";
 import MailingListForm from "@/components/MailingListForm";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "FOEM is a curated art platform connecting independent artists with collectors and art lovers worldwide.",
+  openGraph: {
+    title: "About — FOEM",
+    description: "FOEM is a curated art platform connecting independent artists with collectors.",
+    url: "https://www.foem.co.kr/about",
+  },
+};
 
 export default function AboutPage() {
   return (

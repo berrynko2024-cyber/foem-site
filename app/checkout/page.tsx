@@ -1,11 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/store/CartContext";
+
+declare global {
+  interface Window {
+    TossPayments: (clientKey: string) => {
+      requestPayment: (
+        method: string,
+        options: {
+          amount: number;
+          orderId: string;
+          orderName: string;
+          customerName?: string;
+          customerEmail?: string;
+          successUrl: string;
+          failUrl: string;
+        }
+      ) => Promise<void>;
+    };
+  }
+}
+
+type PaymentMethod = "toss" | "stripe";
+
+function loadTossScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof window.TossPayments === "function") {
+      resolve();
+      return;
+    }
+    const existing = document.querySelector(
+      'script[src="https://js.tosspayments.com/v1/payment"]'
+    );
+    if (existing) {
+      existing.addEventListener("load", () => resolve());
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://js.tosspayments.com/v1/payment";
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
 
 export default function CheckoutPage() {
   const { items, totalPrice } = useCart();
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("toss");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -15,29 +58,72 @@ export default function CheckoutPage() {
     country: "KR",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    setPaymentMethod(form.country === "KR" ? "toss" : "stripe");
+  }, [form.country]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!totalPrice || totalPrice === 0) {
+      alert("결제 금액이 0원입니다. 작품 가격을 확인해 주세요.");
+      return;
+    }
     setLoading(true);
 
-    // Stripe checkout will be wired here in Phase 3
-    // For now, simulate the flow
+    const orderId = crypto.randomUUID();
+    localStorage.setItem(
+      "foem_pending_order",
+      JSON.stringify({ orderId, customer: form, items })
+    );
+
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items, customer: form }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (paymentMethod === "toss") {
+        await loadTossScript();
+        const tossPayments = window.TossPayments(
+          process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!
+        );
+        const orderName =
+          items.length === 1
+            ? items[0].title
+            : `${items[0].title} 외 ${items.length - 1}점`;
+        await tossPayments.requestPayment("카드", {
+          amount: totalPrice,
+          orderId,
+          orderName,
+          customerName: form.name,
+          customerEmail: form.email,
+          successUrl: `${window.location.origin}/order/success`,
+          failUrl: `${window.location.origin}/order/fail`,
+        });
+      } else {
+        const res = await fetch("/api/payments/stripe/create-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items,
+            customer: form,
+            orderId,
+            origin: window.location.origin,
+          }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || "Stripe session creation failed");
+        }
       }
-    } catch {
-      alert("결제 연동 준비 중입니다. Phase 3에서 Stripe 설정 후 활성화됩니다.");
-    } finally {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "결제 중 오류가 발생했습니다.";
+      if (!msg.includes("취소") && !msg.includes("cancel")) {
+        alert(msg);
+      }
       setLoading(false);
     }
   };
@@ -49,6 +135,8 @@ export default function CheckoutPage() {
       </div>
     );
   }
+
+  const isKorea = form.country === "KR";
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
@@ -62,11 +150,11 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Customer info */}
           <div>
             <h2 className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-5">
               Customer information
             </h2>
-
             {[
               { name: "name", label: "Full name", type: "text", required: true },
               { name: "email", label: "Email address", type: "email", required: true },
@@ -88,11 +176,11 @@ export default function CheckoutPage() {
             ))}
           </div>
 
+          {/* Shipping */}
           <div>
             <h2 className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-5 mt-4">
               Shipping address
             </h2>
-
             <div className="mb-4">
               <label className="block text-[11px] tracking-[0.12em] uppercase text-[#9A9A9A] mb-2">
                 Address *
@@ -106,7 +194,6 @@ export default function CheckoutPage() {
                 className="w-full border border-[#E8E6E2] bg-transparent px-4 py-3 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A] transition-colors"
               />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[11px] tracking-[0.12em] uppercase text-[#9A9A9A] mb-2">
@@ -143,16 +230,77 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          {/* Payment method selector */}
+          <div>
+            <h2 className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-4 mt-4">
+              Payment method
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Toss — only shown for Korea */}
+              {isKorea && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("toss")}
+                  className={`flex flex-col items-start px-4 py-4 border text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 ${
+                    paymentMethod === "toss"
+                      ? "border-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
+                      : "border-[#E8E6E2] text-[#1A1A1A] hover:border-[#4A4A4A]"
+                  }`}
+                >
+                  <span className="text-xs font-medium tracking-[0.08em] mb-1">
+                    토스페이먼츠
+                  </span>
+                  <span
+                    className={`text-[10px] tracking-[0.05em] ${
+                      paymentMethod === "toss" ? "text-[#C0C0C0]" : "text-[#9A9A9A]"
+                    }`}
+                  >
+                    카드 · 간편결제
+                  </span>
+                </button>
+              )}
+
+              {/* Stripe */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("stripe")}
+                className={`flex flex-col items-start px-4 py-4 border text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 ${
+                  !isKorea ? "col-span-2" : ""
+                } ${
+                  paymentMethod === "stripe"
+                    ? "border-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
+                    : "border-[#E8E6E2] text-[#1A1A1A] hover:border-[#4A4A4A]"
+                }`}
+              >
+                <span className="text-xs font-medium tracking-[0.08em] mb-1">Stripe</span>
+                <span
+                  className={`text-[10px] tracking-[0.05em] ${
+                    paymentMethod === "stripe" ? "text-[#C0C0C0]" : "text-[#9A9A9A]"
+                  }`}
+                >
+                  {isKorea ? "International card" : "Credit / Debit card"}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 text-xs tracking-[0.15em] uppercase bg-[#1A1A1A] text-[#F5F3EF] hover:bg-[#2D2D2D] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 focus:ring-offset-[#F5F3EF] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+            className="w-full py-4 text-xs tracking-[0.15em] uppercase bg-[#1A1A1A] text-[#F5F3EF] hover:bg-[#2D2D2D] focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 focus:ring-offset-[#F5F3EF] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 mt-4"
           >
-            {loading ? "Processing…" : "Pay with Stripe"}
+            {loading
+              ? "Processing…"
+              : paymentMethod === "toss"
+              ? "토스페이먼츠로 결제"
+              : "Pay with Stripe"}
           </button>
 
           <p className="text-[11px] text-[#9A9A9A] text-center">
-            Secure payment powered by Stripe · SSL encrypted
+            {paymentMethod === "toss"
+              ? "토스페이먼츠 · SSL 암호화 보안 결제"
+              : "Secure payment powered by Stripe · SSL encrypted"}
           </p>
         </form>
 

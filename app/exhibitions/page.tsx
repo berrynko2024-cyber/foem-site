@@ -1,5 +1,16 @@
+import { Metadata } from "next";
 import Image from "next/image";
 import { exhibitions, type Exhibition } from "@/lib/mockData";
+
+export const metadata: Metadata = {
+  title: "Exhibitions",
+  description: "Explore current, upcoming, and past exhibitions by FOEM artists.",
+  openGraph: {
+    title: "Exhibitions — FOEM",
+    description: "Current, upcoming, and past exhibitions by FOEM artists.",
+    url: "https://www.foem.co.kr/exhibitions",
+  },
+};
 
 function formatDateRange(start: string, end: string): string {
   const s = new Date(start);

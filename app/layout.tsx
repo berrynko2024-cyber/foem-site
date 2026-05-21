@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/store/CartContext";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -39,13 +40,42 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "FOEM — Field of Emotion",
-  description: "A multi-artist platform showcasing and selling original artworks — paintings, photographs, and crafts.",
-  keywords: ["art", "gallery", "shop", "paintings", "photography", "crafts", "FOEM"],
+  metadataBase: new URL("https://www.foem.co.kr"),
+  title: {
+    default: "FOEM — Field of Emotion",
+    template: "%s | FOEM",
+  },
+  description: "FOEM is a curated platform showcasing and selling original artworks — paintings, photographs, and crafts — by independent artists.",
+  keywords: ["art gallery", "original artwork", "paintings", "photography", "art shop", "FOEM", "contemporary art", "Korean artists", "art consulting", "아트갤러리", "원화구매", "현대미술", "아트컨설팅", "갤러리", "그림구매", "베티문", "박의영", "박성은", "하린", "서병관", "정재은", "아트페어"],
+  authors: [{ name: "FOEM", url: "https://www.foem.co.kr" }],
   openGraph: {
     title: "FOEM — Field of Emotion",
-    description: "Original artworks by independent artists",
+    description: "Original artworks by independent artists. Paintings, photography, and crafts.",
+    url: "https://www.foem.co.kr",
+    siteName: "FOEM",
     type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 600,
+        alt: "FOEM — Field of Emotion",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FOEM — Field of Emotion",
+    description: "Original artworks by independent artists.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: "-TZsycMQ-P2vgm3N",
   },
 };
 
@@ -56,12 +86,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable} ${oswald.variable} ${barlowCondensed.variable}`}>
+      <head>
+        <meta name="naver-site-verification" content="cbcba41d399c86f33645e8cab8c3c33014d71d54" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-FDMPT09PHJ" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-FDMPT09PHJ');
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col bg-foem-cream text-foem-dark">
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
