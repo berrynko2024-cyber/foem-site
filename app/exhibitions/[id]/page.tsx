@@ -149,7 +149,7 @@ export default async function ExhibitionDetailPage({ params }: Props) {
               Exhibition Views
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-8">
             {ex.photos.map((photo, i) => {
               const src = typeof photo === "string" ? photo : photo.src;
               const caption = typeof photo === "string" ? undefined : photo.caption;
