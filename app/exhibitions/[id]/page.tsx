@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { exhibitions } from "@/lib/mockData";
+import { ExhibitionGallery } from "./ExhibitionGallery";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -44,88 +45,77 @@ export default async function ExhibitionDetailPage({ params }: Props) {
   const ex = exhibitions.find((e) => e.id === id);
   if (!ex) notFound();
 
+  const hasDescription = ex.description || ex.descriptionKo || ex.videoUrl;
+
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
 
-      {/* Top bar */}
-      <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-        <Link
-          href="/exhibitions"
-          className="text-[11px] tracking-[0.2em] uppercase text-[#9A9A9A] hover:text-[#268042] transition-colors"
-        >
-          ← Exhibitions
-        </Link>
-      </div>
-
-      {/* Title block */}
-      <div className="max-w-7xl mx-auto px-6 pb-10 border-b border-[#d4e8da]">
-        <p className="text-[10px] tracking-[0.25em] uppercase text-[#268042] mb-5">
-          {statusLabel[ex.status]}
-        </p>
-        <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-[#1A1A1A] leading-[1.0] mb-2"
-          style={{ fontFamily: "var(--font-oswald)" }}
-        >
-          {ex.title}
-        </h1>
-        {ex.titleEn && (
-          <p
-            className="text-2xl md:text-4xl lg:text-5xl font-bold uppercase text-[#5a9e72] leading-[1.0] mb-8"
-            style={{ fontFamily: "var(--font-oswald)" }}
+      {/* 1. 풀스크린 히어로 */}
+      <div className="relative w-full h-screen bg-[#1A1A1A]">
+        <Image
+          src={ex.heroImage ?? ex.coverImage}
+          alt={ex.title}
+          fill
+          className={`${ex.orientation === "portrait" && !ex.heroImage ? "object-contain" : "object-cover"} object-center`}
+          priority
+        />
+        <div className="absolute top-6 left-6 z-10">
+          <Link
+            href="/exhibitions"
+            className="text-[11px] tracking-[0.2em] uppercase text-white/70 hover:text-white transition-colors drop-shadow-sm"
           >
-            {ex.titleEn}
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-[#9A9A9A]">
-          <span className="text-[#4A4A4A] font-medium">{ex.artists.join(", ")}</span>
-          {ex.venue && <span>{ex.venue}</span>}
-          <span>{ex.location}</span>
-          <span>{formatDateRange(ex.startDate, ex.endDate)}</span>
+            ← Exhibitions
+          </Link>
         </div>
       </div>
 
-      {/* Poster left / Description right */}
-      <div className="max-w-7xl mx-auto px-6 pt-10 pb-14">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      {/* 2. 전시 정보(좌) + 서문(우) */}
+      <section className="max-w-[1200px] mx-auto px-6 py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-start">
 
-          {/* Left: poster */}
-          <div className={`relative overflow-hidden bg-[#e8f0eb] w-full ${
-            ex.orientation === "portrait" ? "aspect-[3/4]" :
-            ex.orientation === "square" ? "aspect-square" :
-            "aspect-[4/3]"
-          }`}>
-            <Image
-              src={ex.coverImage}
-              alt={ex.title}
-              fill
-              className="object-contain"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
-            />
-          </div>
+          {/* 좌: 전시 주제 정보 */}
+          <div className="lg:sticky lg:top-24">
+            <p className="text-[10px] tracking-[0.25em] uppercase text-[#268042] mb-5">
+              {statusLabel[ex.status]}
+            </p>
+            <h1
+              className="text-[2.6rem] sm:text-[3.2rem] md:text-[3.8rem] font-bold uppercase text-[#1A1A1A] leading-[0.93] mb-4 tracking-[-0.02em]"
+              style={{ fontFamily: "var(--font-oswald)" }}
+            >
+              {ex.title}
+            </h1>
+            {ex.titleEn && (
+              <p
+                className="text-lg sm:text-xl md:text-2xl font-bold uppercase text-[#268042] leading-tight mb-10 tracking-[-0.01em]"
+                style={{ fontFamily: "var(--font-oswald)" }}
+              >
+                {ex.titleEn}
+              </p>
+            )}
 
-          {/* Right: description */}
-          <div className="lg:sticky lg:top-24 space-y-10">
-            {ex.description && (
-              <div className="space-y-4">
-                {ex.description.split("\n\n").map((para, i) => (
-                  <p key={i} className="text-base md:text-lg text-[#4A4A4A] leading-relaxed" style={{ whiteSpace: "pre-line" }}>
-                    {para}
-                  </p>
-                ))}
+            <div className="space-y-2 text-sm text-[#4A4A4A]">
+              <div className="flex gap-3">
+                <span className="text-[#9A9A9A] w-16 shrink-0">Date</span>
+                <span>{formatDateRange(ex.startDate, ex.endDate)}</span>
               </div>
-            )}
-            {ex.descriptionKo && (
-              <div className="space-y-4 border-t border-[#d4e8da] pt-10">
-                {ex.descriptionKo.split("\n\n").map((para, i) => (
-                  <p key={i} className="text-base text-[#4A4A4A] leading-relaxed" style={{ whiteSpace: "pre-line", wordBreak: "keep-all" }}>
-                    {para}
-                  </p>
-                ))}
+              {ex.venue && (
+                <div className="flex gap-3">
+                  <span className="text-[#9A9A9A] w-16 shrink-0">Venue</span>
+                  <span>{ex.venue}</span>
+                </div>
+              )}
+              <div className="flex gap-3">
+                <span className="text-[#9A9A9A] w-16 shrink-0">Location</span>
+                <span>{ex.location}</span>
               </div>
-            )}
+              <div className="flex gap-3">
+                <span className="text-[#9A9A9A] w-16 shrink-0">Artists</span>
+                <span>{ex.artists.join(", ")}</span>
+              </div>
+            </div>
+
             {ex.videoUrl && (
-              <div className="pt-2">
+              <div className="mt-10">
                 <a
                   href={ex.videoUrl}
                   target="_blank"
@@ -138,48 +128,48 @@ export default async function ExhibitionDetailPage({ params }: Props) {
             )}
           </div>
 
-        </div>
-      </div>
-
-      {/* Photo gallery */}
-      {ex.photos && ex.photos.length > 0 && (
-        <div className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="border-t border-[#d4e8da] pt-10 mb-8">
-            <p className="text-[10px] tracking-[0.25em] uppercase text-[#9A9A9A]">
-              Exhibition Views
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-8">
-            {ex.photos.map((photo, i) => {
-              const src = typeof photo === "string" ? photo : photo.src;
-              const caption = typeof photo === "string" ? undefined : photo.caption;
-              const captionKo = typeof photo === "string" ? undefined : photo.captionKo;
-              return (
-                <div key={i}>
-                  <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#e8f0eb]">
-                    <Image
-                      src={src}
-                      alt={`${ex.title} — ${i + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, 45vw"
-                    />
-                  </div>
-                  {(caption || captionKo) && (
-                    <div className="mt-3 space-y-1">
-                      {caption && (
-                        <p className="text-xs text-[#9A9A9A] leading-relaxed">{caption}</p>
-                      )}
-                      {captionKo && (
-                        <p className="text-xs text-[#9A9A9A] leading-relaxed" style={{ wordBreak: "keep-all" }}>{captionKo}</p>
-                      )}
-                    </div>
-                  )}
+          {/* 우: 전시 서문 */}
+          {hasDescription && (
+            <div className="space-y-10">
+              {ex.description && (
+                <div className="space-y-5 text-[1.02rem] text-[#3A3A3A]">
+                  {ex.description.split("\n\n").map((para, i) => (
+                    <p key={i} style={{ lineHeight: "1.9", whiteSpace: "pre-line" }}>
+                      {para}
+                    </p>
+                  ))}
                 </div>
-              );
-            })}
-          </div>
+              )}
+              {ex.descriptionKo && (
+                <div className="space-y-5 text-[1.02rem] text-[#3A3A3A] border-t border-[#d4e8da] pt-10">
+                  {ex.descriptionKo.split("\n\n").map((para, i) => (
+                    <p key={i} style={{ lineHeight: "1.9", whiteSpace: "pre-line", wordBreak: "keep-all" }}>
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
+      </section>
+
+      {/* 3. 전시 사진 — 3열 정사각형, 클릭 시 원본 보기 */}
+      {ex.photos && ex.photos.length > 0 && (
+        <section className="max-w-[1400px] mx-auto px-6 pb-28">
+          <p className="text-[10px] tracking-[0.25em] uppercase text-[#9A9A9A] mb-6">
+            Exhibition Views
+          </p>
+          <ExhibitionGallery
+            photos={ex.photos.map((p) =>
+              typeof p === "string"
+                ? { src: p }
+                : { src: p.src, caption: p.caption, captionKo: p.captionKo, orientation: p.orientation }
+            )}
+            title={ex.title}
+          />
+        </section>
       )}
 
     </div>

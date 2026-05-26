@@ -42,7 +42,7 @@ export const artists: Artist[] = [
     bio: "I believe that a unique energy flows through all things. Therefore, when taking a photograph, I first wait for that quiet moment of communion with the object's energy. It is that brief instant when the texture of the air subtly shifts, and light and color organically change their direction. Only then does the connection with the object begin. The warm eye contact a horse silently offered me when I lifted my head on a Jeju Oreum. The single, gentle light waiting for me amidst the sunset when I returned to a remote lodge in the California desert. And those scenes that halted me as the flow of the air instantaneously changed. I follow these subtle signals of change, pressing the shutter hundreds of times. And finally, I arrive at that one single frame where both our moods are perfectly superimposed. Ultimately, photography is the act of capturing the moment when my senses and the world's senses most naturally communicate and resonate.",
     bio_ko: "나는 모든 사물에 고유한 에너지가 흐른다고 믿는다. 그래서 사진을 찍을 때, 먼저 그 에너지와 조용히 교감하는 순간을 기다린다. 공기의 결이 부드럽게 바뀌고, 빛과 색이 스스로 방향을 틀어가는 아주 짧은 순간 — 그때 비로소 대상과의 연결이 시작된다. 제주 오름에서 고개를 들었을 때 말 한 마리가 아무 말 없이 건네던 따뜻한 눈맞춤. 캘리포니아 사막에서, 인적이 드문 숙소로 돌아왔을 때 석양 사이로 기다리던 한 줄기의 따뜻한 불빛. 그리고 공기의 흐름이 순간적으로 바뀌며 나를 멈춰 세웠던 그 장면들. 나는 이런 미세한 변화의 신호를 따라 수백 번 셔터를 누른다. 그리고 마침내 서로의 무드가 완전히 포개지는 단 하나의 장면에 다다른다. 사진은 결국, 나와 세계의 감각이 가장 자연스럽게 교감하는 순간을 붙잡는 일이다.",
     photo: "/artists/betty-moon.jpg",
-    instagram: "@bettymoon",
+    instagram: "@bettymoon_art",
     youtube: "https://www.youtube.com/@bettymoonstudio",
     artworkCount: 6,
     worksGrid: 2,
@@ -659,11 +659,17 @@ export type Exhibition = {
   endDate: string;
   status: "current" | "upcoming" | "past";
   coverImage: string;
+  heroImage?: string;
   description?: string;
   descriptionKo?: string;
   videoUrl?: string;
   orientation?: 'portrait' | 'landscape' | 'square';
-  photos?: Array<{ src: string; caption?: string; captionKo?: string }>;
+  photos?: Array<{
+    src: string;
+    caption?: string;
+    captionKo?: string;
+    orientation?: 'portrait' | 'landscape' | 'square';
+  }>;
 };
 
 export const exhibitions: Exhibition[] = [
@@ -719,27 +725,33 @@ export const exhibitions: Exhibition[] = [
     photos: [
       {
         src: "/exhibitions/bit-geurim-2026/betty main artwork.jpeg",
-      },
-      {
-        src: "/exhibitions/bit-geurim-2026/lim main artwork.jpeg",
+        orientation: "landscape",
       },
       {
         src: "/exhibitions/bit-geurim-2026/betty photo.jpeg",
+        orientation: "landscape",
         caption: "Installation view, Betty Moon. Moments where light paused and held still.",
         captionKo: "Betty Moon 섹션 전시 전경. 빛이 머문 순간의 기록들이 흰 벽 위에 나란히 걸렸다.",
       },
       {
         src: "/exhibitions/bit-geurim-2026/betty photo.2.jpeg",
+        orientation: "landscape",
         caption: "Where the two artists' worlds meet — Betty Moon's photographs and Ha Jeong Lim's glass in dialogue.",
         captionKo: "두 작가의 공간이 교차하는 지점. 사진 너머로 Ha Jeong Lim의 유리 작품이 공간을 투명하게 가로지른다.",
       },
       {
+        src: "/exhibitions/bit-geurim-2026/lim main artwork.jpeg",
+        orientation: "landscape",
+      },
+      {
         src: "/exhibitions/bit-geurim-2026/lim glass photo.jpeg",
+        orientation: "landscape",
         caption: "Installation view, Ha Jeong Lim. Colored glass and steel wire compose their rhythm across the gallery wall.",
         captionKo: "Ha Jeong Lim 섹션 전시 전경. 색유리와 철선이 벽면을 캔버스 삼아 리듬을 그린다.",
       },
       {
         src: "/exhibitions/bit-geurim-2026/lim glass photo3.jpeg",
+        orientation: "landscape",
         caption: "Corner installation view, Ha Jeong Lim. Glass that breathes with light, transforming the space around it.",
         captionKo: "Ha Jeong Lim 코너 설치 전경. 빛을 투과하는 유리가 공간 속에서 살아 숨쉰다.",
       },
