@@ -547,7 +547,7 @@ export const artworks: Artwork[] = [
     year: 2026,
     medium: "Glass casting",
     dimensions: "36.5 × 8.5 × 6 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w43",
@@ -568,7 +568,7 @@ export const artworks: Artwork[] = [
     year: 2026,
     medium: "Glass casting",
     dimensions: "37 × 6 × 6 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w44",
@@ -589,7 +589,7 @@ export const artworks: Artwork[] = [
     year: 2022,
     medium: "Glass casting",
     dimensions: "18 × 8 × 11 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w45",
@@ -607,7 +607,7 @@ export const artworks: Artwork[] = [
     year: 2023,
     medium: "Glass casting",
     dimensions: "13 × 18 × 6 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w46",
@@ -625,7 +625,7 @@ export const artworks: Artwork[] = [
     year: 2023,
     medium: "Glass casting",
     dimensions: "23 × 11.5 × 27 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w47",
@@ -643,7 +643,7 @@ export const artworks: Artwork[] = [
     year: 2023,
     medium: "Glass casting",
     dimensions: "17 × 28 × 9 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w48",
@@ -664,7 +664,7 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Glass casting",
     dimensions: "36 × 5 × 5.5 cm",
-    orientation: "portrait",
+    orientation: "landscape",
   },
   {
     id: "w49",

@@ -21,7 +21,11 @@ export default function ArtworkImageGallery({ images, title, orientation, isSold
       : "aspect-[4/5]";
 
   const fitClass =
-    orientation === "landscape" || orientation === "square" ? "object-contain" : "object-cover";
+    images.length > 1
+      ? "object-contain"
+      : orientation === "landscape" || orientation === "square"
+      ? "object-contain"
+      : "object-cover";
 
   if (images.length === 1) {
     return (
