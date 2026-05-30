@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getArtworkById, artworks, artists } from "@/lib/mockData";
 import ArtworkCTA from "@/components/ArtworkCTA";
+import ArtworkImageGallery from "@/components/ArtworkImageGallery";
 
 export function generateStaticParams() {
   return artworks.map((a) => ({ id: a.id }));
@@ -90,21 +91,12 @@ export default async function ArtworkPage({
         {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Image */}
-          <div className={`relative ${work.orientation === 'landscape' ? 'aspect-[3/2]' : work.orientation === 'square' ? 'aspect-square' : 'aspect-[4/5]'} bg-[#E8E6E2] overflow-hidden`}>
-            <Image
-              src={work.images[0]}
-              alt={work.title}
-              fill
-              className={work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'}
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
-            {work.isSold && (
-              <div className="absolute top-4 left-4 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
-                Sold
-              </div>
-            )}
-          </div>
+          <ArtworkImageGallery
+            images={work.images}
+            title={work.title}
+            orientation={work.orientation}
+            isSold={work.isSold}
+          />
 
           {/* Details */}
           <div className="lg:sticky lg:top-24">
