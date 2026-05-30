@@ -102,7 +102,9 @@ export default async function ArtistPage({
 
   if (!artist) notFound();
 
-  const works = [...getArtworksByArtist(artist.id)].reverse();
+  const works = artist.id === 'a8'
+    ? [...getArtworksByArtist(artist.id)].reverse()
+    : [...getArtworksByArtist(artist.id)].reverse().slice(0, 6);
   const videos = getVideosByArtist(artist.id);
   const featuredVideo = videos[0] ?? null;
 
@@ -214,65 +216,140 @@ export default async function ArtistPage({
           </div>
         </div>
 
-        {/* 3. 작품 그리드 — 전체, orientation 기반 동적 레이아웃 */}
-        <div>
-          <h2
-            className="text-2xl font-normal text-[#268042] mb-10"
-            style={{ fontFamily: "var(--font-playfair)" }}
-          >
-            Works
-          </h2>
-
-          {works.length === 0 ? (
+        {/* 3. 작품 그리드 */}
+        {works.length === 0 && (
+          <div className="mb-20">
+            <h2
+              className="text-2xl font-normal text-[#268042] mb-10"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Works
+            </h2>
             <div className="aspect-[3/1] bg-[#e8f0eb] flex flex-col items-center justify-center gap-3">
               <p className="text-xs tracking-[0.2em] uppercase text-[#5a9e72]">Works</p>
               <p className="text-sm text-[#9A9A9A]">준비중입니다</p>
             </div>
-          ) : (
-            <div className="space-y-px">
-              {buildRows(works).map((row, ri) => (
-                <div key={ri} className="grid grid-cols-12 gap-px bg-[#d4e8da]">
-                  {row.map(({ work, colSpan }) => (
-                    <Link
-                      key={work.id}
-                      href={`/shop/${work.id}`}
-                      className={`${colSpanClass[colSpan]} group bg-[#F6F4EB] block overflow-hidden`}
-                    >
-                      <div className={`relative ${getAspectClass(work.orientation)} bg-[#e8f0eb] overflow-hidden`}>
-                        <Image
-                          src={work.images[0]}
-                          alt={work.title}
-                          fill
-                          className={`${work.orientation === 'landscape' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                        {work.isSold && (
-                          <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
-                            Sold
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-5">
-                        <h3
-                          className="text-base font-normal text-[#268042] mb-1"
-                          style={{ fontFamily: "var(--font-playfair)" }}
-                        >
-                          {work.title}
-                        </h3>
-                        {work.dimensions && (
-                          <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>
-                        )}
-                        <p className="text-sm text-[#4A4A4A]">
-                          {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
+          </div>
+        )}
+        {works.length > 0 && (
+          <div>
+            <h2
+              className="text-2xl font-normal text-[#268042] mb-10"
+              style={{ fontFamily: "var(--font-playfair)" }}
+            >
+              Works
+            </h2>
+
+            {/* 이영재(a8): orientation 기반 동적 그리드 */}
+            {artist.id === 'a8' && (
+              <div className="space-y-px">
+                {buildRows(works).map((row, ri) => (
+                  <div key={ri} className="grid grid-cols-12 gap-px bg-[#d4e8da]">
+                    {row.map(({ work, colSpan }) => (
+                      <Link
+                        key={work.id}
+                        href={`/shop/${work.id}`}
+                        className={`${colSpanClass[colSpan]} group bg-[#F6F4EB] block overflow-hidden`}
+                      >
+                        <div className={`relative ${getAspectClass(work.orientation)} bg-[#e8f0eb] overflow-hidden`}>
+                          <Image
+                            src={work.images[0]}
+                            alt={work.title}
+                            fill
+                            className={`${work.orientation === 'landscape' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                          {work.isSold && (
+                            <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
+                              Sold
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-5">
+                          <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>
+                            {work.title}
+                          </h3>
+                          {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
+                          <p className="text-sm text-[#4A4A4A]">
+                            {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* 나머지 작가: 기존 레이아웃 */}
+            {artist.id !== 'a8' && (() => {
+              if (artist.worksLayout === 'portrait3-mixed') {
+                const rawPortraits = works.filter(w => !w.orientation || w.orientation === 'portrait');
+                const portraits = rawPortraits.length === 3
+                  ? [rawPortraits[1], rawPortraits[0], rawPortraits[2]]
+                  : rawPortraits;
+                const landscapes = works.filter(w => w.orientation === 'landscape');
+                const squares = works.filter(w => w.orientation === 'square');
+                const WorkCard = ({ work, colClass, aspectClass, imgClass }: { work: typeof works[0]; colClass: string; aspectClass: string; imgClass: string }) => (
+                  <Link key={work.id} href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
+                    <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
+                      <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 50vw, 33vw" />
+                      {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
+                      {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
+                      <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
+                    </div>
+                  </Link>
+                );
+                return (
+                  <div className="grid grid-cols-6 gap-px bg-[#d4e8da]">
+                    {portraits.map(w => <WorkCard key={w.id} work={w} colClass="col-span-2" aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
+                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
+                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3 flex flex-col" aspectClass="flex-1 min-h-0" imgClass="object-contain" />)}
+                  </div>
+                );
+              }
+
+              const twoCol = artist.worksGrid === 2;
+              return (
+                <div className={`grid gap-px bg-[#d4e8da] ${twoCol ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'}`}>
+                  {works.map((work, index) => {
+                    const isFeatured = !twoCol && index === 0 && work.orientation === 'landscape';
+                    return (
+                      <Link
+                        key={work.id}
+                        href={`/shop/${work.id}`}
+                        className={`group bg-[#F6F4EB] overflow-hidden block${isFeatured ? ' col-span-2 lg:col-span-3' : ''}`}
+                      >
+                        <div className={`relative overflow-hidden bg-[#e8f0eb]${twoCol ? ' aspect-[3/2]' : isFeatured ? ' aspect-[3/2]' : ' aspect-[4/5]'}`}>
+                          <Image
+                            src={work.images[0]}
+                            alt={work.title}
+                            fill
+                            className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+                            sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
+                          />
+                          {work.isSold && (
+                            <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>
+                          )}
+                        </div>
+                        <div className="p-5">
+                          <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
+                          {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
+                          <p className="text-sm text-[#4A4A4A]">
+                            {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              );
+            })()}
+          </div>
+        )}
 
       </div>
     </div>
