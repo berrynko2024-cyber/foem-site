@@ -6,24 +6,11 @@ import Image from "next/image";
 import { artworks, type Artwork } from "@/lib/mockData";
 
 const categories = [
-  { value: "all",      label: "All" },
-  { value: "photo",    label: "Photography" },
+  { value: "all", label: "All" },
+  { value: "photo", label: "Photography" },
   { value: "painting", label: "Painting" },
-  { value: "craft",    label: "Craft" },
+  { value: "craft", label: "Craft" },
 ];
-
-// 규칙: orientation → col-span, aspect-ratio, 잘림 없음
-function getGridClass(orientation?: Artwork["orientation"]): string {
-  if (orientation === "landscape") return "col-span-12 sm:col-span-8";
-  if (orientation === "square")    return "col-span-6";
-  return "col-span-6 sm:col-span-4"; // portrait / 미지정
-}
-
-function getAspectClass(orientation?: Artwork["orientation"]): string {
-  if (orientation === "landscape") return "aspect-[3/2]";
-  if (orientation === "square")    return "aspect-square";
-  return "aspect-[3/4]";
-}
 
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -68,56 +55,79 @@ export default function ShopPage() {
         </span>
       </div>
 
-      {/* Grid — orientation 규칙 + CSS dense 자동 채움 */}
-      {filtered.length === 0 ? (
+      {/* Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-px bg-[#E8E6E2]">
+        {sortedWithPadding(filtered).map((work, idx) => {
+          if (work === null) {
+            return <div key={`empty-${idx}`} className="hidden lg:block lg:col-span-3 bg-[#F5F3EF]" />;
+          }
+          const isPhoto = work.category === "photo";
+          const isLandscapePainting = work.category === "painting" && work.orientation === "landscape";
+          const colClass = (isPhoto || isLandscapePainting) ? "col-span-2 lg:col-span-3" : "col-span-1 lg:col-span-2";
+          return <ArtworkCard key={work.id} work={work} className={colClass} />;
+        })}
+      </div>
+
+      {filtered.length === 0 && (
         <div className="py-32 text-center">
           <p className="text-[#9A9A9A] text-sm">No works in this category yet.</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-12 grid-flow-dense gap-px bg-[#E8E6E2]">
-          {filtered.map((work) => (
-            <Link
-              key={work.id}
-              href={`/shop/${work.id}`}
-              className={`${getGridClass(work.orientation)} group bg-[#F5F3EF] block overflow-hidden`}
-            >
-              <div className={`relative ${getAspectClass(work.orientation)} bg-[#E8E6E2] overflow-hidden`}>
-                <Image
-                  src={work.images[0]}
-                  alt={work.title}
-                  fill
-                  className="object-contain transition-transform duration-700 group-hover:scale-[1.03]"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 40vw, 30vw"
-                />
-                {work.isSold && (
-                  <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
-                    Sold
-                  </div>
-                )}
-              </div>
-              <div className="p-5">
-                <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-1">
-                  {work.artistName} · {work.year}
-                </p>
-                <h3
-                  className="text-base font-normal text-[#1A1A1A] mb-1 group-hover:text-[#4A4A4A] transition-colors"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  {work.title}
-                </h3>
-                {work.dimensions && (
-                  <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>
-                )}
-                <p className="text-sm font-medium text-[#1A1A1A]">
-                  {work.isSold
-                    ? "Sold Out"
-                    : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
       )}
     </div>
+  );
+}
+
+function sortedWithPadding(items: Artwork[]): (Artwork | null)[] {
+  const isWide = (a: Artwork) =>
+    a.category === "photo" || (a.category === "painting" && a.orientation === "landscape");
+
+  const wideItems = items.filter(isWide);
+  const narrowItems = items.filter((a) => !isWide(a));
+
+  const result: (Artwork | null)[] = [...wideItems];
+  if (wideItems.length % 2 === 1) result.push(null);
+  result.push(...narrowItems);
+  return result;
+}
+
+function ArtworkCard({ work, className = "" }: { work: Artwork; className?: string }) {
+  const isWide = work.category === "photo" || (work.category === "painting" && work.orientation === "landscape");
+  return (
+    <Link href={`/shop/${work.id}`} className={`group bg-[#F5F3EF] overflow-hidden block ${className}`}>
+      <div
+        className="relative overflow-hidden bg-[#E8E6E2]"
+        style={{ aspectRatio: isWide ? "3/2" : "4/5" }}
+      >
+        <Image
+          src={work.images[0]}
+          alt={work.title}
+          fill
+          className={`${work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+        {work.isSold && (
+          <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
+            Sold
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-1">
+          {work.artistName} · {work.year}
+        </p>
+        <h3
+          className="text-base font-normal text-[#1A1A1A] mb-1 group-hover:text-[#4A4A4A] transition-colors"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          {work.title}
+        </h3>
+        {work.dimensions && (
+          <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>
+        )}
+        <p className="text-sm font-medium text-[#1A1A1A]">
+          {work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
+        </p>
+      </div>
+    </Link>
   );
 }
