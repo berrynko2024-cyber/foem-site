@@ -243,7 +243,7 @@ export default async function ArtistPage({
                           src={work.images[0]}
                           alt={work.title}
                           fill
-                          className="object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+                          className={`${work.orientation === 'landscape' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                         {work.isSold && (
