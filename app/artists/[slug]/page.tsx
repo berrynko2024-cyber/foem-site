@@ -163,6 +163,7 @@ export default async function ArtistPage({
               alt={artist.name}
               fill
               className="object-cover"
+              style={artist.photoFilter ? { filter: artist.photoFilter } : undefined}
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
@@ -270,9 +271,11 @@ export default async function ArtistPage({
                             {work.title}
                           </h3>
                           {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                          <p className="text-sm text-[#4A4A4A]">
-                            {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
-                          </p>
+                          {(work.isSold || work.priceDisplay || work.price > 0) && (
+                            <p className="text-sm text-[#4A4A4A]">
+                              {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
+                            </p>
+                          )}
                         </div>
                       </Link>
                     ))}
@@ -299,7 +302,9 @@ export default async function ArtistPage({
                     <div className="p-5">
                       <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
                       {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                      <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
+                      {(work.isSold || work.priceDisplay || work.price > 0) && (
+                        <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
+                      )}
                     </div>
                   </Link>
                 );
@@ -338,9 +343,11 @@ export default async function ArtistPage({
                         <div className="p-5">
                           <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
                           {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                          <p className="text-sm text-[#4A4A4A]">
-                            {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
-                          </p>
+                          {(work.isSold || work.priceDisplay || work.price > 0) && (
+                            <p className="text-sm text-[#4A4A4A]">
+                              {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
+                            </p>
+                          )}
                         </div>
                       </Link>
                     );

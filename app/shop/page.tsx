@@ -15,10 +15,12 @@ const categories = [
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
+  const shopArtworks = artworks.filter((a) => a.artistId !== "a2");
+
   const filtered =
     activeCategory === "all"
-      ? artworks
-      : artworks.filter((a) => a.category === activeCategory);
+      ? shopArtworks
+      : shopArtworks.filter((a) => a.category === activeCategory);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
@@ -102,7 +104,7 @@ function ArtworkCard({ work, className = "" }: { work: Artwork; className?: stri
           src={work.images[0]}
           alt={work.title}
           fill
-          className={`${work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+          className={`${work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         {work.isSold && (
