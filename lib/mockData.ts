@@ -6,6 +6,7 @@ export type Artist = {
   bio: string;
   bio_ko: string;
   photo: string;
+  photoFilter?: string;
   instagram?: string;
   youtube?: string;
   artworkCount: number;
@@ -106,7 +107,8 @@ export const artists: Artist[] = [
     name_ko: "이영재",
     bio: "Young Jae Lee works with glass casting, coaxing light into form. Each piece begins as molten material and emerges as something caught between solid and translucent — an object that holds stillness while seeming on the verge of dissolving. Her works are vessels of time: moments solidified in glass, named after the quiet hours and seasons that shaped them.",
     bio_ko: "이영재는 유리 주조(glass casting) 작업을 한다. 녹아 있는 재료에서 출발해, 고체와 투명 사이 어딘가에 존재하는 형태를 끌어낸다. 그의 작품은 시간의 그릇이다 — 고요한 시간과 계절이 유리 속에 응고된, 사라지기 직전의 순간들.",
-    photo: "/artists/young-jae-lee.jpg",
+    photo: "/artists/young-jae-lee.png",
+    photoFilter: "brightness(1.25) contrast(0.95)",
     artworkCount: 8,
   },
 ];
@@ -145,7 +147,7 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Oil on Canvas",
     dimensions: "60.6 × 50 cm",
-    priceDisplay: "$1,000",
+    priceDisplay: "$2,000",
     orientation: "landscape",
   },
   {
@@ -201,7 +203,7 @@ export const artworks: Artwork[] = [
     year: 2023,
     medium: "Acrylic on Canvas",
     dimensions: "60.6 × 72.7 cm",
-    priceDisplay: "$1,700",
+    priceDisplay: "$3,500",
   },
   {
     id: "w34",
@@ -466,8 +468,8 @@ export const artworks: Artwork[] = [
     images: ["/artworks/uiyeong-park/the-wall-and-the-wait-2-6.jpg"],
     artistId: "a2",
     artistName: "Uiyeong Park",
-    stock: 1,
-    isSold: false,
+    stock: 0,
+    isSold: true,
     year: 2026,
     medium: "Mixed Media on Wooden Panel",
     dimensions: "45 × 45 cm",
@@ -602,8 +604,8 @@ export const artworks: Artwork[] = [
     images: ["/artworks/youngjae-lee/afternoon-s.jpg"],
     artistId: "a8",
     artistName: "Young Jae Lee",
-    stock: 1,
-    isSold: false,
+    stock: 0,
+    isSold: true,
     year: 2023,
     medium: "Glass casting",
     dimensions: "13 × 18 × 6 cm",
@@ -620,8 +622,8 @@ export const artworks: Artwork[] = [
     images: ["/artworks/youngjae-lee/afternoon-l.jpg"],
     artistId: "a8",
     artistName: "Young Jae Lee",
-    stock: 1,
-    isSold: false,
+    stock: 0,
+    isSold: true,
     year: 2023,
     medium: "Glass casting",
     dimensions: "23 × 11.5 × 27 cm",
@@ -698,6 +700,7 @@ export type ArtistVideo = {
   duration?: string;
   url: string;         // YouTube watch URL
   thumbnail?: string;  // 비유튜브 영상용 수동 오버라이드
+  noEmbed?: boolean;   // true면 임베드 대신 YouTube 새 탭으로 열기
 };
 
 export const artistVideos: ArtistVideo[] = [
@@ -715,9 +718,8 @@ export const artistVideos: ArtistVideo[] = [
     artistId: "a8",
     artistSlug: "young-jae-lee",
     artistName: "Young Jae Lee",
-    title: "Glass Artist : Young Jae Lee Profile",
-    duration: "7:15",
-    url: "https://www.youtube.com/watch?v=4145YTRnG4E",
+    title: "Young Jae Lee — Glass Artist",
+    url: "https://youtu.be/4145YTRnG4E",
   },
   {
     id: "v3",
@@ -747,6 +749,18 @@ export type ArtFair = {
 
 export const artFairs: ArtFair[] = [
   {
+    id: "f9",
+    name: "Positions Berlin Art Fair 2026",
+    venue: "Flughafen Tempelhof, Hangar 5–6",
+    location: "Berlin, Germany",
+    artists: ["Betty Moon", "Uiyeong Park", "Harin J", "Ha Jeong Lim", "Byeong Gwan Seo"],
+    startDate: "2026-09-10",
+    endDate: "2026-09-13",
+    status: "upcoming",
+    coverImage: "/art-fairs/positions-berlin-2026/cover.png",
+    description: "FOEM presents works by Betty Moon, Uiyeong Park, Harin J, Ha Jeong Lim, and Byeong Gwan Seo at Positions Berlin Art Fair 2026 — one of Europe's leading platforms for contemporary art.",
+  },
+  {
     id: "f5",
     name: "Affordable Art Fair Hong Kong 2026",
     venue: "Hong Kong Convention & Exhibition Centre",
@@ -755,7 +769,7 @@ export const artFairs: ArtFair[] = [
     previewDate: "2026-05-14",
     startDate: "2026-05-15",
     endDate: "2026-05-18",
-    status: "current",
+    status: "past",
     coverImage: "/art-fairs/hong-kong-2026/affordable art fair.jpg",
     description: "Sung Eun Park presents works at the Affordable Art Fair Hong Kong 2026. VIP Preview May 14 (1pm–9:30pm) · May 15 (12pm–8:30pm) · May 16–17 (10am–8:30pm) · May 18 (10am–7pm).",
   },
@@ -841,7 +855,7 @@ export const exhibitions: Exhibition[] = [
     location: "Seoul, Korea",
     startDate: "2026-06-08",
     endDate: "2026-06-18",
-    status: "upcoming",
+    status: "current",
     coverImage: "/exhibitions/beyond the frame 2026/beyond the frame.jpg",
     orientation: "portrait",
   },
@@ -878,7 +892,7 @@ export const exhibitions: Exhibition[] = [
     location: "수원, 한국",
     startDate: "2026-05-26",
     endDate: "2026-05-31",
-    status: "current",
+    status: "past",
     coverImage: "/exhibitions/bit-geurim-2026/poster.png",
     orientation: "portrait",
     description: "The light that illuminates the world\nis reborn at the fingertips of two artists.\n\nPhotography that captures a fleeting moment of light\nand holds it forever within a frame,\nand glass that transmits light itself,\ncreating brilliant variations.\n\nThe record of light projected through a camera lens\nand the transparent breath earned by glass enduring intense heat —\ntheir harmony stains the gallery walls and floor\ninto one vast canvas.\n\nIn this place where flat and three-dimensional,\nfrozen moments and moving shadows intersect,\nwe invite you to discover your own light.\n\nWhere a fleeting gaze meets lustrous texture —\ntoday, they paint a picture with light.",
