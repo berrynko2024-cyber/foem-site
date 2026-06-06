@@ -856,7 +856,7 @@ export const exhibitions: Exhibition[] = [
     startDate: "2026-06-08",
     endDate: "2026-06-18",
     status: "current",
-    coverImage: "/exhibitions/beyond the frame 2026/beyond the frame.jpg",
+    coverImage: "/exhibitions/beyond-the-frame-2026/beyond-the-frame.jpg",
     orientation: "portrait",
   },
   {
@@ -875,33 +875,33 @@ export const exhibitions: Exhibition[] = [
     descriptionKo: "세상을 비추는 빛이\n두 예술가의 손끝에서 다시 태어납니다.\n\n찰나의 빛을 붙잡아 프레임 속에\n영원히 가둔 사진,\n그리고 스스로 빛을 투과하며\n찬란한 변주를 만들어내는 유리.\n\n카메라 렌즈를 통해 투영된 빛의 기록과\n뜨거운 열기를 견디며 투명한 숨결을 얻은 유리의 조화는\n전시장 벽면과 바닥을\n하나의 거대한 캔버스로 물들입니다.\n\n평면과 입체,\n정지된 순간과 움직이는 그림자가 교차하는 이곳에서\n당신만의 빛을 발견하는 시간을 가져보시길 바랍니다.\n\n찰나의 시선과 영롱한 질감이 만나,\n오늘 우리 앞에 빛으로 그림을 그립니다.",
     photos: [
       {
-        src: "/exhibitions/bit-geurim-2026/betty main artwork.jpeg",
+        src: "/exhibitions/bit-geurim-2026/betty-main-artwork.jpeg",
         orientation: "landscape",
       },
       {
-        src: "/exhibitions/bit-geurim-2026/betty photo.jpeg",
+        src: "/exhibitions/bit-geurim-2026/betty-photo.jpeg",
         orientation: "landscape",
         caption: "Installation view, Betty Moon. Moments where light paused and held still.",
         captionKo: "Betty Moon 섹션 전시 전경. 빛이 머문 순간의 기록들이 흰 벽 위에 나란히 걸렸다.",
       },
       {
-        src: "/exhibitions/bit-geurim-2026/betty photo.2.jpeg",
+        src: "/exhibitions/bit-geurim-2026/betty-photo.2.jpeg",
         orientation: "landscape",
         caption: "Where the two artists' worlds meet — Betty Moon's photographs and Ha Jeong Lim's glass in dialogue.",
         captionKo: "두 작가의 공간이 교차하는 지점. 사진 너머로 Ha Jeong Lim의 유리 작품이 공간을 투명하게 가로지른다.",
       },
       {
-        src: "/exhibitions/bit-geurim-2026/lim main artwork.jpeg",
+        src: "/exhibitions/bit-geurim-2026/lim-main-artwork.jpeg",
         orientation: "landscape",
       },
       {
-        src: "/exhibitions/bit-geurim-2026/lim glass photo.jpeg",
+        src: "/exhibitions/bit-geurim-2026/lim-glass-photo.jpeg",
         orientation: "landscape",
         caption: "Installation view, Ha Jeong Lim. Colored glass and steel wire compose their rhythm across the gallery wall.",
         captionKo: "Ha Jeong Lim 섹션 전시 전경. 색유리와 철선이 벽면을 캔버스 삼아 리듬을 그린다.",
       },
       {
-        src: "/exhibitions/bit-geurim-2026/lim glass photo3.jpeg",
+        src: "/exhibitions/bit-geurim-2026/lim-glass-photo3.jpeg",
         orientation: "landscape",
         caption: "Corner installation view, Ha Jeong Lim. Glass that breathes with light, transforming the space around it.",
         captionKo: "Ha Jeong Lim 코너 설치 전경. 빛을 투과하는 유리가 공간 속에서 살아 숨쉰다.",
