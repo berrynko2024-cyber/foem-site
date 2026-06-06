@@ -51,28 +51,23 @@ export default async function ExhibitionDetailPage({ params }: Props) {
     <div className="bg-[#F6F4EB] min-h-screen">
 
       {/* 1. 풀스크린 히어로 */}
-      {(() => {
-        const isPortraitContain = ex.orientation === "portrait" && !ex.heroImage;
-        return (
-          <div className={`relative w-full h-screen ${isPortraitContain ? "bg-[#F6F4EB]" : "bg-[#1A1A1A]"}`}>
-            <Image
-              src={ex.heroImage ?? ex.coverImage}
-              alt={ex.title}
-              fill
-              className={`${isPortraitContain ? "object-contain" : "object-cover"} object-center`}
-              priority
-            />
-            <div className="absolute top-6 left-6 z-10">
-              <Link
-                href="/exhibitions"
-                className={`text-[11px] tracking-[0.2em] uppercase transition-colors drop-shadow-sm ${isPortraitContain ? "text-[#1A1A1A]/60 hover:text-[#1A1A1A]" : "text-white/70 hover:text-white"}`}
-              >
-                ← Exhibitions
-              </Link>
-            </div>
-          </div>
-        );
-      })()}
+      <div className={`relative w-full h-screen bg-[#1A1A1A]`}>
+        <Image
+          src={ex.heroImage ?? ex.coverImage}
+          alt={ex.title}
+          fill
+          className={`${ex.orientation === "portrait" && !ex.heroImage ? "object-contain" : "object-cover"} object-center`}
+          priority
+        />
+        <div className="absolute top-6 left-6 z-10">
+          <Link
+            href="/exhibitions"
+            className="text-[11px] tracking-[0.2em] uppercase transition-colors drop-shadow-sm text-white/70 hover:text-white"
+          >
+            ← Exhibitions
+          </Link>
+        </div>
+      </div>
 
       {/* 2. 전시 정보(좌) + 서문(우) */}
       <section className="max-w-[1200px] mx-auto px-6 py-24">
