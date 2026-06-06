@@ -912,7 +912,7 @@ export const exhibitions: Exhibition[] = [
     location: "Seoul, Korea",
     startDate: "2026-04-15",
     endDate: "2026-06-01",
-    status: "current",
+    status: "past",
     coverImage: "/exhibitions/field-of-emotions-2026/cover.jpg",
     description: "A group exhibition exploring the intersection of emotion and material form across photography and painting.",
   },
