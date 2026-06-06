@@ -114,11 +114,13 @@ export default async function ArtworkPage({
               {work.title}
             </h1>
 
-            <p className="text-2xl font-medium text-[#1A1A1A] mb-8">
-              {work.isSold
-                ? "Sold Out"
-                : work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
-            </p>
+            {work.artistId !== "a2" && (
+              <p className="text-2xl font-medium text-[#1A1A1A] mb-8">
+                {work.isSold
+                  ? "Sold Out"
+                  : work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
+              </p>
+            )}
 
             {/* Metadata */}
             <div className="border-t border-[#E8E6E2] py-6 grid grid-cols-2 gap-4 mb-8">
@@ -143,11 +145,14 @@ export default async function ArtworkPage({
             </div>
 
             {/* CTA */}
-            <ArtworkCTA work={work} />
-
-            <p className="text-[11px] text-[#9A9A9A] mt-4 text-center">
-              Worldwide shipping · Certificate of authenticity included
-            </p>
+            {work.artistId !== "a2" && (
+              <>
+                <ArtworkCTA work={work} />
+                <p className="text-[11px] text-[#9A9A9A] mt-4 text-center">
+                  Worldwide shipping · Certificate of authenticity included
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
