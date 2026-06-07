@@ -5,11 +5,11 @@ import { artists } from "@/lib/mockData";
 
 export const metadata: Metadata = {
   title: "Artists",
-  description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, and more. 베티문, 박의영, 하린, 박성은, 서병관, 정재은.",
-  keywords: ["FOEM artists", "베티문", "박의영", "박성은", "하린", "서병관", "정재은", "문유경", "Korean artists", "contemporary art"],
+  description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, Young Jae Lee, and more. 베티문, 박의영, 하린, 박성은, 이영재, 서병관, 정재은.",
+  keywords: ["FOEM artists", "베티문", "박의영", "박성은", "하린", "이영재", "서병관", "정재은", "문유경", "Korean artists", "contemporary art", "glass art", "유리공예"],
   openGraph: {
     title: "Artists — FOEM",
-    description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, and more.",
+    description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, Young Jae Lee, and more.",
     url: "https://www.foem.co.kr/artists",
   },
 };

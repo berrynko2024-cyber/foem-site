@@ -3,6 +3,7 @@ import Image from "next/image";
 import { artworks, artists, artistVideos } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
+import MailingListForm from "@/components/MailingListForm";
 
 export default function HomePage() {
   const galleryItems = artworks.filter(a => a.images[0].startsWith('/artworks/'));
@@ -109,6 +110,39 @@ export default function HomePage() {
             &ldquo;Every work on FOEM is an original — made by hand, shaped by feeling, carried by intention.&rdquo;
           </p>
           <div className="mt-8 h-px w-16 bg-[#268042]" />
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="border-t border-[#d4e8da]">
+        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-end">
+            <div>
+              <p
+                className="text-[10px] tracking-[0.3em] uppercase text-[#5a9e72] mb-4"
+                style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
+              >
+                Newsletter
+              </p>
+              <h2
+                className="text-3xl md:text-4xl font-normal text-[#268042] leading-snug"
+                style={{ fontFamily: "var(--font-playfair)" }}
+              >
+                Stay in the field.
+              </h2>
+            </div>
+            <div>
+              <p
+                className="text-sm text-[#5a9e72] leading-relaxed mb-8"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                New works, artist stories, and art fair updates —
+                <br className="hidden md:block" />
+                delivered to your inbox.
+              </p>
+              <MailingListForm />
+            </div>
+          </div>
         </div>
       </section>
     </div>

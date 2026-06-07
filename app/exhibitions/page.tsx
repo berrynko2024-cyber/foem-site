@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { exhibitions, type Exhibition } from "@/lib/mockData";
 
 export const metadata: Metadata = {
@@ -21,8 +22,8 @@ function formatDateRange(start: string, end: string): string {
 }
 
 function ExhibitionCard({ ex }: { ex: Exhibition }) {
-  const cardContent = (
-    <>
+  return (
+    <Link href={`/exhibitions/${ex.id}`} className="group cursor-pointer block">
       <div className={`relative overflow-hidden bg-[#e8f0eb] mb-5 ${
         ex.orientation === 'portrait' ? 'aspect-[4/5]' :
         ex.orientation === 'square' ? 'aspect-square' : 'aspect-[4/3]'
@@ -36,11 +37,6 @@ function ExhibitionCard({ ex }: { ex: Exhibition }) {
           }`}
           sizes="(max-width: 768px) 100vw, 50vw"
         />
-        {ex.status === "upcoming" && (
-          <div className="absolute top-3 left-3 bg-[#268042] text-[#F6F4EB] text-[10px] tracking-[0.15em] uppercase px-3 py-1">
-            Upcoming
-          </div>
-        )}
         {ex.videoUrl && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
             <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-2xl font-light">
@@ -53,45 +49,45 @@ function ExhibitionCard({ ex }: { ex: Exhibition }) {
         {ex.artists.join(", ")}
       </p>
       <h3
-        className="text-3xl md:text-4xl font-bold uppercase text-[#268042] mb-3 leading-[1.1] group-hover:text-[#1a5c30] transition-colors"
+        className="text-3xl md:text-4xl font-bold uppercase text-[#268042] mb-1 leading-[1.1] group-hover:text-[#1a5c30] transition-colors"
         style={{ fontFamily: "var(--font-oswald)" }}
       >
         {ex.title}
       </h3>
+      {ex.titleEn && (
+        <p
+          className="text-lg md:text-xl font-bold uppercase text-[#5a9e72] mb-3 leading-[1.1]"
+          style={{ fontFamily: "var(--font-oswald)" }}
+        >
+          {ex.titleEn}
+        </p>
+      )}
       <p className="text-sm text-[#9A9A9A] mb-1">
         {ex.venue ? `${ex.venue} · ` : ""}{ex.location}
       </p>
       <p className="text-sm text-[#9A9A9A]">
         {formatDateRange(ex.startDate, ex.endDate)}
       </p>
-      {ex.description && (
-        <p className="text-base text-[#4A4A4A] leading-relaxed mt-4">
-          {ex.description}
-        </p>
-      )}
-    </>
+    </Link>
   );
+}
 
-  if (ex.videoUrl) {
-    return (
-      <a
-        href={ex.videoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group cursor-pointer block"
-      >
-        {cardContent}
-      </a>
-    );
-  }
-
-  return <div className="group cursor-default">{cardContent}</div>;
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <div className="col-span-full flex items-center gap-4 mb-2">
+      <span className="text-[10px] tracking-[0.3em] uppercase text-[#9A9A9A]">{label}</span>
+      <div className="flex-1 h-px bg-[#d4e8da]" />
+    </div>
+  );
 }
 
 export default function ExhibitionsPage() {
-  const sorted = [...exhibitions].sort(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  );
+  const byDate = (a: Exhibition, b: Exhibition) =>
+    new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+
+  const current  = exhibitions.filter(e => e.status === "current").sort(byDate);
+  const upcoming = exhibitions.filter(e => e.status === "upcoming").sort(byDate);
+  const past     = exhibitions.filter(e => e.status === "past").sort(byDate);
 
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
@@ -110,9 +106,24 @@ export default function ExhibitionsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
-          {sorted.map((ex) => (
-            <ExhibitionCard key={ex.id} ex={ex} />
-          ))}
+          {current.length > 0 && (
+            <>
+              <SectionLabel label="Current" />
+              {current.map(ex => <ExhibitionCard key={ex.id} ex={ex} />)}
+            </>
+          )}
+          {upcoming.length > 0 && (
+            <>
+              <SectionLabel label="Upcoming" />
+              {upcoming.map(ex => <ExhibitionCard key={ex.id} ex={ex} />)}
+            </>
+          )}
+          {past.length > 0 && (
+            <>
+              <SectionLabel label="Past" />
+              {past.map(ex => <ExhibitionCard key={ex.id} ex={ex} />)}
+            </>
+          )}
         </div>
 
       </div>

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { artFairs, type ArtFair } from "@/lib/mockData";
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ function formatDate(date: string): string {
 
 const STATUS_LABEL: Record<ArtFair["status"], string> = {
   upcoming: "Upcoming",
-  current: "Current",
+  current: "On Now",
   past: "Past",
 };
 
@@ -39,7 +40,7 @@ const STATUS_ORDER: Record<ArtFair["status"], number> = {
 
 function ArtFairCard({ fair }: { fair: ArtFair }) {
   return (
-    <div className="group cursor-default">
+    <Link href={`/art-fair/${fair.id}`} className="group block">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#e8f0eb] mb-5">
         <Image
           src={fair.coverImage}
@@ -51,6 +52,7 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
         <div className="absolute top-3 left-3 bg-[#F6F4EB] text-[#268042] text-[10px] tracking-[0.15em] uppercase px-3 py-1">
           {STATUS_LABEL[fair.status]}
         </div>
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
       </div>
       <p className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-3">
         {fair.artists.join(", ")}
@@ -70,11 +72,16 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
         {formatDateRange(fair.startDate, fair.endDate)}
       </p>
       {fair.description && (
-        <p className="text-base text-[#4A4A4A] leading-relaxed mt-4">
+        <p className="text-base text-[#4A4A4A] leading-relaxed mt-4 line-clamp-3">
           {fair.description}
         </p>
       )}
-    </div>
+      {fair.artworkIds && fair.artworkIds.length > 0 && (
+        <p className="text-[11px] tracking-[0.1em] uppercase text-[#268042] mt-3 group-hover:text-[#1a5c30] transition-colors">
+          {fair.artworkIds.length} works presented →
+        </p>
+      )}
+    </Link>
   );
 }
 

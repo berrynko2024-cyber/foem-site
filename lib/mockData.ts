@@ -32,6 +32,8 @@ export type Artwork = {
   dimensions?: string;
   orientation?: 'portrait' | 'landscape' | 'square';
   priceDisplay?: string;
+  emotions?: string[];
+  artistStatement?: string;
 };
 
 export const artists: Artist[] = [
@@ -130,6 +132,8 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Oil on Canvas",
     dimensions: "45 × 53 cm",
+    emotions: ["nostalgia", "stillness", "memory"],
+    artistStatement: "October holds a particular quality of light — the kind that makes you feel something is ending and beginning at once.",
   },
   {
     id: "w38",
@@ -149,6 +153,8 @@ export const artworks: Artwork[] = [
     dimensions: "60.6 × 50 cm",
     priceDisplay: "$2,000",
     orientation: "landscape",
+    emotions: ["memory", "longing", "warmth"],
+    artistStatement: "Memories bleed into one another like pigment on wet canvas. This work is about that stain — the way the past colors everything we see.",
   },
   {
     id: "w39",
@@ -168,6 +174,8 @@ export const artworks: Artwork[] = [
     dimensions: "53 × 53 cm",
     priceDisplay: "$900",
     orientation: "square",
+    emotions: ["introspection", "tension", "depth"],
+    artistStatement: "The inner landscape is not a place you visit — it is where you already are, always.",
   },
   {
     id: "w40",
@@ -186,6 +194,8 @@ export const artworks: Artwork[] = [
     medium: "Oil on Canvas",
     dimensions: "53 × 65.2 cm",
     priceDisplay: "문의",
+    emotions: ["memory", "absence", "longing"],
+    artistStatement: "Memory is not what happened. It is what remains after everything else has dissolved.",
   },
   {
     id: "w41",
@@ -204,6 +214,8 @@ export const artworks: Artwork[] = [
     medium: "Acrylic on Canvas",
     dimensions: "60.6 × 72.7 cm",
     priceDisplay: "$3,500",
+    emotions: ["renewal", "joy", "openness"],
+    artistStatement: "Spring arrives not as an event but as a permission — to begin again, to expand, to be seen.",
   },
   {
     id: "w34",
@@ -222,6 +234,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "60.6 × 60.6 cm",
     orientation: "square",
+    emotions: ["freedom", "transcendence", "luminous"],
+    artistStatement: "Every threshold holds a question. This work is the moment before the answer — suspended, golden, weightless.",
   },
   {
     id: "w35",
@@ -240,6 +254,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "60.6 × 60.6 cm",
     orientation: "square",
+    emotions: ["luminous", "transcendence", "spirituality"],
+    artistStatement: "Gold has always been the color of what we cannot hold — the divine, the sacred, the unreachable. This is an invitation to step closer anyway.",
   },
   {
     id: "w36",
@@ -258,6 +274,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "45 × 45 cm",
     orientation: "square",
+    emotions: ["stillness", "connection", "intimacy"],
+    artistStatement: "Some meetings happen in silence. This is that silence — held, gilded, and made permanent.",
   },
   {
     id: "w13",
@@ -276,6 +294,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "60.6 × 60.6 cm",
     orientation: "square",
+    emotions: ["freedom", "mythology", "power"],
+    artistStatement: "The celestial horse does not run — it floats. This is what freedom looks like when it no longer needs the ground.",
   },
   {
     id: "w15",
@@ -294,6 +314,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "72.7 × 72.7 cm",
     orientation: "square",
+    emotions: ["connection", "wonder", "stillness"],
+    artistStatement: "The first moment of genuine encounter leaves something behind — a residue of light that no explanation can dissolve.",
   },
   {
     id: "w14",
@@ -312,6 +334,8 @@ export const artworks: Artwork[] = [
     medium: "Korean pigment, 24k gold leaf, Hanji",
     dimensions: "145.5 × 97.0 cm",
     orientation: "landscape",
+    emotions: ["freedom", "transcendence", "luminous"],
+    artistStatement: "Freedom at this scale is not an escape — it is an arrival. The horse arrives at itself.",
   },
   {
     id: "w25",
@@ -330,6 +354,8 @@ export const artworks: Artwork[] = [
     medium: "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper",
     dimensions: "150 × 100 cm",
     orientation: "landscape",
+    emotions: ["contrast", "calm", "presence"],
+    artistStatement: "I waited three hours for this light. It arrived for less than a minute. That minute is this photograph.",
   },
   {
     id: "w23",
@@ -348,6 +374,8 @@ export const artworks: Artwork[] = [
     medium: "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper",
     dimensions: "150 × 100 cm",
     orientation: "landscape",
+    emotions: ["awe", "connection", "vastness"],
+    artistStatement: "Nature doesn't perform for the camera. You have to become quiet enough that it forgets you're there.",
   },
   {
     id: "w24",
@@ -366,6 +394,8 @@ export const artworks: Artwork[] = [
     medium: "Archival Pigment Print on Korean Traditional Paper (Hanji)",
     dimensions: "60 × 90 cm",
     orientation: "landscape",
+    emotions: ["anticipation", "warmth", "threshold"],
+    artistStatement: "A single light waited for me in the California desert. It felt like a welcome. This is what belonging looks like.",
   },
   {
     id: "w27",
@@ -384,6 +414,8 @@ export const artworks: Artwork[] = [
     medium: "Archival Pigment Print on Creamish Paper",
     dimensions: "90 × 52 cm",
     orientation: "landscape",
+    emotions: ["intimacy", "warmth", "anticipation"],
+    artistStatement: "Someone set this table with care, before anyone arrived. That act of preparation — for an unseen guest — is one of the most human things I know.",
   },
   {
     id: "w26",
@@ -401,6 +433,8 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Archival Pigment Print on Korean Traditional Paper (Hanji)",
     dimensions: "60 × 90 cm",
+    emotions: ["solitude", "stillness", "renewal"],
+    artistStatement: "Returning to yourself is not a dramatic event. It happens quietly, the way dawn replaces night — without announcement.",
   },
   {
     id: "w22",
@@ -419,6 +453,8 @@ export const artworks: Artwork[] = [
     medium: "Archival Pigment Print on Korean Traditional Paper (Hanji)",
     dimensions: "120 × 80 cm",
     orientation: "landscape",
+    emotions: ["solitude", "renewal", "calm"],
+    artistStatement: "The horse on the Jeju Oreum looked at me without judgment. In that eye contact, I found something I had been looking for.",
   },
   {
     id: "w31",
@@ -437,6 +473,8 @@ export const artworks: Artwork[] = [
     medium: "Acrylic on Wooden Panel",
     dimensions: "60.5 × 60.5 cm",
     orientation: "square",
+    emotions: ["tension", "boundary", "contemplation"],
+    artistStatement: "The wall is not an obstacle. It is a question the line keeps asking — where do I end, and where do you begin?",
   },
   {
     id: "w33",
@@ -455,6 +493,8 @@ export const artworks: Artwork[] = [
     medium: "Mixed Media on Wooden Panel",
     dimensions: "45 × 45 cm",
     orientation: "square",
+    emotions: ["tension", "solitude", "rhythm"],
+    artistStatement: "Waiting is its own kind of activity — a structured silence held between two states.",
   },
   {
     id: "w32",
@@ -473,6 +513,8 @@ export const artworks: Artwork[] = [
     medium: "Mixed Media on Wooden Panel",
     dimensions: "45 × 45 cm",
     orientation: "square",
+    emotions: ["tension", "solitude", "rhythm"],
+    artistStatement: "The stripe does not divide — it creates the possibility of two things existing at once.",
   },
   {
     id: "w29",
@@ -490,6 +532,8 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Mixed Media on Canvas",
     dimensions: "65 × 80 cm",
+    emotions: ["rhythm", "depth", "introspection"],
+    artistStatement: "'Dam da' — to contain, to hold. This work holds something I cannot name in any other way.",
   },
   {
     id: "w30",
@@ -507,6 +551,8 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Acrylic on Canvas",
     dimensions: "77 × 98 cm",
+    emotions: ["calm", "rhythm", "contemplation"],
+    artistStatement: "To contain is not to suppress — it is to give shape to what would otherwise dissolve. Blue holds this.",
   },
   {
     id: "w28",
@@ -524,6 +570,8 @@ export const artworks: Artwork[] = [
     year: 2025,
     medium: "Acrylic on Canvas",
     dimensions: "60.5 × 100 cm",
+    emotions: ["calm", "boundary", "contemplation"],
+    artistStatement: "This series began in Normandy, where the stripes weren't decoration — they were the memory of borders crossed and recrossed.",
   },
   {
     id: "w42",
@@ -546,6 +594,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "36.5 × 8.5 × 6 cm",
     orientation: "landscape",
+    emotions: ["stillness", "transparency", "fragility"],
+    artistStatement: "Glass begins as molten chaos. What emerges is a question: what does a dream look like when it solidifies?",
   },
   {
     id: "w43",
@@ -567,6 +617,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "37 × 6 × 6 cm",
     orientation: "landscape",
+    emotions: ["stillness", "transparency", "time"],
+    artistStatement: "Each piece carries the memory of fire — the heat that shaped it — now held in permanent transparency.",
   },
   {
     id: "w44",
@@ -588,6 +640,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "18 × 8 × 11 cm",
     orientation: "landscape",
+    emotions: ["time", "memory", "stillness"],
+    artistStatement: "A specific day. Glass holds it the way only objects can — without interpretation, without forgetting.",
   },
   {
     id: "w45",
@@ -606,6 +660,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "13 × 18 × 6 cm",
     orientation: "landscape",
+    emotions: ["calm", "time", "light"],
+    artistStatement: "Afternoon light changes everything it touches. Glass holds that quality — the way things glow just before they fade.",
   },
   {
     id: "w46",
@@ -624,6 +680,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "23 × 11.5 × 27 cm",
     orientation: "landscape",
+    emotions: ["calm", "time", "light"],
+    artistStatement: "The larger form holds more silence. Size changes the quality of stillness.",
   },
   {
     id: "w47",
@@ -642,6 +700,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "17 × 28 × 9 cm",
     orientation: "landscape",
+    emotions: ["hope", "renewal", "transparency"],
+    artistStatement: "Before anything is certain, there is this — light beginning to enter. Dawn is the most honest moment of any day.",
   },
   {
     id: "w48",
@@ -663,6 +723,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "36 × 5 × 5.5 cm",
     orientation: "landscape",
+    emotions: ["fragility", "stillness", "transparency"],
+    artistStatement: "Dreams are shapeless. Casting them in glass is the attempt to hold what cannot be held.",
   },
   {
     id: "w49",
@@ -684,6 +746,8 @@ export const artworks: Artwork[] = [
     medium: "Glass casting",
     dimensions: "26 × 15 × 7.5 cm",
     orientation: "portrait",
+    emotions: ["hope", "luminous", "presence"],
+    artistStatement: "Hope is not optimism — it is the decision to remain open. This form embodies that decision.",
   },
 ];
 
@@ -741,6 +805,7 @@ export type ArtFair = {
   status: "current" | "upcoming" | "past";
   coverImage: string;
   description?: string;
+  artworkIds?: string[];
 };
 
 export const artFairs: ArtFair[] = [
@@ -755,6 +820,7 @@ export const artFairs: ArtFair[] = [
     status: "upcoming",
     coverImage: "/art-fairs/positions-berlin-2026/cover.png",
     description: "FOEM presents works by Betty Moon, Uiyeong Park, Harin J, Ha Jeong Lim, and Byeong Gwan Seo at Positions Berlin Art Fair 2026 — one of Europe's leading platforms for contemporary art.",
+    artworkIds: ["w22", "w23", "w25", "w38", "w41", "w29", "w30"],
   },
   {
     id: "f5",
@@ -768,6 +834,7 @@ export const artFairs: ArtFair[] = [
     status: "past",
     coverImage: "/art-fairs/hong-kong-2026/affordable art fair.jpg",
     description: "Sung Eun Park presents works at the Affordable Art Fair Hong Kong 2026. VIP Preview May 14 (1pm–9:30pm) · May 15 (12pm–8:30pm) · May 16–17 (10am–8:30pm) · May 18 (10am–7pm).",
+    artworkIds: ["w13", "w15", "w34", "w35", "w36"],
   },
   {
     id: "f7",
@@ -793,6 +860,7 @@ export const artFairs: ArtFair[] = [
     status: "past",
     coverImage: "/art-fairs/artankara-2026/cover.jpg",
     description: "FOEM participated in ARTANKARA 2026, presenting works by Betty Moon, Uiyeong Park, and Harin J at Turkey's leading contemporary art fair.",
+    artworkIds: ["w22", "w26", "w27", "w37", "w38", "w39", "w28", "w29"],
   },
   {
     id: "f8",

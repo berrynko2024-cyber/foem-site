@@ -13,6 +13,7 @@ const NAV_LEFT = [
   { href: "/consulting", label: "Consulting" },
   { href: "/shop", label: "Shop" },
   { href: "/about", label: "About" },
+  { href: "/join", label: "Join" },
 ];
 
 const NAV_RIGHT = [

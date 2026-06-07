@@ -57,9 +57,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/logo.png",
-        width: 800,
-        height: 600,
+        url: "/og-main.png",
+        width: 1200,
+        height: 630,
         alt: "FOEM — Field of Emotion",
       },
     ],
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FOEM — Field of Emotion",
     description: "Original artworks by independent artists.",
-    images: ["/logo.png"],
+    images: ["/og-main.png"],
   },
   robots: {
     index: true,

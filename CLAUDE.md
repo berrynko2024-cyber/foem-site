@@ -8,6 +8,28 @@
 - `screenshot.mjs` (Playwright) 실행 금지 — 컴퓨터 다운됨
 - 사이트 확인은 `npm run dev` 후 사용자에게 `http://localhost:3000` 직접 열도록 안내
 
+## 🚨 사이트 오류 시 체크리스트
+
+**"클릭 안 됨 / 사진 없음 / 기능 안 됨" 같은 증상 → 1번부터 순서대로 확인**
+
+1. **재배포 먼저**: 로컬 코드는 정상인데 라이브 사이트가 이상하면 → `npx vercel --prod`
+   - 코드 변경 후 배포를 안 한 경우가 90%
+   - 배포 전 `npm run build`로 오류 없는지 확인 (TypeScript 오류 등)
+2. **로컬 확인**: `npm run dev` → `curl http://localhost:3000/[경로]` 또는 브라우저 직접 확인
+3. **코드 버그**: 로컬도 안 되면 코드 문제
+
+## 📋 전시(Exhibition) 데이터 관리 규칙
+
+전시 추가·수정 시 반드시 확인:
+
+| 항목 | 규칙 |
+|------|------|
+| **status** | 날짜 기준으로 정확히 유지. `endDate` 지나면 반드시 `"past"`로 변경 |
+| **coverImage** | 파일이 실제로 존재하는지 확인. `public/exhibitions/{폴더명}/` 에 이미지 있어야 함 |
+| **이미지 파일명** | 공백 금지 → 하이픈 사용 (`beyond-the-frame.jpg`) |
+
+**전시 상태 업데이트 시점**: 사용자가 날짜 변경 요청할 때 또는 현재 날짜 기준 만료된 전시 발견 시
+
 ## 현재 진행 상태
 - **Phase 2 완료**: 모든 페이지 UI 완성
 - **Phase 3 미착수**: Stripe / Supabase 연동 필요 (`.env.local` 없음)
@@ -157,13 +179,13 @@ cd /Users/ko/Projects/foem-site && npm run dev
 | Uiyeong Park | w29 | dam da 4_11 | landscape | 판매중 |
 | Uiyeong Park | w30 | contenir 4_10 | — | 판매중 ($2,500) |
 | Uiyeong Park | w31 | The Wall and the Wait 1_2 | square | 판매중 |
-| Uiyeong Park | w32 | The Wall and The Wait 2_6 | square | 판매중 ($700) |
+| Uiyeong Park | w32 | The Wall and The Wait 2_6 | square | Sold Out ($700) |
 | Uiyeong Park | w33 | The Wall and The Wait 2_6(O) | square | Sold Out ($700) |
 | Harin J | w37 | My October | — | Sold Out |
-| Harin J | w38 | Green-Stained Memories | landscape | 판매중 ($1,000) |
+| Harin J | w38 | Green-Stained Memories | landscape | 판매중 ($2,000) |
 | Harin J | w39 | Inner land scape | square | Sold Out ($900) |
 | Harin J | w40 | Memory | — | 판매중 (문의) |
-| Harin J | w41 | Spring Field | — | 판매중 ($1,700) |
+| Harin J | w41 | Spring Field | — | 판매중 ($3,500) |
 | Sung Eun Park | w13 | Golden Cheonma | square | 판매중 |
 | Sung Eun Park | w14 | Golden Freedom | landscape | 판매중 |
 | Sung Eun Park | w15 | The Moment We Met | square | 판매중 |

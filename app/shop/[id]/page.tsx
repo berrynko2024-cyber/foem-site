@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getArtworkById, artworks, artists } from "@/lib/mockData";
 import ArtworkCTA from "@/components/ArtworkCTA";
 import ArtworkImageGallery from "@/components/ArtworkImageGallery";
+import ArtworkChat from "@/components/ArtworkChat";
 
 export function generateStaticParams() {
   return artworks.map((a) => ({ id: a.id }));
@@ -108,11 +109,25 @@ export default async function ArtworkPage({
             </Link>
 
             <h1
-              className="text-3xl md:text-4xl font-normal text-[#1A1A1A] mb-6"
+              className="text-3xl md:text-4xl font-normal text-[#1A1A1A] mb-4"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
               {work.title}
             </h1>
+
+            {/* Emotion tags */}
+            {work.emotions && work.emotions.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-6">
+                {work.emotions.map((e) => (
+                  <span
+                    key={e}
+                    className="text-[10px] tracking-[0.12em] uppercase text-[#268042] border border-[#d4e8da] px-2.5 py-1"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
+            )}
 
             {work.artistId !== "a2" && (
               <p className="text-2xl font-medium text-[#1A1A1A] mb-8">
@@ -138,11 +153,25 @@ export default async function ArtworkPage({
             </div>
 
             {/* Description */}
-            <div className="mb-8">
-              <p className="text-sm text-[#4A4A4A] leading-relaxed">
-                {work.description}
-              </p>
-            </div>
+            {work.description && (
+              <div className="mb-6">
+                <p className="text-sm text-[#4A4A4A] leading-relaxed">
+                  {work.description}
+                </p>
+              </div>
+            )}
+
+            {/* Artist statement */}
+            {work.artistStatement && (
+              <div className="mb-8 border-l-2 border-[#d4e8da] pl-4">
+                <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">
+                  Artist's note
+                </p>
+                <p className="text-sm text-[#4A4A4A] leading-relaxed italic">
+                  "{work.artistStatement}"
+                </p>
+              </div>
+            )}
 
             {/* CTA */}
             {work.artistId !== "a2" && (
@@ -153,6 +182,9 @@ export default async function ArtworkPage({
                 </p>
               </>
             )}
+
+            {/* AI Chat */}
+            <ArtworkChat artworkId={work.id} artworkTitle={work.title} />
           </div>
         </div>
       </div>
