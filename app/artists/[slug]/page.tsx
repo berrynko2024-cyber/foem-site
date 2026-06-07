@@ -181,33 +181,11 @@ export default async function ArtistPage({
             </h1>
             {artist.name_ko && (
               <p
-                className="text-base text-[#5a9e72] mb-3"
+                className="text-base text-[#5a9e72] mb-8"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
                 {artist.name_ko}
               </p>
-            )}
-            {(artist.location || artist.birthYear) && (
-              <p className="text-xs tracking-[0.08em] text-[#9A9A9A] mb-4">
-                {[
-                  artist.location,
-                  artist.birthYear ? `b. ${artist.birthYear}` : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
-            )}
-            {artist.tags && artist.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-8">
-                {artist.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[10px] tracking-[0.08em] text-[#268042] border border-[#d4e8da] px-2 py-0.5 capitalize"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
             )}
 
             <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4">

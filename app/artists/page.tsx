@@ -1,32 +1,23 @@
-"use client";
-
-import { useState, useMemo } from "react";
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { artists } from "@/lib/mockData";
 
-const MEDIUM_TABS = [
-  { value: "all", label: "All" },
-  { value: "photography", label: "Photography" },
-  { value: "painting", label: "Painting" },
-  { value: "sculpture", label: "Sculpture" },
-  { value: "glass", label: "Glass" },
-];
+export const metadata: Metadata = {
+  title: "Artists",
+  description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, Young Jae Lee, and more. 베티문, 박의영, 하린, 박성은, 이영재, 서병관, 정재은.",
+  keywords: ["FOEM artists", "베티문", "박의영", "박성은", "하린", "이영재", "서병관", "정재은", "문유경", "Korean artists", "contemporary art", "glass art", "유리공예"],
+  openGraph: {
+    title: "Artists — FOEM",
+    description: "Meet the independent artists of FOEM — Betty Moon, Uiyeong Park, Harin J, Sung Eun Park, Young Jae Lee, and more.",
+    url: "https://www.foem.co.kr/artists",
+  },
+};
 
 export default function ArtistsPage() {
-  const [activeMedium, setActiveMedium] = useState("all");
-
-  const filtered = useMemo(
-    () =>
-      activeMedium === "all"
-        ? artists
-        : artists.filter((a) => a.medium === activeMedium),
-    [activeMedium]
-  );
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-      <div className="mb-10">
+      <div className="mb-14">
         <p className="text-xs tracking-[0.2em] uppercase text-[#9A9A9A] mb-4">FOEM</p>
         <h1
           className="text-6xl md:text-8xl font-bold uppercase text-[#1A1A1A] leading-[1.0]"
@@ -36,28 +27,8 @@ export default function ArtistsPage() {
         </h1>
       </div>
 
-      {/* Medium filter tabs */}
-      <div className="flex items-center gap-0 border-b border-[#E8E6E2] mb-8">
-        {MEDIUM_TABS.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => setActiveMedium(tab.value)}
-            className={`text-xs tracking-[0.15em] uppercase px-5 py-3 border-b-[1.5px] transition-all duration-200 focus:outline-none ${
-              activeMedium === tab.value
-                ? "border-[#1A1A1A] text-[#1A1A1A]"
-                : "border-transparent text-[#9A9A9A] hover:text-[#4A4A4A]"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-        <span className="ml-auto text-xs text-[#9A9A9A] pb-3 pl-3 border-l border-[#E8E6E2]">
-          {filtered.length} artist{filtered.length !== 1 ? "s" : ""}
-        </span>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#E8E6E2]">
-        {filtered.map((artist) => (
+        {artists.map((artist) => (
           <Link
             key={artist.id}
             href={`/artists/${artist.slug}`}
@@ -74,37 +45,16 @@ export default function ArtistsPage() {
             </div>
             <div className="p-6">
               <h2
-                className="text-xl font-normal text-[#1A1A1A] mb-1"
+                className="text-xl font-normal text-[#1A1A1A] mb-2"
                 style={{ fontFamily: "var(--font-playfair)" }}
               >
                 {artist.name}
               </h2>
-              {(artist.location || artist.birthYear) && (
-                <p className="text-xs tracking-[0.08em] text-[#9A9A9A] mb-3">
-                  {[
-                    artist.location,
-                    artist.birthYear ? `b. ${artist.birthYear}` : null,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </p>
-              )}
-              {artist.tags && artist.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-3">
-                  {artist.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] tracking-[0.08em] text-[#268042] border border-[#d4e8da] px-2 py-0.5 capitalize"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <p className="text-sm text-[#4A4A4A] leading-relaxed line-clamp-2 mb-3">
+                {artist.bio}
+              </p>
               <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A]">
-                {artist.artworkCount > 0
-                  ? `${artist.artworkCount} works available`
-                  : "Coming soon"}
+                {artist.artworkCount} works available
               </p>
             </div>
           </Link>

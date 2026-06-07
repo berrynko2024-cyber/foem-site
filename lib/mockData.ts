@@ -12,10 +12,6 @@ export type Artist = {
   artworkCount: number;
   worksGrid?: 2;
   worksLayout?: 'portrait3-mixed';
-  location?: string;
-  birthYear?: number;
-  tags?: string[];
-  medium?: string;
 };
 
 export type Artwork = {
@@ -53,9 +49,6 @@ export const artists: Artist[] = [
     youtube: "https://www.youtube.com/@bettymoonstudio",
     artworkCount: 6,
     worksGrid: 2,
-    location: "Seoul",
-    tags: ["photography", "nature", "light"],
-    medium: "photography",
   },
   {
     id: "a2",
@@ -67,9 +60,6 @@ export const artists: Artist[] = [
     photo: "/artists/uiyeong-park.jpg",
     instagram: "@ui_yeong_park",
     artworkCount: 6,
-    location: "Seoul",
-    tags: ["painting", "stripe", "abstraction"],
-    medium: "painting",
   },
   {
     id: "a4",
@@ -81,9 +71,6 @@ export const artists: Artist[] = [
     photo: "/artists/harin-j.jpg",
     artworkCount: 6,
     worksLayout: 'portrait3-mixed',
-    location: "Seoul",
-    tags: ["painting", "memory", "emotion"],
-    medium: "painting",
   },
   {
     id: "a5",
@@ -94,9 +81,6 @@ export const artists: Artist[] = [
     bio_ko: "'Golden Horse' 시리즈는 작가 박성은이 오랜 시간 탐구해온 정신적 자유의 궁극적인 형상을 담고 있다. 작가에게 말(馬)은 단지 달리는 존재가 아니라, 자아의 상징이자 해방의 토템이다. 이 시리즈에 등장하는 금빛 말은 더 이상 땅을 딛지 않고, 산수화 위를 유영하듯 부유하며 무게감 없는 존재의 자유로움을 표현한다. 작품 속 말은 욕망과 두려움을 지나, 자기 자신을 있는 그대로 받아들이는 깨달음의 상태에 이르러 있다. 그 몸에 입혀진 순금의 색은 변하지 않는 내면의 결의와 자존감을 상징하며, 어디론가 향하지 않아도 충분한 존재 그 자체의 힘을 드러낸다. 'Golden Horse'는 자아의 중심에서 출발한 작가의 정신적 여정이 현실과 환상의 경계를 넘어 시간과 풍경, 상처와 꿈을 통과하며 현대적인 신화(Mythos)로 확장된 결과물이다.",
     photo: "/artists/sung-eun-park.jpg",
     artworkCount: 6,
-    location: "Seoul",
-    tags: ["painting", "gold", "mythology"],
-    medium: "painting",
   },
   {
     id: "a6",
@@ -107,9 +91,6 @@ export const artists: Artist[] = [
     bio_ko: "서병관은 조각과 공간 실천을 통해 구조와 부재를 탐구합니다.",
     photo: "/artists/byeong-gwan-seo.jpg",
     artworkCount: 0,
-    location: "Seoul",
-    tags: ["sculpture", "structure", "space"],
-    medium: "sculpture",
   },
   {
     id: "a7",
@@ -120,9 +101,6 @@ export const artists: Artist[] = [
     bio_ko: "정재은의 회화는 정지된 시간을 품습니다 — 숨과 고요 사이에 포착된 순간들.",
     photo: "/artists/jae-eun-jeong.jpg",
     artworkCount: 0,
-    location: "Seoul",
-    tags: ["painting", "stillness", "time"],
-    medium: "painting",
   },
   {
     id: "a8",
@@ -134,9 +112,6 @@ export const artists: Artist[] = [
     photo: "/artists/young-jae-lee.png",
     photoFilter: "brightness(1.25) contrast(0.95)",
     artworkCount: 8,
-    location: "Seoul",
-    tags: ["glass", "casting", "translucency"],
-    medium: "glass",
   },
 ];
 
