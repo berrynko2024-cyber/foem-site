@@ -123,7 +123,7 @@ export const artists: Artist[] = [
     bio: "Young Jae Lee works with glass casting, coaxing light into form. Each piece begins as molten material and emerges as something caught between solid and translucent — an object that holds stillness while seeming on the verge of dissolving. Her works are vessels of time: moments solidified in glass, named after the quiet hours and seasons that shaped them.",
     bio_ko: "이영재는 유리 주조(glass casting) 작업을 한다. 녹아 있는 재료에서 출발해, 고체와 투명 사이 어딘가에 존재하는 형태를 끌어낸다. 그의 작품은 시간의 그릇이다 — 고요한 시간과 계절이 유리 속에 응고된, 사라지기 직전의 순간들.",
     photo: "/artists/young-jae-lee.png",
-    photoFilter: "brightness(1.25) contrast(0.95)",
+    photoFilter: "grayscale(100%)",
     artworkCount: 8,
     medium: "glass",
   },
