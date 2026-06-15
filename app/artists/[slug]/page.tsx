@@ -277,7 +277,9 @@ export default async function ArtistPage({
                     return (
                       <div key={seriesName}>
                         {seriesName && (
-                          <p className="text-xs tracking-[0.2em] uppercase text-[#5a9e72] mb-6">— {seriesName}</p>
+                          <div className="inline-block bg-[#268042] text-[#F6F4EB] text-[11px] tracking-[0.2em] uppercase px-4 py-2 mb-6">
+                            {seriesName}
+                          </div>
                         )}
                         <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
                           {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
