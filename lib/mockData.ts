@@ -111,6 +111,7 @@ export const artists: Artist[] = [
     photo: "/artists/jae-eun-jeong.jpg",
     statement: "I seek to restore the sense of place—which is easily lost to economic logic—into a space for artistic contemplation that transcends physical boundaries, using the fundamental elements of painting and architectural imagery. The lines, color fields, and multi-layered strata constructed on the canvas form strata where memories of the past collide with the reality of the present. I wish to shatter the fixed visual frame through this \"interval\" between invisible memory and visible form, awaken a floating sensation of multiple perspectives, and allow viewers to experience the freedom of subjective thought that drifts freely.",
     statement_ko: "경제적 논리로 쉽게 상실되어가는 장소의 감각을 회화의 기본 요소와 건축적 이미지를 통해 물리적 경계를 넘어선 예술적 사유의 공간으로 복원하고자 한다. 캔버스 위에 구축된 선과 색면, 다층의 층위들은 과거의 기억과 현재의 실재가 충돌하는 지층이다. 이 보이지 않는 기억과 보이는 형태 사이의 '간격(Interval)'은 고정된 시각적 프레임을 깨부수고 다중 시점의 부유하는 감각을 일깨우고 자유롭게 유영하는 주체적 사유의 자유를 경험하게 하고 싶다.",
+    instagram: "@jeongjaeeun1012",
     artworkCount: 16,
     medium: "painting",
   },
