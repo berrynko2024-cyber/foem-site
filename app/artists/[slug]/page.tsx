@@ -280,9 +280,9 @@ export default async function ArtistPage({
                           <p className="text-xs tracking-[0.2em] uppercase text-[#5a9e72] mb-6">— {seriesName}</p>
                         )}
                         <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
-                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-4" aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
-                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-6" aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
-                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-4" aspectClass="aspect-square" imgClass="object-contain" />)}
+                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
+                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
+                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-square" imgClass="object-contain" />)}
                         </div>
                       </div>
                     );
