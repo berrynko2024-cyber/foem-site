@@ -199,6 +199,16 @@ export default async function ArtistPage({
               {artist.bio_ko}
             </p>
 
+            {artist.statement && (
+              <div className="mb-8 pt-6 border-t border-[#d4e8da]">
+                <p className="text-[11px] tracking-[0.15em] uppercase text-[#5a9e72] mb-4">Artist Statement</p>
+                <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4">{artist.statement}</p>
+                {artist.statement_ko && (
+                  <p className="text-sm text-[#9A9A9A] leading-relaxed">{artist.statement_ko}</p>
+                )}
+              </div>
+            )}
+
             {artist.instagram && (
               <p className="text-xs text-[#9A9A9A] tracking-wide mb-2">
                 Instagram:{" "}
@@ -260,7 +270,10 @@ export default async function ArtistPage({
                     {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
                   </div>
                   <div className="p-5">
-                    <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
+                    <h3 className="text-base font-normal text-[#268042] mb-0.5" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
+                    {work.title_ko && work.title_ko !== work.title && (
+                      <p className="text-xs text-[#9A9A9A] mb-1">{work.title_ko}</p>
+                    )}
                     {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
                     {(work.isSold || work.priceDisplay || work.price > 0) && (
                       <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
