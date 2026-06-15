@@ -102,9 +102,13 @@ export default async function ArtistPage({
 
   if (!artist) notFound();
 
+  const allWorks = [...getArtworksByArtist(artist.id)];
+  const hasSeries = allWorks.some(w => w.series);
   const works = artist.id === 'a8'
-    ? [...getArtworksByArtist(artist.id)].reverse()
-    : [...getArtworksByArtist(artist.id)].reverse().slice(0, 6);
+    ? allWorks.reverse()
+    : hasSeries
+      ? allWorks
+      : allWorks.reverse().slice(0, 6);
   const videos = getVideosByArtist(artist.id);
   const featuredVideo = videos[0] ?? null;
 
@@ -241,8 +245,54 @@ export default async function ArtistPage({
               Works
             </h2>
 
+            {/* 시리즈 그룹 렌더링 */}
+            {hasSeries && (() => {
+              const groupMap = new Map<string, Artwork[]>();
+              for (const w of works) {
+                const key = w.series ?? '';
+                if (!groupMap.has(key)) groupMap.set(key, []);
+                groupMap.get(key)!.push(w);
+              }
+              const SeriesWorkCard = ({ work, colClass, aspectClass, imgClass }: { work: Artwork; colClass: string; aspectClass: string; imgClass: string }) => (
+                <Link href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
+                  <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
+                    <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                    {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
+                    {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
+                    {(work.isSold || work.priceDisplay || work.price > 0) && (
+                      <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
+                    )}
+                  </div>
+                </Link>
+              );
+              return (
+                <div className="space-y-16">
+                  {[...groupMap.entries()].map(([seriesName, seriesWorks]) => {
+                    const portraits = seriesWorks.filter(w => !w.orientation || w.orientation === 'portrait');
+                    const landscapes = seriesWorks.filter(w => w.orientation === 'landscape');
+                    const squares = seriesWorks.filter(w => w.orientation === 'square');
+                    return (
+                      <div key={seriesName}>
+                        {seriesName && (
+                          <p className="text-xs tracking-[0.2em] uppercase text-[#5a9e72] mb-6">— {seriesName}</p>
+                        )}
+                        <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
+                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-4" aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
+                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-6" aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
+                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass="col-span-12 sm:col-span-4" aspectClass="aspect-square" imgClass="object-contain" />)}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
             {/* 이영재(a8): orientation 기반 동적 그리드 */}
-            {artist.id === 'a8' && (
+            {!hasSeries && artist.id === 'a8' && (
               <div className="space-y-px">
                 {buildRows(works).map((row, ri) => (
                   <div key={ri} className="grid grid-cols-12 gap-px bg-[#d4e8da]">
@@ -285,7 +335,7 @@ export default async function ArtistPage({
             )}
 
             {/* 나머지 작가: 기존 레이아웃 */}
-            {artist.id !== 'a8' && (() => {
+            {!hasSeries && artist.id !== 'a8' && (() => {
               if (artist.worksLayout === 'portrait3-mixed') {
                 const rawPortraits = works.filter(w => !w.orientation || w.orientation === 'portrait');
                 const portraits = rawPortraits.length === 3
