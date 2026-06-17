@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     description: "Artist films and studio videos from FOEM.",
     url: "https://www.foem.co.kr/video",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/video",
+  },
 };
 
 export default function VideoPage() {

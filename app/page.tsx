@@ -1,9 +1,16 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { artworks, artists, artistVideos } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.foem.co.kr",
+  },
+};
 
 export default function HomePage() {
   const galleryItems = artworks.filter(a => a.images[0].startsWith('/artworks/'));

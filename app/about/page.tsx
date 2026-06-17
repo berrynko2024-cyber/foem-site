@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     description: "FOEM is a curated art platform connecting independent artists with collectors.",
     url: "https://www.foem.co.kr/about",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/about",
+  },
 };
 
 export default function AboutPage() {

@@ -22,6 +22,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: fair.description ?? `FOEM at ${fair.name}, ${fair.location}.`,
       images: [{ url: fair.coverImage }],
     },
+    alternates: {
+      canonical: `https://www.foem.co.kr/art-fair/${id}`,
+    },
   };
 }
 

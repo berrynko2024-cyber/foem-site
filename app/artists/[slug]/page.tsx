@@ -89,6 +89,9 @@ export async function generateMetadata({
       url: `https://www.foem.co.kr/artists/${slug}`,
       images: artist.photo ? [{ url: artist.photo, alt: artist.name }] : [],
     },
+    alternates: {
+      canonical: `https://www.foem.co.kr/artists/${slug}`,
+    },
   };
 }
 

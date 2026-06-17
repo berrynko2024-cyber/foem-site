@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     description: "Browse and purchase original artworks — paintings, photography, and crafts.",
     url: "https://www.foem.co.kr/shop",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/shop",
+  },
 };
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {

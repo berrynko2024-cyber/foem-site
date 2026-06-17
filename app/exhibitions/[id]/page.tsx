@@ -23,6 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: ex.description ?? `${ex.title} by ${ex.artists.join(", ")}`,
       images: [{ url: ex.coverImage }],
     },
+    alternates: {
+      canonical: `https://www.foem.co.kr/exhibitions/${id}`,
+    },
   };
 }
 

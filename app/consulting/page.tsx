@@ -9,6 +9,9 @@ export const metadata = {
     description: "Personalized art consulting to find the right artwork for your space and taste.",
     url: "https://www.foem.co.kr/consulting",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/consulting",
+  },
 };
 
 export default function ConsultingPage() {

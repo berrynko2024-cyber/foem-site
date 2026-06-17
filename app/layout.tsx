@@ -99,6 +99,26 @@ export default function RootLayout({
             `,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "FOEM",
+              alternateName: "Field of Emotion",
+              url: "https://www.foem.co.kr",
+              logo: "https://www.foem.co.kr/og-main.png",
+              description: "FOEM is a curated platform showcasing and selling original artworks by independent artists.",
+              sameAs: ["https://www.instagram.com/foem.official"],
+              contactPoint: {
+                "@type": "ContactPoint",
+                email: "berrynko2024@gmail.com",
+                contactType: "customer service",
+              },
+            }),
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col bg-foem-cream text-foem-dark">
         <CartProvider>

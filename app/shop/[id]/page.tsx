@@ -35,6 +35,9 @@ export async function generateMetadata({
         ? [{ url: work.images[0], alt: work.title }]
         : [],
     },
+    alternates: {
+      canonical: `https://www.foem.co.kr/shop/${id}`,
+    },
   };
 }
 

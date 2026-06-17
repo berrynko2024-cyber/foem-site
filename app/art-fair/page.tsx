@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     description: "FOEM at international art fairs — KIAF, Frieze Seoul, Art Busan, and more.",
     url: "https://www.foem.co.kr/art-fair",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/art-fair",
+  },
 };
 
 function formatDateRange(start: string, end: string): string {

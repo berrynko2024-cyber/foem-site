@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     description: "Current, upcoming, and past exhibitions by FOEM artists.",
     url: "https://www.foem.co.kr/exhibitions",
   },
+  alternates: {
+    canonical: "https://www.foem.co.kr/exhibitions",
+  },
 };
 
 function formatDateRange(start: string, end: string): string {
