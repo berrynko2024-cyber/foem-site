@@ -1163,13 +1163,12 @@ export type ArtistVideo = {
 
 export const artistVideos: ArtistVideo[] = [
   {
-    id: "v1",
-    artistId: "a1",
-    artistSlug: "betty-moon",
-    artistName: "Betty Moon",
-    title: "Mother Nature Exhibition",
-    duration: "4:32",
-    url: "https://www.youtube.com/watch?v=D83nSLLX00o",
+    id: "v4",
+    artistId: "a2",
+    artistSlug: "uiyeong-park",
+    artistName: "Uiyeong Park",
+    title: "UIYEONG PARK ABSTRACT ARTIST",
+    url: "https://www.youtube.com/watch?v=kTcBu_bqgZk",
   },
   {
     id: "v2",
@@ -1187,6 +1186,15 @@ export const artistVideos: ArtistVideo[] = [
     title: "Sung Eun Park",
     duration: "",
     url: "https://youtu.be/-Ldafm_vp88?si=ZVg74h3fDi3_YNbt",
+  },
+  {
+    id: "v1",
+    artistId: "a1",
+    artistSlug: "betty-moon",
+    artistName: "Betty Moon",
+    title: "Mother Nature Exhibition",
+    duration: "4:32",
+    url: "https://www.youtube.com/watch?v=D83nSLLX00o",
   },
 ];
 
