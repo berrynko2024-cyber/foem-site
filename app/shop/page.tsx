@@ -67,7 +67,7 @@ export default function ShopPage() {
   const [activePriceRange, setActivePriceRange] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
 
-  const shopArtworks = artworks.filter((a) => a.artistId !== "a2");
+  const shopArtworks = artworks;
 
   const availableEmotions = useMemo(() => {
     const set = new Set<string>();
