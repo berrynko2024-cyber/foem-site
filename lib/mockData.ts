@@ -1169,6 +1169,7 @@ export const artistVideos: ArtistVideo[] = [
     artistName: "Uiyeong Park",
     title: "UIYEONG PARK ABSTRACT ARTIST",
     url: "https://www.youtube.com/watch?v=kTcBu_bqgZk",
+    thumbnail: "https://img.youtube.com/vi/kTcBu_bqgZk/maxresdefault.jpg",
   },
   {
     id: "v2",

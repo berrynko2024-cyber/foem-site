@@ -49,11 +49,13 @@ export function VideoCard({
 
   const youtubeId = extractYoutubeId(video.url);
 
-  const thumbSrc = youtubeId
+  const thumbSrc = video.thumbnail
+    ? video.thumbnail
+    : youtubeId
     ? `https://img.youtube.com/vi/${youtubeId}/${
         useFallbackThumb ? "maxresdefault" : "hqdefault"
       }.jpg`
-    : (video.thumbnail ?? null);
+    : null;
 
   return (
     <Link

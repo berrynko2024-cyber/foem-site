@@ -14,7 +14,9 @@ function extractYoutubeId(url: string): string | null {
 export default function VideoPlayer({ video }: { video: ArtistVideo }) {
   const [playing, setPlaying] = useState(false);
   const youtubeId = extractYoutubeId(video.url);
-  const thumbSrc = youtubeId
+  const thumbSrc = video.thumbnail
+    ? video.thumbnail
+    : youtubeId
     ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
     : null;
 
