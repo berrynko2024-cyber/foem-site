@@ -75,7 +75,7 @@ export const artists: Artist[] = [
     bio: "My work is a process of reconstructing on canvas the trajectory of 'Difference', a path endlessly deferred and unsettled between presence and absence. The texture of memory, the density of emotion, and the afterglow of light are not fixed entities but traces that continually slip away and transform. For me, abstraction is neither a rule nor a limitation aimed at formal completion, but a vessel that embraces the indefinable fragments of life and truth of vanishing moments. Ultimately, my practice moves beyond constrained form to create a new field where what is fading may finally dwell. Within this space of warm hospitality toward the disappearing, we are invited to encounter our own authentic landscapes.",
     bio_ko: "나의 작업은 현시(Presence)와 부재(Absence) 사이에 끊임없이 미뤄지고 흔들리는 '차연(Difference)'의 궤적을 화면위에 재구성하는 과정이다. 캔버스 위에 새겨진 기억의 결, 감정의 밀도, 빛의 잔향은 고정된 실체가 아니라 미끄러지고 변화하는 흔적들이다. 나에게 추상이란 형식의 완결을 지향하는 규칙이나 제한이 아니라, 규정할 수 없는 삶의 파편들과 사라져가는 순간의 진실을 수용하는 '그릇'이다. 결국 나의 작업은 얽매인 형식에서 벗어나 소멸하는 것들이 비로소 머물 수 있는 새로운 장(Field)을 마련하는 일이며, 사라져가는 것들을 향한 이 따뜻한 환대의 공간 안에서 우리는 비로소 각자의 진실한 정경과 마주하게 된다.",
     photo: "/artists/harin-j.jpg",
-    artworkCount: 6,
+    artworkCount: 5,
     worksLayout: 'portrait3-mixed',
     medium: "painting",
   },

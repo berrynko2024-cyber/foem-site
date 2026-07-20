@@ -123,15 +123,16 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - Sold 표시: 좌상단 검정 뱃지 통일
 - 가격란: `isSold`이면 "Sold Out", `priceDisplay` 있으면 그대로, 없으면 원화
 
-### 현재 작가 현황
-| ID | slug | 작품 |
-|----|------|------|
-| a1 | betty-moon | ✅ 6개 |
-| a2 | uiyeong-park | ✅ 6개 |
-| a4 | harin-j | ✅ 5개 |
-| a5 | seong-eun-park | ✅ 6개 |
-| a6 | byeong-gwan-seo | ⏳ 준비중 (artworkCount: 0) |
-| a7 | jae-eun-jeong | ⏳ 준비중 (artworkCount: 0) |
+### 현재 작가 현황 (2026-07-20 기준)
+| ID | slug | medium | 작품 | 영상 |
+|----|------|--------|------|------|
+| a1 | betty-moon | photography | ✅ 6개 | ✅ |
+| a2 | uiyeong-park | painting | ✅ 10개 | ⏳ |
+| a4 | harin-j | painting | ✅ 5개 | ⏳ |
+| a5 | sung-eun-park | painting | ✅ 6개 | ✅ |
+| a6 | byeong-gwan-seo | sculpture | ⏳ 준비중 (artworkCount: 0) | ⏳ |
+| a7 | jae-eun-jeong | painting | ✅ 16개 (Interval 10 + 구조와 속력 6) | ⏳ |
+| a8 | young-jae-lee | glass | ✅ 8개 | ✅ |
 
 ### 작품 없는 작가 처리
 - `artworkCount: 0`으로 설정
@@ -166,34 +167,14 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - 탭: Current / Upcoming / Past
 - 데이터: `exhibitions` 배열 (`lib/mockData.ts`)
 
-### 현재 실제 작품 현황
-| 작가 | ID | 제목 | orientation | 상태 |
-|------|-----|------|-------------|------|
-| Betty Moon | w22 | Returning to Myself I | landscape | 판매중 |
-| Betty Moon | w26 | Returning to Myself II | — | 판매중 |
-| Betty Moon | w27 | Table is Ready | landscape | 판매중 |
-| Betty Moon | w23 | Mother Nature | landscape | 판매중 |
-| Betty Moon | w25 | Light and Shadow | landscape | 판매중 |
-| Betty Moon | w24 | Arrival | landscape | 판매중 |
-| Uiyeong Park | w28 | contenir 3_5 | — | Sold Out ($2,100) |
-| Uiyeong Park | w29 | dam da 4_11 | landscape | 판매중 |
-| Uiyeong Park | w30 | contenir 4_10 | — | 판매중 ($2,500) |
-| Uiyeong Park | w31 | The Wall and the Wait 1_2 | square | 판매중 |
-| Uiyeong Park | w32 | The Wall and The Wait 2_6 | square | Sold Out ($700) |
-| Uiyeong Park | w33 | The Wall and The Wait 2_6(O) | square | Sold Out ($700) |
-| Harin J | w37 | My October | — | Sold Out |
-| Harin J | w38 | Green-Stained Memories | landscape | 판매중 ($2,000) |
-| Harin J | w39 | Inner land scape | square | Sold Out ($900) |
-| Harin J | w40 | Memory | — | 판매중 (문의) |
-| Harin J | w41 | Spring Field | — | 판매중 ($3,500) |
-| Sung Eun Park | w13 | Golden Cheonma | square | 판매중 |
-| Sung Eun Park | w14 | Golden Freedom | landscape | 판매중 |
-| Sung Eun Park | w15 | The Moment We Met | square | 판매중 |
-| Sung Eun Park | w34 | Invite into the New World | square | 판매중 |
-| Sung Eun Park | w35 | Invite into a New World G | square | 판매중 |
-| Sung Eun Park | w36 | The Moment We Met II | square | 판매중 |
+### 개별 작품 현황
+- 작가별 작품 목록·가격·판매상태는 `lib/mockData.ts`의 `artworks` 배열이 유일한 원본(source of truth)
+- 여기에 표로 다시 옮겨적지 말 것 — 작품이 자주 추가/삭제되어 바로 오래된 정보가 됨
+- 작가별 개수는 위 "현재 작가 현황" 표 참고
 
 ### 영상 현황
-- Betty Moon: ✅ 영상 있음 (v1, v2)
+- Betty Moon: ✅ 영상 있음 (v1)
+- Young Jae Lee: ✅ 영상 있음 (v2)
 - Sung Eun Park: ✅ 영상 있음 (v3)
+- Uiyeong Park, Harin J, Jae-eun Jeong, Byeong-gwan Seo: ⏳ 준비중
 - Uiyeong Park: ⏳ 준비중
