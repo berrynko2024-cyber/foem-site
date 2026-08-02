@@ -245,15 +245,21 @@ export default function ShopPage() {
 
       {/* Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-px bg-[#E8E6E2]">
-        {sortedWithPadding(filtered).map((work, idx) => {
-          if (work === null) {
-            return <div key={`empty-${idx}`} className="hidden lg:block lg:col-span-3 bg-[#F5F3EF]" />;
-          }
-          const isPhoto = work.category === "photo";
-          const isLandscapePainting = work.category === "painting" && work.orientation === "landscape";
-          const colClass = (isPhoto || isLandscapePainting) ? "col-span-2 lg:col-span-3" : "col-span-1 lg:col-span-2";
-          return <ArtworkCard key={work.id} work={work} className={colClass} />;
-        })}
+        {(() => {
+          const sorted = sortedWithPadding(filtered);
+          const wideCount = sorted.filter(isWideArtwork).length;
+          const lastWideIndex = wideCount - 1;
+          return sorted.map((work, idx) => {
+            const isWide = isWideArtwork(work);
+            const isLastOddWide = isWide && idx === lastWideIndex && wideCount % 2 === 1;
+            const colClass = isLastOddWide
+              ? "col-span-2 lg:col-span-6"
+              : isWide
+              ? "col-span-2 lg:col-span-3"
+              : "col-span-1 lg:col-span-2";
+            return <ArtworkCard key={work.id} work={work} className={colClass} />;
+          });
+        })()}
       </div>
 
       {filtered.length === 0 && (
@@ -268,25 +274,19 @@ export default function ShopPage() {
   );
 }
 
-function sortedWithPadding(items: Artwork[]): (Artwork | null)[] {
-  const isWide = (a: Artwork) =>
-    a.category === "photo"
-    || (a.category === "painting" && a.orientation === "landscape")
-    || (a.category === "craft" && a.orientation === "landscape");
+function isWideArtwork(a: Artwork): boolean {
+  return a.category === "photo"
+    || ((a.category === "painting" || a.category === "craft") && a.orientation === "landscape");
+}
 
-  const wideItems = items.filter(isWide);
-  const narrowItems = items.filter((a) => !isWide(a));
-
-  const result: (Artwork | null)[] = [...wideItems];
-  if (wideItems.length % 2 === 1) result.push(null);
-  result.push(...narrowItems);
-  return result;
+function sortedWithPadding(items: Artwork[]): Artwork[] {
+  const wideItems = items.filter(isWideArtwork);
+  const narrowItems = items.filter((a) => !isWideArtwork(a));
+  return [...wideItems, ...narrowItems];
 }
 
 function ArtworkCard({ work, className = "" }: { work: Artwork; className?: string }) {
-  const isWide = work.category === "photo"
-    || (work.category === "painting" && work.orientation === "landscape")
-    || (work.category === "craft" && work.orientation === "landscape");
+  const isWide = isWideArtwork(work);
   return (
     <Link href={`/shop/${work.id}`} className={`group bg-[#F5F3EF] overflow-hidden block ${className}`}>
       <div
