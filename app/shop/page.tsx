@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { artworks, artists, type Artwork } from "@/lib/mockData";
+import { artworks, type Artwork } from "@/lib/mockData";
 
 const categories = [
   { value: "all", label: "All" },
@@ -102,234 +101,190 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-      {/* Header */}
-      <div className="mb-10">
-        <p className="text-xs tracking-[0.2em] uppercase text-[#9A9A9A] mb-4">
-          FOEM Shop
-        </p>
-        <h1
-          className="text-6xl md:text-8xl font-bold uppercase text-[#1A1A1A] leading-[1.0]"
-          style={{ fontFamily: "var(--font-oswald)" }}
-        >
-          All works
-        </h1>
-      </div>
+    <div className="bg-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+        {/* Header */}
+        <div className="mb-10">
+          <p className="text-xs tracking-[0.2em] uppercase text-[#9A9A9A] mb-4">
+            FOEM Shop
+          </p>
+          <h1
+            className="text-6xl md:text-8xl font-bold uppercase text-black leading-[1.0]"
+            style={{ fontFamily: "var(--font-oswald)" }}
+          >
+            All works
+          </h1>
+        </div>
 
-      {/* Category tabs */}
-      <div className="flex items-center gap-0 border-b border-[#E8E6E2] mb-4">
-        {categories.map((cat) => (
+        {/* Category tabs */}
+        <div className="flex items-center gap-0 border-b border-[#E5E5E5] mb-4">
+          {categories.map((cat) => (
+            <button
+              key={cat.value}
+              onClick={() => setActiveCategory(cat.value)}
+              className={`text-xs tracking-[0.15em] uppercase px-5 py-3 border-b-[1.5px] transition-all duration-200 focus:outline-none ${
+                activeCategory === cat.value
+                  ? "border-black text-black"
+                  : "border-transparent text-[#9A9A9A] hover:text-[#4A4A4A]"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
           <button
-            key={cat.value}
-            onClick={() => setActiveCategory(cat.value)}
-            className={`text-xs tracking-[0.15em] uppercase px-5 py-3 border-b-[1.5px] transition-all duration-200 focus:outline-none ${
-              activeCategory === cat.value
-                ? "border-[#1A1A1A] text-[#1A1A1A]"
-                : "border-transparent text-[#9A9A9A] hover:text-[#4A4A4A]"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`ml-auto text-xs tracking-[0.15em] uppercase px-4 py-3 pb-4 flex items-center gap-2 transition-colors ${
+              hasActiveFilters ? "text-black" : "text-[#9A9A9A] hover:text-[#4A4A4A]"
             }`}
           >
-            {cat.label}
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+            Filter{hasActiveFilters ? " · On" : ""}
           </button>
-        ))}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className={`ml-auto text-xs tracking-[0.15em] uppercase px-4 py-3 pb-4 flex items-center gap-2 transition-colors ${
-            hasActiveFilters ? "text-[#268042]" : "text-[#9A9A9A] hover:text-[#4A4A4A]"
-          }`}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M1 3h10M3 6h6M5 9h2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-          </svg>
-          Filter{hasActiveFilters ? " ·" : ""}
-          {hasActiveFilters && <span className="text-[#268042]">On</span>}
-        </button>
-        <span className="text-xs text-[#9A9A9A] pb-3 pl-3 border-l border-[#E8E6E2]">
-          {filtered.length} work{filtered.length !== 1 ? "s" : ""}
-        </span>
-      </div>
+          <span className="text-xs text-[#9A9A9A] pb-3 pl-3 border-l border-[#E5E5E5]">
+            {filtered.length} work{filtered.length !== 1 ? "s" : ""}
+          </span>
+        </div>
 
-      {/* Expanded filter panel */}
-      {showFilters && (
-        <div className="mb-8 p-5 bg-[#F5F3EF] border border-[#E8E6E2] space-y-5">
+        {/* Expanded filter panel */}
+        {showFilters && (
+          <div className="mb-8 p-5 bg-white border border-[#E5E5E5] space-y-5">
 
-          {/* Emotion filter */}
-          <div>
-            <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Emotion</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActiveEmotion("all")}
-                className={`text-xs px-3 py-1 border transition-colors ${
-                  activeEmotion === "all"
-                    ? "border-[#1A1A1A] text-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
-                    : "border-[#D0CEC9] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
-                }`}
-              >
-                All
-              </button>
-              {availableEmotions.map((e) => (
+            {/* Emotion filter */}
+            <div>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Emotion</p>
+              <div className="flex flex-wrap gap-2">
                 <button
-                  key={e}
-                  onClick={() => setActiveEmotion(activeEmotion === e ? "all" : e)}
-                  className={`text-xs px-3 py-1 border transition-colors capitalize ${
-                    activeEmotion === e
-                      ? "border-[#268042] text-[#268042] bg-[#e8f5ee]"
-                      : "border-[#D0CEC9] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
-                  }`}
-                >
-                  {EMOTION_LABELS[e] ?? e}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Artist filter */}
-          <div>
-            <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Artist</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setActiveArtist("all")}
-                className={`text-xs px-3 py-1 border transition-colors ${
-                  activeArtist === "all"
-                    ? "border-[#1A1A1A] text-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
-                    : "border-[#D0CEC9] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
-                }`}
-              >
-                All
-              </button>
-              {availableArtists.map(({ id, name }) => (
-                <button
-                  key={id}
-                  onClick={() => setActiveArtist(activeArtist === id ? "all" : id)}
+                  onClick={() => setActiveEmotion("all")}
                   className={`text-xs px-3 py-1 border transition-colors ${
-                    activeArtist === id
-                      ? "border-[#268042] text-[#268042] bg-[#e8f5ee]"
-                      : "border-[#D0CEC9] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
+                    activeEmotion === "all"
+                      ? "border-black text-white bg-black"
+                      : "border-[#D0D0D0] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
                   }`}
                 >
-                  {name}
+                  All
                 </button>
-              ))}
+                {availableEmotions.map((e) => (
+                  <button
+                    key={e}
+                    onClick={() => setActiveEmotion(activeEmotion === e ? "all" : e)}
+                    className={`text-xs px-3 py-1 border transition-colors capitalize ${
+                      activeEmotion === e
+                        ? "border-black text-white bg-black"
+                        : "border-[#D0D0D0] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
+                    }`}
+                  >
+                    {EMOTION_LABELS[e] ?? e}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Price range filter */}
-          <div>
-            <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Price</p>
-            <div className="flex flex-wrap gap-2">
-              {PRICE_RANGES.map((r) => (
+            {/* Artist filter */}
+            <div>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Artist</p>
+              <div className="flex flex-wrap gap-2">
                 <button
-                  key={r.value}
-                  onClick={() => setActivePriceRange(activePriceRange === r.value ? "all" : r.value)}
+                  onClick={() => setActiveArtist("all")}
                   className={`text-xs px-3 py-1 border transition-colors ${
-                    activePriceRange === r.value
-                      ? "border-[#268042] text-[#268042] bg-[#e8f5ee]"
-                      : "border-[#D0CEC9] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
+                    activeArtist === "all"
+                      ? "border-black text-white bg-black"
+                      : "border-[#D0D0D0] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
                   }`}
                 >
-                  {r.label}
+                  All
                 </button>
-              ))}
+                {availableArtists.map(({ id, name }) => (
+                  <button
+                    key={id}
+                    onClick={() => setActiveArtist(activeArtist === id ? "all" : id)}
+                    className={`text-xs px-3 py-1 border transition-colors ${
+                      activeArtist === id
+                        ? "border-black text-white bg-black"
+                        : "border-[#D0D0D0] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
+                    }`}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {hasActiveFilters && (
-            <button
-              onClick={clearAll}
-              className="text-xs text-[#9A9A9A] underline hover:text-[#4A4A4A] transition-colors"
-            >
-              Clear all filters
+            {/* Price range filter */}
+            <div>
+              <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">Price</p>
+              <div className="flex flex-wrap gap-2">
+                {PRICE_RANGES.map((r) => (
+                  <button
+                    key={r.value}
+                    onClick={() => setActivePriceRange(activePriceRange === r.value ? "all" : r.value)}
+                    className={`text-xs px-3 py-1 border transition-colors ${
+                      activePriceRange === r.value
+                        ? "border-black text-white bg-black"
+                        : "border-[#D0D0D0] text-[#9A9A9A] hover:border-[#4A4A4A] hover:text-[#4A4A4A]"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {hasActiveFilters && (
+              <button
+                onClick={clearAll}
+                className="text-xs text-[#9A9A9A] underline hover:text-[#4A4A4A] transition-colors"
+              >
+                Clear all filters
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Grid — natural aspect ratio, no cropping */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-16 items-start">
+          {filtered.map((work) => (
+            <ArtworkCard key={work.id} work={work} />
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="py-32 text-center">
+            <p className="text-[#9A9A9A] text-sm mb-3">No works match these filters.</p>
+            <button onClick={clearAll} className="text-xs text-black underline">
+              Clear filters
             </button>
-          )}
-        </div>
-      )}
-
-      {/* Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-px bg-[#E8E6E2]">
-        {(() => {
-          const sorted = sortedWithPadding(filtered);
-          const wideCount = sorted.filter(isWideArtwork).length;
-          const lastWideIndex = wideCount - 1;
-          return sorted.map((work, idx) => {
-            const isWide = isWideArtwork(work);
-            const isLastOddWide = isWide && idx === lastWideIndex && wideCount % 2 === 1;
-            const colClass = isLastOddWide
-              ? "col-span-2 lg:col-span-6"
-              : isWide
-              ? "col-span-2 lg:col-span-3"
-              : "col-span-1 lg:col-span-2";
-            return <ArtworkCard key={work.id} work={work} className={colClass} />;
-          });
-        })()}
+          </div>
+        )}
       </div>
-
-      {filtered.length === 0 && (
-        <div className="py-32 text-center">
-          <p className="text-[#9A9A9A] text-sm mb-3">No works match these filters.</p>
-          <button onClick={clearAll} className="text-xs text-[#268042] underline">
-            Clear filters
-          </button>
-        </div>
-      )}
     </div>
   );
 }
 
-function isWideArtwork(a: Artwork): boolean {
-  return a.category === "photo"
-    || ((a.category === "painting" || a.category === "craft") && a.orientation === "landscape");
-}
-
-function sortedWithPadding(items: Artwork[]): Artwork[] {
-  const wideItems = items.filter(isWideArtwork);
-  const narrowItems = items.filter((a) => !isWideArtwork(a));
-  return [...wideItems, ...narrowItems];
-}
-
-function ArtworkCard({ work, className = "" }: { work: Artwork; className?: string }) {
-  const isWide = isWideArtwork(work);
+function ArtworkCard({ work }: { work: Artwork }) {
   return (
-    <Link href={`/shop/${work.id}`} className={`group bg-[#F5F3EF] overflow-hidden block ${className}`}>
-      <div
-        className="relative overflow-hidden bg-[#E8E6E2]"
-        style={{ aspectRatio: isWide ? "3/2" : "4/5" }}
-      >
-        <Image
+    <Link href={`/shop/${work.id}`} className="group block">
+      <div className="relative overflow-hidden bg-[#F2F2F2]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={work.images[0]}
           alt={work.title}
-          fill
-          className={`${(work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          loading="lazy"
+          className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.02]"
         />
         {work.isSold && (
-          <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
+          <div className="absolute top-3 left-3 bg-black text-white text-[11px] tracking-[0.15em] uppercase px-3 py-1">
             Sold
           </div>
         )}
       </div>
-      <div className="p-5">
-        <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-1">
-          {work.artistName} · {work.year}
-        </p>
-        <h3
-          className="text-base font-normal text-[#1A1A1A] mb-1 group-hover:text-[#4A4A4A] transition-colors"
-          style={{ fontFamily: "var(--font-playfair)" }}
-        >
+      <div className="pt-4">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-black">
           {work.title}
         </h3>
-        {work.dimensions && (
-          <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>
-        )}
-        {work.emotions && work.emotions.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-2">
-            {work.emotions.slice(0, 2).map((e) => (
-              <span key={e} className="text-[10px] tracking-[0.08em] text-[#268042] border border-[#d4e8da] px-2 py-0.5 capitalize">
-                {e}
-              </span>
-            ))}
-          </div>
-        )}
-        <p className="text-sm font-medium text-[#1A1A1A]">
-          {work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
+        <p className="text-sm uppercase tracking-wide text-[#767676] mt-0.5">
+          {work.isSold ? "Sold Out" : work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`}
         </p>
       </div>
     </Link>
