@@ -294,8 +294,8 @@ export default async function ArtistPage({
                         )}
                         <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
                           {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
-                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
-                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-square" imgClass="object-contain" />)}
+                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[3/2]" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
+                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-square" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
                         </div>
                       </div>
                     );
@@ -320,7 +320,7 @@ export default async function ArtistPage({
                             src={work.images[0]}
                             alt={work.title}
                             fill
-                            className={`${work.orientation === 'landscape' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+                            className={`${work.orientation === 'landscape' && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                           {work.isSold && (
@@ -374,8 +374,8 @@ export default async function ArtistPage({
                 return (
                   <div className="grid grid-cols-6 gap-px bg-[#d4e8da]">
                     {portraits.map(w => <WorkCard key={w.id} work={w} colClass="col-span-2" aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
-                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" aspectClass="aspect-[3/2]" imgClass="object-contain" />)}
-                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3 flex flex-col" aspectClass="flex-1 min-h-0" imgClass="object-contain" />)}
+                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" aspectClass="aspect-[3/2]" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
+                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3 flex flex-col" aspectClass="flex-1 min-h-0" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
                   </div>
                 );
               }
@@ -396,7 +396,7 @@ export default async function ArtistPage({
                             src={work.images[0]}
                             alt={work.title}
                             fill
-                            className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+                            className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : (work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
                           />
                           {work.isSold && (

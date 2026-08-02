@@ -34,6 +34,7 @@ export type Artwork = {
   medium?: string;
   dimensions?: string;
   orientation?: 'portrait' | 'landscape' | 'square';
+  fillFrame?: boolean;
   priceDisplay?: string;
   series?: string;
   emotions?: string[];
@@ -368,6 +369,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, forging, acetylene welding",
     dimensions: "50 × 80 × 30 cm",
     orientation: "landscape",
+    fillFrame: true,
   },
   {
     id: "w73",
@@ -386,6 +388,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, forging, welding",
     dimensions: "Variable installation",
     orientation: "landscape",
+    fillFrame: true,
   },
   {
     id: "w74",
@@ -405,6 +408,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, forging, acetylene welding",
     dimensions: "48 × 65 × 80 cm",
     orientation: "landscape",
+    fillFrame: true,
     series: "The Forbidden Fruit",
   },
   {
@@ -478,6 +482,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, forging, acetylene welding",
     dimensions: "19 × 18 × 22 cm",
     orientation: "landscape",
+    fillFrame: true,
     series: "The Forbidden Fruit",
   },
   {
@@ -497,6 +502,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, wood, acetylene welding",
     dimensions: "35 × 35 × 5 cm",
     orientation: "landscape",
+    fillFrame: true,
     series: "The Forbidden Fruit",
   },
   {
@@ -516,6 +522,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, wood, acetylene welding",
     dimensions: "35 × 35 × 5 cm",
     orientation: "landscape",
+    fillFrame: true,
     series: "The Forbidden Fruit",
   },
   {
@@ -535,6 +542,7 @@ export const artworks: Artwork[] = [
     medium: "Steel, acetylene welding",
     dimensions: "40 × 14 × 37 cm",
     orientation: "landscape",
+    fillFrame: true,
     series: "The Forbidden Fruit",
   },
   {

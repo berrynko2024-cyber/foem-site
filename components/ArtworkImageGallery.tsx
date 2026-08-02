@@ -8,9 +8,10 @@ type Props = {
   title: string;
   orientation?: "portrait" | "landscape" | "square";
   isSold?: boolean;
+  fillFrame?: boolean;
 };
 
-export default function ArtworkImageGallery({ images, title, orientation, isSold }: Props) {
+export default function ArtworkImageGallery({ images, title, orientation, isSold, fillFrame }: Props) {
   const [selected, setSelected] = useState(0);
 
   const aspectClass =
@@ -20,12 +21,13 @@ export default function ArtworkImageGallery({ images, title, orientation, isSold
       ? "aspect-square"
       : "aspect-[4/5]";
 
-  const fitClass =
-    images.length > 1
-      ? "object-contain"
-      : orientation === "landscape" || orientation === "square"
-      ? "object-contain"
-      : "object-cover";
+  const fitClass = fillFrame
+    ? "object-cover"
+    : images.length > 1
+    ? "object-contain"
+    : orientation === "landscape" || orientation === "square"
+    ? "object-contain"
+    : "object-cover";
 
   if (images.length === 1) {
     return (

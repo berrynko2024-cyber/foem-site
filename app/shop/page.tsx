@@ -270,7 +270,9 @@ export default function ShopPage() {
 
 function sortedWithPadding(items: Artwork[]): (Artwork | null)[] {
   const isWide = (a: Artwork) =>
-    a.category === "photo" || (a.category === "painting" && a.orientation === "landscape");
+    a.category === "photo"
+    || (a.category === "painting" && a.orientation === "landscape")
+    || (a.category === "craft" && a.orientation === "landscape");
 
   const wideItems = items.filter(isWide);
   const narrowItems = items.filter((a) => !isWide(a));
@@ -282,7 +284,9 @@ function sortedWithPadding(items: Artwork[]): (Artwork | null)[] {
 }
 
 function ArtworkCard({ work, className = "" }: { work: Artwork; className?: string }) {
-  const isWide = work.category === "photo" || (work.category === "painting" && work.orientation === "landscape");
+  const isWide = work.category === "photo"
+    || (work.category === "painting" && work.orientation === "landscape")
+    || (work.category === "craft" && work.orientation === "landscape");
   return (
     <Link href={`/shop/${work.id}`} className={`group bg-[#F5F3EF] overflow-hidden block ${className}`}>
       <div
@@ -293,7 +297,7 @@ function ArtworkCard({ work, className = "" }: { work: Artwork; className?: stri
           src={work.images[0]}
           alt={work.title}
           fill
-          className={`${work.orientation === 'landscape' || work.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+          className={`${(work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         {work.isSold && (

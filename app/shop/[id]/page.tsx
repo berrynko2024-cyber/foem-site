@@ -100,6 +100,7 @@ export default async function ArtworkPage({
             title={work.title}
             orientation={work.orientation}
             isSold={work.isSold}
+            fillFrame={work.fillFrame}
           />
 
           {/* Details */}
@@ -210,7 +211,7 @@ export default async function ArtworkPage({
                       src={r.images[0]}
                       alt={r.title}
                       fill
-                      className={`${r.orientation === 'landscape' || r.orientation === 'square' ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
+                      className={`${(r.orientation === 'landscape' || r.orientation === 'square') && !r.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                       sizes="(max-width: 640px) 100vw, 33vw"
                     />
                   </div>
