@@ -95,12 +95,12 @@ export default function AboutPage() {
                   Instagram
                 </p>
                 <a
-                  href="https://www.instagram.com/we_are_tide/"
+                  href="https://www.instagram.com/foem_korea/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-[#268042] hover:opacity-60 transition-opacity duration-200"
                 >
-                  @foem.art
+                  @foem_korea
                 </a>
               </div>
             </div>

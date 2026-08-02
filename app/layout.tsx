@@ -110,7 +110,7 @@ export default function RootLayout({
               url: "https://www.foem.co.kr",
               logo: "https://www.foem.co.kr/og-main.png",
               description: "FOEM is a curated platform showcasing and selling original artworks by independent artists.",
-              sameAs: ["https://www.instagram.com/foem.official"],
+              sameAs: ["https://www.instagram.com/foem_korea"],
               contactPoint: {
                 "@type": "ContactPoint",
                 email: "berrynko2024@gmail.com",

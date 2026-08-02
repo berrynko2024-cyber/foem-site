@@ -21,7 +21,7 @@ FOEM(Field of Emotions) — 국내 독립 작가들의 원화를 소개·판매�
 철학: 작품을 장르가 아닌 감정으로 경험하게 한다.
 소속 작가: Betty Moon(베티문, 사진), Uiyeong Park(박의영, 회화), Harin J(하린, 회화), Sung Eun Park(박성은, 회화)
 아트페어 참가: Affordable Art Fair Hong Kong, ARTANKARA, AQUA Art Miami, Seoul Art Show 등
-사이트: https://www.foem.co.kr | 인스타그램: @foem.art
+사이트: https://www.foem.co.kr | 인스타그램: @foem_korea
 브랜드 컬러: 에메랄드 그린 (#268042), 따뜻한 크림 (#F6F4EB)
 `;
 
@@ -101,7 +101,7 @@ ${VIRAL_RULES}
 슬라이드 3: [작품 디테일 클로즈업 + 한 줄 설명]
 슬라이드 4: [작가 사진 + 작가 이름]
 슬라이드 5: [작가 한 줄 인용구 — bio에서 가장 강렬한 문장 추출]
-슬라이드 6: [CTA 슬라이드 — "작품 보러 가기 @foem.art"]
+슬라이드 6: [CTA 슬라이드 — "작품 보러 가기 @foem_korea"]
 
 ━━━ 📹 릴스 콘셉트 (선택) ━━━
 (15~30초 릴스로 만든다면 어떤 장면 구성인지 — 구체적으로)
@@ -169,7 +169,7 @@ ${VIRAL_RULES}
 슬라이드 4: [작업 철학 — 가장 인상적인 한 줄]
 슬라이드 5: [대표 작품 1 이미지]
 슬라이드 6: [대표 작품 2 이미지]
-슬라이드 7: [CTA — "작가 페이지 → @foem.art"]
+슬라이드 7: [CTA — "작가 페이지 → @foem_korea"]
 
 ━━━ 📹 릴스 콘셉트 (선택) ━━━
 (작가 스토리를 15~30초로 — 어떤 장면 구성인지)

@@ -17,7 +17,7 @@ const NAV_LEFT = [
 ];
 
 const NAV_RIGHT = [
-  { href: "https://www.instagram.com/we_are_tide/", label: "Instagram", external: true },
+  { href: "https://www.instagram.com/foem_korea/", label: "Instagram", external: true },
 ];
 
 const navLinkClass =
