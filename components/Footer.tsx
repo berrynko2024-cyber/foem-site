@@ -59,7 +59,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#d4e8da] mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-[#d4e8da] mt-12 pt-8">
+          <p className="text-[11px] text-[#5a9e72] tracking-wide leading-relaxed">
+            포엠(FOEM KOREA) · 대표 고빛나 · 사업자등록번호 213-14-63869 · 통신판매업 신고번호 제2022-성남분당A-0703호
+          </p>
+        </div>
+
+        <div className="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[11px] text-[#5a9e72] tracking-wide">
             © {new Date().getFullYear()} FOEM — Field of Emotion. All rights reserved.
           </p>
