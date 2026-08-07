@@ -3,9 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/store/CartContext";
+import { formatPrice } from "@/lib/currency";
+import CurrencySelector from "@/components/CurrencySelector";
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+  const { items, removeItem, updateQuantity, totalItems, displayCurrency, convertToDisplay, totalInDisplayCurrency } =
+    useCart();
 
   if (items.length === 0) {
     return (
@@ -31,12 +34,15 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
-      <h1
-        className="text-4xl font-normal text-[#1A1A1A] mb-14"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
-        Cart ({totalItems})
-      </h1>
+      <div className="flex items-center justify-between mb-14 flex-wrap gap-4">
+        <h1
+          className="text-4xl font-normal text-[#1A1A1A]"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          Cart ({totalItems})
+        </h1>
+        <CurrencySelector />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Items */}
@@ -90,9 +96,19 @@ export default function CartPage() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <p className="text-sm font-medium text-[#1A1A1A]">
-                      {(item.price * item.quantity).toLocaleString("ko-KR")}원
-                    </p>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-[#1A1A1A]">
+                        {formatPrice(
+                          convertToDisplay(item.price * item.quantity, item.currency),
+                          displayCurrency
+                        )}
+                      </p>
+                      {item.currency !== displayCurrency && (
+                        <p className="text-[10px] text-[#9A9A9A]">
+                          ≈ {formatPrice(item.price * item.quantity, item.currency)} 기준 환산
+                        </p>
+                      )}
+                    </div>
                     <button
                       onClick={() => removeItem(item.id)}
                       className="text-[11px] tracking-[0.1em] uppercase text-[#9A9A9A] hover:text-[#1A1A1A] transition-colors focus:outline-none"
@@ -123,7 +139,10 @@ export default function CartPage() {
                     {item.title} × {item.quantity}
                   </span>
                   <span className="text-sm text-[#1A1A1A] flex-shrink-0 ml-2">
-                    {(item.price * item.quantity).toLocaleString("ko-KR")}원
+                    {formatPrice(
+                      convertToDisplay(item.price * item.quantity, item.currency),
+                      displayCurrency
+                    )}
                   </span>
                 </div>
               ))}
@@ -132,7 +151,7 @@ export default function CartPage() {
             <div className="flex justify-between mb-8">
               <span className="text-sm font-medium text-[#1A1A1A]">Total</span>
               <span className="text-lg font-medium text-[#1A1A1A]">
-                {totalPrice.toLocaleString("ko-KR")}원
+                {formatPrice(totalInDisplayCurrency, displayCurrency)}
               </span>
             </div>
 
@@ -142,6 +161,12 @@ export default function CartPage() {
             >
               Proceed to checkout
             </Link>
+
+            {displayCurrency !== "KRW" && (
+              <p className="text-[10px] text-[#9A9A9A] text-center mt-3">
+                실시간 환율 기준 예상 금액이며 결제 화면에서 최종 확정됩니다
+              </p>
+            )}
 
             <p className="text-[11px] text-[#9A9A9A] text-center mt-4">
               Shipping calculated at checkout

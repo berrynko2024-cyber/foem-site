@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: NextRequest) {
-  const { paymentKey, orderId, amount, customer, items } = await req.json();
+  const { paymentKey, orderId, amount, customer, items, currency } = await req.json();
+  const cur = currency === "USD" ? "USD" : "KRW";
 
   if (!paymentKey || !orderId || !amount) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -40,7 +41,8 @@ export async function POST(req: NextRequest) {
       : null,
     items: items ?? [],
     total_amount: amount,
-    payment_method: "toss",
+    currency: cur,
+    payment_method: cur === "USD" ? "paypal" : "toss",
     payment_key: paymentKey,
     payment_status: "paid",
   });

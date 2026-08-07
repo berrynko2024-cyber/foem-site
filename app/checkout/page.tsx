@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/store/CartContext";
+import { formatPrice, convertPrice } from "@/lib/currency";
+import CurrencySelector from "@/components/CurrencySelector";
 
 declare global {
   interface Window {
@@ -22,7 +24,21 @@ declare global {
   }
 }
 
-type PaymentMethod = "toss" | "stripe";
+// v2 SDK (needed for PayPal, which only works through the Payment Widget — not
+// the v1 requestPayment() popup). Cast separately so it doesn't clash with the
+// v1 `window.TossPayments` signature above; only one of the two scripts is ever
+// loaded per checkout session since currency determines the branch.
+type TossPaymentsV2Widgets = {
+  setAmount: (amount: { value: number; currency: "USD" }) => Promise<void>;
+  requestPayment: (options: {
+    orderId: string;
+    amount: { value: number; currency: "USD" };
+    successUrl: string;
+    failUrl: string;
+  }) => Promise<void>;
+};
+
+type PaymentMethod = "toss" | "paypal";
 
 function loadTossScript(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -45,10 +61,32 @@ function loadTossScript(): Promise<void> {
   });
 }
 
+function loadTossWidgetScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(
+      'script[src="https://js.tosspayments.com/v2/standard"][data-loaded="true"]'
+    );
+    if (existing) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://js.tosspayments.com/v2/standard";
+    script.onload = () => {
+      script.dataset.loaded = "true";
+      resolve();
+    };
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
+
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart();
+  const { items, displayCurrency, rates, convertToDisplay, totalInDisplayCurrency } = useCart();
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("toss");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    displayCurrency === "KRW" ? "toss" : "paypal"
+  );
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -59,8 +97,8 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    setPaymentMethod(form.country === "KR" ? "toss" : "stripe");
-  }, [form.country]);
+    setPaymentMethod(displayCurrency === "KRW" ? "toss" : "paypal");
+  }, [displayCurrency]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -70,8 +108,12 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!totalPrice || totalPrice === 0) {
-      alert("결제 금액이 0원입니다. 작품 가격을 확인해 주세요.");
+    if (!totalInDisplayCurrency || totalInDisplayCurrency === 0) {
+      alert("결제 금액이 0입니다. 작품 가격을 확인해 주세요.");
+      return;
+    }
+    if (paymentMethod === "paypal" && !rates) {
+      alert("환율 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
     setLoading(true);
@@ -79,7 +121,7 @@ export default function CheckoutPage() {
     const orderId = crypto.randomUUID();
     localStorage.setItem(
       "foem_pending_order",
-      JSON.stringify({ orderId, customer: form, items })
+      JSON.stringify({ orderId, customer: form, items, currency: displayCurrency })
     );
 
     try {
@@ -93,31 +135,44 @@ export default function CheckoutPage() {
             ? items[0].title
             : `${items[0].title} 외 ${items.length - 1}점`;
         await tossPayments.requestPayment("카드", {
-          amount: totalPrice,
+          amount: Math.round(totalInDisplayCurrency),
           orderId,
           orderName,
           customerName: form.name,
           customerEmail: form.email,
-          successUrl: `${window.location.origin}/order/success`,
+          successUrl: `${window.location.origin}/order/success?currency=KRW`,
           failUrl: `${window.location.origin}/order/fail`,
         });
       } else {
-        const res = await fetch("/api/payments/stripe/create-session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items,
-            customer: form,
-            orderId,
-            origin: window.location.origin,
-          }),
+        // PayPal via the Toss widget only accepts USD from our side — PayPal's
+        // own checkout page converts to the buyer's local currency automatically
+        // (confirmed in Toss's overseas-payment deck), so EUR selection here is
+        // a display estimate; the widget submission is always USD-denominated.
+        const usdRates = rates; // narrowed non-null by the guard above (paymentMethod === "paypal" requires rates)
+        const totalInUSD = items.reduce(
+          (sum, i) => sum + convertPrice(i.price, i.currency, "USD", usdRates!) * i.quantity,
+          0
+        );
+
+        await loadTossWidgetScript();
+        const TossPaymentsV2 = (
+          window as unknown as {
+            TossPayments: (clientKey: string) => {
+              widgets: (opts: { variantKey: string }) => TossPaymentsV2Widgets;
+            };
+          }
+        ).TossPayments;
+        const widgets = TossPaymentsV2(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!).widgets({
+          variantKey: "PAYPAL",
         });
-        const data = await res.json();
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          throw new Error(data.error || "Stripe session creation failed");
-        }
+        const roundedUSD = Math.round(totalInUSD * 100) / 100;
+        await widgets.setAmount({ value: roundedUSD, currency: "USD" });
+        await widgets.requestPayment({
+          orderId,
+          amount: { value: roundedUSD, currency: "USD" },
+          successUrl: `${window.location.origin}/order/success?currency=USD`,
+          failUrl: `${window.location.origin}/order/fail`,
+        });
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "결제 중 오류가 발생했습니다.";
@@ -136,16 +191,17 @@ export default function CheckoutPage() {
     );
   }
 
-  const isKorea = form.country === "KR";
-
   return (
     <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-      <h1
-        className="text-4xl font-normal text-[#1A1A1A] mb-14"
-        style={{ fontFamily: "var(--font-playfair)" }}
-      >
-        Checkout
-      </h1>
+      <div className="flex items-center justify-between mb-14 flex-wrap gap-4">
+        <h1
+          className="text-4xl font-normal text-[#1A1A1A]"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          Checkout
+        </h1>
+        <CurrencySelector />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Form */}
@@ -236,8 +292,8 @@ export default function CheckoutPage() {
               Payment method
             </h2>
             <div className="grid grid-cols-2 gap-3">
-              {/* Toss — only shown for Korea */}
-              {isKorea && (
+              {/* Card via Toss — only settles in KRW */}
+              {displayCurrency === "KRW" && (
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("toss")}
@@ -260,28 +316,34 @@ export default function CheckoutPage() {
                 </button>
               )}
 
-              {/* Stripe */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod("stripe")}
-                className={`flex flex-col items-start px-4 py-4 border text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 ${
-                  !isKorea ? "col-span-2" : ""
-                } ${
-                  paymentMethod === "stripe"
-                    ? "border-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
-                    : "border-[#E8E6E2] text-[#1A1A1A] hover:border-[#4A4A4A]"
-                }`}
-              >
-                <span className="text-xs font-medium tracking-[0.08em] mb-1">Stripe</span>
-                <span
-                  className={`text-[10px] tracking-[0.05em] ${
-                    paymentMethod === "stripe" ? "text-[#C0C0C0]" : "text-[#9A9A9A]"
+              {/* PayPal via Toss — for USD/EUR selection */}
+              {displayCurrency !== "KRW" && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("paypal")}
+                  className={`flex flex-col items-start px-4 py-4 border text-left col-span-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 ${
+                    paymentMethod === "paypal"
+                      ? "border-[#1A1A1A] bg-[#1A1A1A] text-[#F5F3EF]"
+                      : "border-[#E8E6E2] text-[#1A1A1A] hover:border-[#4A4A4A]"
                   }`}
                 >
-                  {isKorea ? "International card" : "Credit / Debit card"}
-                </span>
-              </button>
+                  <span className="text-xs font-medium tracking-[0.08em] mb-1">PayPal</span>
+                  <span
+                    className={`text-[10px] tracking-[0.05em] ${
+                      paymentMethod === "paypal" ? "text-[#C0C0C0]" : "text-[#9A9A9A]"
+                    }`}
+                  >
+                    via 토스페이먼츠
+                  </span>
+                </button>
+              )}
             </div>
+            {displayCurrency === "EUR" && (
+              <p className="text-[11px] text-[#9A9A9A] mt-3">
+                PayPal 결제 화면에서 유로(EUR) 등 실제 사용하시는 통화로 자동 환산되어
+                표시됩니다.
+              </p>
+            )}
           </div>
 
           {/* Submit */}
@@ -294,13 +356,13 @@ export default function CheckoutPage() {
               ? "Processing…"
               : paymentMethod === "toss"
               ? "토스페이먼츠로 결제"
-              : "Pay with Stripe"}
+              : "Pay with PayPal"}
           </button>
 
           <p className="text-[11px] text-[#9A9A9A] text-center">
             {paymentMethod === "toss"
               ? "토스페이먼츠 · SSL 암호화 보안 결제"
-              : "Secure payment powered by Stripe · SSL encrypted"}
+              : "PayPal via 토스페이먼츠 · SSL 암호화 보안 결제"}
           </p>
         </form>
 
@@ -328,7 +390,7 @@ export default function CheckoutPage() {
                   </p>
                 </div>
                 <p className="text-sm text-[#1A1A1A] flex-shrink-0">
-                  {(item.price * item.quantity).toLocaleString("ko-KR")}원
+                  {formatPrice(convertToDisplay(item.price * item.quantity, item.currency), displayCurrency)}
                 </p>
               </div>
             ))}
@@ -337,7 +399,7 @@ export default function CheckoutPage() {
           <div className="flex justify-between mb-2">
             <span className="text-sm text-[#4A4A4A]">Subtotal</span>
             <span className="text-sm text-[#1A1A1A]">
-              {totalPrice.toLocaleString("ko-KR")}원
+              {formatPrice(totalInDisplayCurrency, displayCurrency)}
             </span>
           </div>
           <div className="flex justify-between mb-6">
@@ -347,9 +409,14 @@ export default function CheckoutPage() {
           <div className="flex justify-between border-t border-[#E8E6E2] pt-4">
             <span className="text-base font-medium text-[#1A1A1A]">Total</span>
             <span className="text-base font-medium text-[#1A1A1A]">
-              {totalPrice.toLocaleString("ko-KR")}원
+              {formatPrice(totalInDisplayCurrency, displayCurrency)}
             </span>
           </div>
+          {displayCurrency !== "KRW" && (
+            <p className="text-[10px] text-[#9A9A9A] text-center mt-4">
+              실시간 환율 기준 예상 금액입니다
+            </p>
+          )}
         </div>
       </div>
     </div>

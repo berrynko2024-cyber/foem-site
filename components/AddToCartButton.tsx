@@ -14,6 +14,7 @@ export default function AddToCartButton({ work }: { work: Artwork }) {
       title: work.title,
       artist: work.artistName,
       price: work.price,
+      currency: work.currency ?? "KRW",
       image: work.images[0],
     });
     setAdded(true);

@@ -15,7 +15,7 @@ function SuccessContent() {
     const paymentKey = searchParams.get("paymentKey");
     const tossOrderId = searchParams.get("orderId");
     const amount = searchParams.get("amount");
-    const sessionId = searchParams.get("session_id");
+    const currency = searchParams.get("currency") || "KRW";
 
     const raw = localStorage.getItem("foem_pending_order");
     const pending = raw ? JSON.parse(raw) : {};
@@ -28,6 +28,7 @@ function SuccessContent() {
           paymentKey,
           orderId: tossOrderId,
           amount: Number(amount),
+          currency,
           customer: pending.customer,
           items: pending.items,
         }),
@@ -38,29 +39,6 @@ function SuccessContent() {
             localStorage.removeItem("foem_pending_order");
             clearCart();
             setOrderId(tossOrderId.slice(0, 8).toUpperCase());
-            setStatus("success");
-          } else {
-            setStatus("error");
-          }
-        })
-        .catch(() => setStatus("error"));
-    } else if (sessionId) {
-      fetch("/api/payments/stripe/verify-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          customer: pending.customer,
-          items: pending.items,
-          orderId: pending.orderId,
-        }),
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.success) {
-            localStorage.removeItem("foem_pending_order");
-            clearCart();
-            setOrderId((pending.orderId || sessionId).slice(0, 8).toUpperCase());
             setStatus("success");
           } else {
             setStatus("error");
