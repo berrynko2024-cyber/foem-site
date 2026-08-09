@@ -171,7 +171,7 @@ export default function JoinPage() {
               참여 비용
             </p>
             <p className="text-[11px] text-[#268042] font-semibold tracking-wide">
-              ※ 아래 금액은 2026년 6월 15일까지 적용됩니다. 이후 가격은 변동될 수 있습니다.
+              ※ 아래 금액은 2026년 8월 31일까지 적용됩니다. 이후 가격은 변동될 수 있습니다.
             </p>
           </div>
 
@@ -201,11 +201,11 @@ export default function JoinPage() {
                   className="text-6xl font-bold text-[#268042] leading-none mb-3"
                   style={{ fontFamily: "var(--font-oswald)" }}
                 >
-                  100만원
+                  150만원
                 </p>
                 <p className="text-xs text-[#666] mb-8">
                   <span className="line-through text-[#555]">정가 200만원</span>
-                  <span className="text-[#5a9e72] ml-2">6월 15일까지 혜택가</span>
+                  <span className="text-[#5a9e72] ml-2">8월 31일까지 혜택가</span>
                 </p>
                 <div className="border-t border-[#333] pt-6 space-y-2">
                   <p className="text-sm text-[#aaa] leading-[1.8]">
