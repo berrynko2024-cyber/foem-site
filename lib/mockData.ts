@@ -1379,6 +1379,15 @@ export type ArtistVideo = {
 
 export const artistVideos: ArtistVideo[] = [
   {
+    id: "v5",
+    artistId: "a4",
+    artistSlug: "harin-j",
+    artistName: "Harin J",
+    title: "Harin J",
+    url: "https://youtu.be/_ntW97pctFs?si=VT7_WAobetlIB_c4",
+    thumbnail: "https://img.youtube.com/vi/_ntW97pctFs/maxresdefault.jpg",
+  },
+  {
     id: "v4",
     artistId: "a2",
     artistSlug: "uiyeong-park",
@@ -1412,15 +1421,6 @@ export const artistVideos: ArtistVideo[] = [
     title: "Mother Nature Exhibition",
     duration: "4:32",
     url: "https://www.youtube.com/watch?v=D83nSLLX00o",
-  },
-  {
-    id: "v5",
-    artistId: "a4",
-    artistSlug: "harin-j",
-    artistName: "Harin J",
-    title: "Harin J",
-    url: "https://youtu.be/_ntW97pctFs?si=VT7_WAobetlIB_c4",
-    thumbnail: "https://img.youtube.com/vi/_ntW97pctFs/maxresdefault.jpg",
   },
 ];
 
