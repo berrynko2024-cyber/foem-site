@@ -1413,6 +1413,14 @@ export const artistVideos: ArtistVideo[] = [
     duration: "4:32",
     url: "https://www.youtube.com/watch?v=D83nSLLX00o",
   },
+  {
+    id: "v5",
+    artistId: "a4",
+    artistSlug: "harin-j",
+    artistName: "Harin J",
+    title: "Harin J",
+    url: "https://youtu.be/_ntW97pctFs?si=VT7_WAobetlIB_c4",
+  },
 ];
 
 export type ArtFair = {

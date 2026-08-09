@@ -176,5 +176,6 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - Betty Moon: ✅ 영상 있음 (v1)
 - Young Jae Lee: ✅ 영상 있음 (v2)
 - Sung Eun Park: ✅ 영상 있음 (v3)
-- Uiyeong Park, Harin J, Jae-eun Jeong, Byeong-gwan Seo: ⏳ 준비중
-- Uiyeong Park: ⏳ 준비중
+- Uiyeong Park: ✅ 영상 있음 (v4)
+- Harin J: ✅ 영상 있음 (v5)
+- Jae-eun Jeong, Byeong-gwan Seo: ⏳ 준비중
