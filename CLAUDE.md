@@ -62,8 +62,20 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - `ArtistVideo.url` = YouTube watch URL (`https://www.youtube.com/watch?v=ID`)
 - `youtubeId` 필드 없음 — 컴포넌트 내 `extractYoutubeId(url)` 함수로 자동 추출
 - 정규식: `/(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/`
-- 썸네일 폴백 순서: `hqdefault.jpg` → `maxresdefault.jpg` → CSS 폴백
-- SD 영상 주의: `maxresdefault`는 SD 영상에서 검정 빈 이미지(200 OK) 반환 → `hqdefault` 먼저 사용
+- 기본 동작(썸네일 필드 미지정 시): `hqdefault.jpg`(480x360)로 먼저 시도 → 로드 실패(에러) 시에만 런타임에 `maxresdefault.jpg`로 전환
+- **주의**: `hqdefault`는 저해상도라서 VideoGrid의 피처드(전체폭) 슬롯처럼 큰 영역에 표시되면 확대되며 화질이 깨져 보임(블러/픽셀化). 에러가 나지 않는 한 자동으로 고화질로 안 바뀜.
+
+### ⚠️ 새 아티스트 영상 추가할 때마다 반드시 할 것
+1. `mockData.ts`의 `artistVideos`에 새 항목 추가 (id, artistId, artistSlug, artistName, title, url)
+2. **아래 명령으로 고화질 썸네일 존재 여부 확인**:
+   ```bash
+   curl -s -o /dev/null -w "%{size_download}\n" "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg"
+   ```
+3. **다운로드 크기가 15KB 이상**이면 진짜 HD 썸네일 → mockData 항목에 `thumbnail` 필드로 명시 지정:
+   ```ts
+   thumbnail: "https://img.youtube.com/vi/{videoId}/maxresdefault.jpg",
+   ```
+4. **15KB 미만**이면 SD 영상이라 `maxresdefault`가 검정 빈 이미지일 가능성 높음 → `thumbnail` 필드 생략하고 기본 `hqdefault` 폴백 그대로 둠
 - 위치: `components/VideoGrid.tsx`, `components/VideoPlayer.tsx`
 
 ## VideoGrid 구조 (홈페이지)
