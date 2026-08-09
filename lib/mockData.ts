@@ -1420,6 +1420,7 @@ export const artistVideos: ArtistVideo[] = [
     artistName: "Harin J",
     title: "Harin J",
     url: "https://youtu.be/_ntW97pctFs?si=VT7_WAobetlIB_c4",
+    thumbnail: "https://img.youtube.com/vi/_ntW97pctFs/maxresdefault.jpg",
   },
 ];
 
