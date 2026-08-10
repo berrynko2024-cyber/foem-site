@@ -57,6 +57,8 @@ export default async function EditArtworkPage({
           dimensions: data.dimensions ?? "",
           orientation: data.orientation ?? "portrait",
           price_display: data.price_display ?? "",
+          series: data.series ?? "",
+          fill_frame: data.fill_frame ?? false,
         }}
       />
     </div>

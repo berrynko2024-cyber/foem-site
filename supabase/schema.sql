@@ -23,6 +23,12 @@ CREATE TABLE IF NOT EXISTS artworks (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 2026-08 추가: mockData.ts Artwork 타입엔 있었지만 최초 DB 이관 때 빠졌던 컬럼.
+-- series 누락으로 인해 시리즈 작가(정재은 등)의 hasSeries 판정이 DB에서 항상 false가 되어
+-- 작품이 6개로 잘려 보이는 버그가 있었다 — 반드시 실행할 것.
+ALTER TABLE artworks ADD COLUMN IF NOT EXISTS series TEXT;
+ALTER TABLE artworks ADD COLUMN IF NOT EXISTS fill_frame BOOLEAN;
+
 -- pending_orders (임시 주문) 테이블 생성
 CREATE TABLE IF NOT EXISTS pending_orders (
   order_id UUID PRIMARY KEY,

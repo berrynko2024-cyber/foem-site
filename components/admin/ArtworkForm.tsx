@@ -24,6 +24,8 @@ type ArtworkFormData = {
   dimensions: string;
   orientation: "portrait" | "landscape" | "square";
   price_display: string;
+  series: string;
+  fill_frame: boolean;
 };
 
 const emptyForm: ArtworkFormData = {
@@ -43,6 +45,8 @@ const emptyForm: ArtworkFormData = {
   dimensions: "",
   orientation: "portrait",
   price_display: "",
+  series: "",
+  fill_frame: false,
 };
 
 export default function ArtworkForm({
@@ -137,6 +141,8 @@ export default function ArtworkForm({
       dimensions: form.dimensions.trim() || undefined,
       orientation: form.orientation,
       price_display: form.price_display.trim() || undefined,
+      series: form.series.trim() || undefined,
+      fill_frame: form.fill_frame,
     };
 
     setSaving(true);
@@ -334,14 +340,29 @@ export default function ArtworkForm({
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-[#4A4A4A]">
-        <input
-          type="checkbox"
-          checked={form.is_sold}
-          onChange={(e) => set("is_sold", e.target.checked)}
-        />
-        Sold out
-      </label>
+      <div>
+        <label className={labelClass}>Series (선택, 같은 이름끼리 작가 페이지에서 그룹으로 묶여 표시됨)</label>
+        <input className={inputClass} value={form.series} onChange={(e) => set("series", e.target.value)} placeholder="예: Interval" />
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <label className="flex items-center gap-2 text-sm text-[#4A4A4A]">
+          <input
+            type="checkbox"
+            checked={form.is_sold}
+            onChange={(e) => set("is_sold", e.target.checked)}
+          />
+          Sold out
+        </label>
+        <label className="flex items-center gap-2 text-sm text-[#4A4A4A]">
+          <input
+            type="checkbox"
+            checked={form.fill_frame}
+            onChange={(e) => set("fill_frame", e.target.checked)}
+          />
+          Fill frame (흰 배경 작품 등을 프레임에 꽉 채워 표시)
+        </label>
+      </div>
 
       {error && <p className="text-xs text-red-500">{error}</p>}
 

@@ -3,37 +3,56 @@
 import { useState } from "react";
 import { getBlurDataUrl, getOptimizedUrl } from "@/lib/blurUrl";
 
+const DEFAULT_RATIO: Record<string, number> = {
+  portrait: 0.8,
+  landscape: 1.5,
+  square: 1,
+};
+
 /**
- * 크롭 없이 원본 비율 그대로 보여주는 이미지. next/image의 fill 방식은 컨테이너 비율을
- * 미리 고정해야 해서 크롭이 생기므로 쓰지 않는다. 대신 블러 썸네일(w=32)을 먼저
- * w-full h-auto로 그려 컨테이너 높이를 원본과 동일한 비율로 잡고, 그 위에 실제
- * 이미지를 절대 위치로 겹쳐 로드되면 페이드인한다 — 두 이미지 모두 같은 원본을
- * 리사이즈한 것이라 비율이 항상 일치해 잘리는 부분이 없다.
+ * 전시회 스타일 "justified gallery" 타일. 크롭 없이 원본 비율 그대로 보여주되,
+ * w-full h-auto로 폭을 그리드 칸에 맞추면(예전 방식) 세로가 긴 작품이 실제 크기와
+ * 무관하게 화면에서 훨씬 커 보이는 문제가 있었다. 대신 행 높이(heightClassName)를
+ * 고정하고 폭을 실제 비율만큼만 늘려서, 모든 작품이 같은 높이 기준으로 나란히
+ * 정렬되고 실제 비율 차이만 폭 차이로 드러나게 한다.
+ *
+ * 비율은 블러 썸네일(w=32, 용량 작아 거의 즉시 로드됨)의 naturalWidth/naturalHeight를
+ * 읽어 실측한다 — DB에 원본 크기를 저장하지 않아도 되므로 스키마 변경이 없다.
+ * 측정 전에는 orientation 버킷 기반 추정치로 렌더링하다가 갱신되면 살짝 리사이즈된다.
  */
 export default function NaturalImage({
   src,
   alt,
-  className = "",
-  sizes = "(max-width: 640px) 50vw, 33vw",
+  orientation,
+  heightClassName = "h-[220px] sm:h-[260px] lg:h-[300px]",
+  sizes = "300px",
   hoverZoom = true,
 }: {
   src: string;
   alt: string;
-  className?: string;
+  orientation?: string;
+  heightClassName?: string;
   sizes?: string;
   hoverZoom?: boolean;
 }) {
+  const [ratio, setRatio] = useState(DEFAULT_RATIO[orientation ?? "portrait"] ?? 0.8);
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div
+      className={`relative overflow-hidden shrink-0 ${heightClassName}`}
+      style={{ aspectRatio: ratio }}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={getBlurDataUrl(src)}
         alt=""
         aria-hidden="true"
-        loading="lazy"
-        className="w-full h-auto block scale-105 blur-md"
+        onLoad={(e) => {
+          const { naturalWidth, naturalHeight } = e.currentTarget;
+          if (naturalWidth && naturalHeight) setRatio(naturalWidth / naturalHeight);
+        }}
+        className="absolute inset-0 w-full h-full object-cover scale-105 blur-md"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

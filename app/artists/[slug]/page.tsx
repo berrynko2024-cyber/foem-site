@@ -11,55 +11,44 @@ import NaturalImage from "@/components/NaturalImage";
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
 
-type RowItem = { work: Artwork; colSpan: 4 | 6 | 8 | 12 };
-
-function buildRows(works: Artwork[]): RowItem[][] {
-  const rows: RowItem[][] = [];
-  const pool = [...works];
-
-  while (pool.length > 0) {
-    const first = pool[0];
-
-    if (first.orientation === 'landscape') {
-      const pairIdx = pool.slice(1, 4).findIndex(w => w.orientation !== 'landscape');
-      if (pairIdx >= 0) {
-        const pair = pool.splice(1 + pairIdx, 1)[0];
-        pool.shift();
-        rows.push([{ work: first, colSpan: 8 }, { work: pair, colSpan: 4 }]);
-      } else if (pool.length >= 2) {
-        const second = pool.splice(1, 1)[0];
-        pool.shift();
-        rows.push([{ work: first, colSpan: 6 }, { work: second, colSpan: 6 }]);
-      } else {
-        pool.shift();
-        rows.push([{ work: first, colSpan: 12 }]);
-      }
-    } else {
-      const landscapeIdx = pool.slice(1, 4).findIndex(w => w.orientation === 'landscape');
-      if (landscapeIdx >= 0) {
-        const landscape = pool.splice(1 + landscapeIdx, 1)[0];
-        pool.shift();
-        rows.push([{ work: first, colSpan: 4 }, { work: landscape, colSpan: 8 }]);
-      } else {
-        const group: Artwork[] = [pool.shift()!];
-        while (group.length < 3 && pool.length > 0 && pool[0].orientation !== 'landscape') {
-          group.push(pool.shift()!);
-        }
-        const span = (group.length >= 3 ? 4 : 6) as 4 | 6;
-        rows.push(group.map(w => ({ work: w, colSpan: span })));
-      }
-    }
-  }
-
-  return rows;
+/**
+ * 전시회 스타일 작품 타일 — 행 높이를 고정하고 폭은 NaturalImage가 실측한 원본
+ * 비율만큼만 늘어난다. 크롭 없이 작품마다 실제 비율 차이가 폭 차이로만 드러난다.
+ */
+function WorkTile({ work, heightClassName }: { work: Artwork; heightClassName?: string }) {
+  return (
+    <Link href={`/shop/${work.id}`} className="group flex flex-col items-start">
+      <div className="relative bg-[#e8f0eb]">
+        <NaturalImage
+          src={work.images[0]}
+          alt={work.title}
+          orientation={work.orientation}
+          heightClassName={heightClassName}
+          sizes="300px"
+        />
+        {work.isSold && (
+          <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1 z-10">
+            Sold
+          </div>
+        )}
+      </div>
+      <div className="pt-5 w-full">
+        <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>
+          {work.title}
+        </h3>
+        {work.title_ko && work.title_ko !== work.title && (
+          <p className="text-xs text-[#9A9A9A] mb-1">{work.title_ko}</p>
+        )}
+        {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
+        {(work.isSold || work.priceDisplay || work.price > 0) && (
+          <p className="text-sm text-[#4A4A4A]">
+            {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
+          </p>
+        )}
+      </div>
+    </Link>
+  );
 }
-
-const colSpanClass: Record<4 | 6 | 8 | 12, string> = {
-  4:  'col-span-12 sm:col-span-4',
-  6:  'col-span-12 sm:col-span-6',
-  8:  'col-span-12 sm:col-span-8',
-  12: 'col-span-12',
-};
 
 async function getArtist(slug: string) {
   const { data } = await supabase.from("artists").select("*").eq("slug", slug).maybeSingle();
@@ -273,123 +262,26 @@ export default async function ArtistPage({
                 if (!groupMap.has(key)) groupMap.set(key, []);
                 groupMap.get(key)!.push(w);
               }
-              const SeriesWorkCard = ({ work, colClass }: { work: Artwork; colClass: string }) => (
-                <Link href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
-                  <div className="relative bg-[#e8f0eb]">
-                    <NaturalImage src={work.images[0]} alt={work.title} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
-                    {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-base font-normal text-[#268042] mb-0.5" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
-                    {work.title_ko && work.title_ko !== work.title && (
-                      <p className="text-xs text-[#9A9A9A] mb-1">{work.title_ko}</p>
-                    )}
-                    {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                    {(work.isSold || work.priceDisplay || work.price > 0) && (
-                      <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
-                    )}
-                  </div>
-                </Link>
-              );
               return (
                 <div className="space-y-16">
-                  {[...groupMap.entries()].map(([seriesName, seriesWorks]) => {
-                    const portraits = seriesWorks.filter(w => !w.orientation || w.orientation === 'portrait');
-                    const landscapes = seriesWorks.filter(w => w.orientation === 'landscape');
-                    const squares = seriesWorks.filter(w => w.orientation === 'square');
-                    return (
-                      <div key={seriesName}>
-                        {seriesName && (
-                          <div className="inline-block bg-[#268042] text-[#F6F4EB] text-[11px] tracking-[0.2em] uppercase px-4 py-2 mb-6">
-                            {seriesName}
-                          </div>
-                        )}
-                        <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
-                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
-                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
-                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
+                  {[...groupMap.entries()].map(([seriesName, seriesWorks]) => (
+                    <div key={seriesName}>
+                      {seriesName && (
+                        <div className="inline-block bg-[#268042] text-[#F6F4EB] text-[11px] tracking-[0.2em] uppercase px-4 py-2 mb-6">
+                          {seriesName}
                         </div>
+                      )}
+                      <div className="flex flex-wrap gap-x-6 gap-y-12">
+                        {seriesWorks.map(w => <WorkTile key={w.id} work={w} />)}
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               );
             })()}
 
-            {/* 이영재(a8): orientation 기반 동적 그리드 */}
-            {!hasSeries && artist.id === 'a8' && (
-              <div className="space-y-px">
-                {buildRows(works).map((row, ri) => (
-                  <div key={ri} className="grid grid-cols-12 gap-px bg-[#d4e8da]">
-                    {row.map(({ work, colSpan }) => (
-                      <Link
-                        key={work.id}
-                        href={`/shop/${work.id}`}
-                        className={`${colSpanClass[colSpan]} group bg-[#F6F4EB] block overflow-hidden`}
-                      >
-                        <div className="relative bg-[#e8f0eb]">
-                          <NaturalImage
-                            src={work.images[0]}
-                            alt={work.title}
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                          {work.isSold && (
-                            <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
-                              Sold
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-5">
-                          <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>
-                            {work.title}
-                          </h3>
-                          {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                          {(work.isSold || work.priceDisplay || work.price > 0) && (
-                            <p className="text-sm text-[#4A4A4A]">
-                              {work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* 나머지 작가: 기존 레이아웃 */}
-            {!hasSeries && artist.id !== 'a8' && (() => {
-              if (artist.worksLayout === 'portrait3-mixed') {
-                const rawPortraits = works.filter(w => !w.orientation || w.orientation === 'portrait');
-                const portraits = rawPortraits.length === 3
-                  ? [rawPortraits[1], rawPortraits[0], rawPortraits[2]]
-                  : rawPortraits;
-                const landscapes = works.filter(w => w.orientation === 'landscape');
-                const squares = works.filter(w => w.orientation === 'square');
-                const WorkCard = ({ work, colClass }: { work: typeof works[0]; colClass: string }) => (
-                  <Link key={work.id} href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
-                    <div className="relative bg-[#e8f0eb]">
-                      <NaturalImage src={work.images[0]} alt={work.title} sizes="(max-width: 640px) 50vw, 33vw" />
-                      {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-base font-normal text-[#268042] mb-1" style={{ fontFamily: "var(--font-playfair)" }}>{work.title}</h3>
-                      {work.dimensions && <p className="text-xs text-[#9A9A9A] mb-2">{work.dimensions}</p>}
-                      {(work.isSold || work.priceDisplay || work.price > 0) && (
-                        <p className="text-sm text-[#4A4A4A]">{work.isSold ? "Sold Out" : (work.priceDisplay ?? `${work.price.toLocaleString("ko-KR")}원`)}</p>
-                      )}
-                    </div>
-                  </Link>
-                );
-                return (
-                  <div className="grid grid-cols-6 gap-px bg-[#d4e8da]">
-                    {portraits.map(w => <WorkCard key={w.id} work={w} colClass="col-span-2" />)}
-                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" />)}
-                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" />)}
-                  </div>
-                );
-              }
-
+            {/* 베티문: 이전 고정 비율 그리드로 복구 (worksGrid:2라 항상 object-cover라 크롭 문제 없음) */}
+            {!hasSeries && artist.id === 'a1' && (() => {
               const twoCol = artist.worksGrid === 2;
               return (
                 <div className={`grid gap-px bg-[#d4e8da] ${twoCol ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'}`}>
@@ -401,11 +293,15 @@ export default async function ArtistPage({
                         href={`/shop/${work.id}`}
                         className={`group bg-[#F6F4EB] overflow-hidden block${isFeatured ? ' col-span-2 lg:col-span-3' : ''}`}
                       >
-                        <div className="relative bg-[#e8f0eb]">
-                          <NaturalImage
+                        <div className={`relative overflow-hidden bg-[#e8f0eb]${twoCol ? ' aspect-[3/2]' : isFeatured ? ' aspect-[3/2]' : ' aspect-[4/5]'}`}>
+                          <Image
                             src={work.images[0]}
                             alt={work.title}
+                            fill
+                            className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : (work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
+                            placeholder="blur"
+                            blurDataURL={getBlurDataUrl(work.images[0])}
                           />
                           {work.isSold && (
                             <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>
@@ -423,6 +319,32 @@ export default async function ArtistPage({
                       </Link>
                     );
                   })}
+                </div>
+              );
+            })()}
+
+            {/* 나머지 작가(박성은 포함): 전시회 스타일 통일 그리드, 크롭 없음 */}
+            {!hasSeries && artist.id !== 'a1' && (() => {
+              const twoCol = artist.worksGrid === 2;
+              const heightClassName = twoCol
+                ? "h-[280px] sm:h-[360px] lg:h-[440px]"
+                : "h-[220px] sm:h-[260px] lg:h-[320px]";
+
+              let orderedWorks = works;
+              if (artist.worksLayout === 'portrait3-mixed') {
+                const rawPortraits = works.filter(w => !w.orientation || w.orientation === 'portrait');
+                const rest = works.filter(w => w.orientation && w.orientation !== 'portrait');
+                const portraits = rawPortraits.length === 3
+                  ? [rawPortraits[1], rawPortraits[0], rawPortraits[2]]
+                  : rawPortraits;
+                orderedWorks = [...portraits, ...rest];
+              }
+
+              return (
+                <div className="flex flex-wrap gap-x-6 gap-y-12">
+                  {orderedWorks.map(work => (
+                    <WorkTile key={work.id} work={work} heightClassName={heightClassName} />
+                  ))}
                 </div>
               );
             })()}

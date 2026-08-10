@@ -28,6 +28,8 @@ export async function GET() {
       price_display: artwork.priceDisplay || null,
       emotions: artwork.emotions || null,
       artist_statement: artwork.artistStatement || null,
+      series: artwork.series || null,
+      fill_frame: artwork.fillFrame ?? null,
     }));
 
     const { data, error } = await supabase

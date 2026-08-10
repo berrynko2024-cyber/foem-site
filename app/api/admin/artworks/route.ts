@@ -37,6 +37,8 @@ export async function POST(req: NextRequest) {
         dimensions: body.dimensions || null,
         orientation: body.orientation || "portrait",
         price_display: body.price_display || null,
+        series: body.series || null,
+        fill_frame: body.fill_frame ?? null,
       })
       .select()
       .single();
