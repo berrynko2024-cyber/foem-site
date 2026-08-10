@@ -31,6 +31,8 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelError, setCancelError] = useState<{ orderId: string; message: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/orders")
@@ -40,6 +42,29 @@ export default function AdminOrdersPage() {
         setLoading(false);
       });
   }, []);
+
+  const handleCancel = async (order: Order) => {
+    if (!confirm(`#${order.order_number.slice(0, 8).toUpperCase()} 주문을 취소하시겠습니까?\n토스 결제가 실제로 환불되고, 작품은 다시 판매 가능 상태로 돌아갑니다.`)) {
+      return;
+    }
+    setCancellingId(order.id);
+    setCancelError(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}/cancel`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        setCancelError({ orderId: order.id, message: data.error || "취소에 실패했습니다." });
+        return;
+      }
+      setOrders((prev) =>
+        prev.map((o) => (o.id === order.id ? { ...o, payment_status: "cancelled" } : o))
+      );
+    } catch {
+      setCancelError({ orderId: order.id, message: "취소 요청 중 오류가 발생했습니다." });
+    } finally {
+      setCancellingId(null);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
@@ -133,6 +158,22 @@ export default function AdminOrdersPage() {
                         </div>
                       ))}
                     </div>
+
+                    {order.payment_status === "paid" && (
+                      <div className="mt-4 pt-4 border-t border-[#E8E6E2]">
+                        <button
+                          type="button"
+                          onClick={() => handleCancel(order)}
+                          disabled={cancellingId === order.id}
+                          className="text-[11px] tracking-[0.1em] uppercase text-red-600 hover:text-red-700 transition-colors focus:outline-none disabled:opacity-50"
+                        >
+                          {cancellingId === order.id ? "취소 처리 중…" : "결제 취소"}
+                        </button>
+                        {cancelError?.orderId === order.id && (
+                          <p className="text-[11px] text-red-500 mt-2">{cancelError.message}</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

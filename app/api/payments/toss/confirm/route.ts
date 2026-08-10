@@ -1,23 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendOrderEmails } from "@/lib/orderEmail";
-
-async function cancelTossPayment(paymentKey: string, reason: string) {
-  const secretKey = process.env.TOSS_SECRET_KEY!;
-  const encodedKey = Buffer.from(secretKey + ":").toString("base64");
-  try {
-    await fetch(`https://api.tosspayments.com/v1/payments/${paymentKey}/cancel`, {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${encodedKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cancelReason: reason }),
-    });
-  } catch (e) {
-    console.error("[Confirm] Failed to auto-cancel payment after lost race:", e);
-  }
-}
+import { cancelTossPayment } from "@/lib/toss";
 
 export async function POST(req: NextRequest) {
   try {
