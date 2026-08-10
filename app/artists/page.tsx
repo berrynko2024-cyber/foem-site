@@ -83,7 +83,7 @@ export default function ArtistsPage() {
                 {artist.bio}
               </p>
               <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A]">
-                {artist.artworkCount} works available
+                {artist.artworkCount > 0 ? `${artist.artworkCount} works available` : "Works coming soon"}
               </p>
             </div>
           </Link>

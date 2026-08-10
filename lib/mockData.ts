@@ -129,6 +129,17 @@ export const artists: Artist[] = [
     artworkCount: 8,
     medium: "glass",
   },
+  {
+    id: "a9",
+    slug: "ha-jeong-lim",
+    name: "Ha Jeong Lim",
+    name_ko: "임하정",
+    bio: "Ha Jeong Lim works with colored glass and steel wire, composing installations where transmitted light transforms the surrounding space. Her work was featured alongside Betty Moon in the two-artist exhibition \"Painting with Light\" at Suwon Museum of Art in 2026.",
+    bio_ko: "임하정은 색유리와 철선으로 빛이 공간을 가로지르는 설치 작업을 만든다. 2026년 수원시립미술관에서 열린 베티문과의 2인전 \"빛, 그림을 그리다\"에 참여했다.",
+    photo: "/artists/ha-jeong-lim.jpg",
+    artworkCount: 0,
+    medium: "glass",
+  },
 ];
 
 export const artworks: Artwork[] = [
