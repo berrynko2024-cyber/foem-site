@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendOrderEmails } from "@/lib/orderEmail";
 
 /**
  * Toss 웹훅 검증 방식
@@ -117,6 +118,25 @@ export async function POST(req: NextRequest) {
       console.error("[Webhook] Failed to force insert order to DB:", dbError.message);
       return NextResponse.json({ error: "Database insert error" }, { status: 500 });
     }
+
+    // 3-1. 신규 주문이 이 경로로 처음 생성됐을 때만 발송 (order가 이미 있었다면 위에서 이미 return됨 — 중복 발송 없음)
+    await sendOrderEmails({
+      orderId,
+      customerName: pendingOrder.customer?.name ?? "",
+      customerEmail: pendingOrder.customer?.email ?? "",
+      customerPhone: pendingOrder.customer?.phone ?? null,
+      shippingAddress: pendingOrder.customer
+        ? {
+            address: pendingOrder.customer.address,
+            city: pendingOrder.customer.city,
+            country: pendingOrder.customer.country,
+          }
+        : null,
+      items: pendingOrder.items ?? [],
+      amount,
+      currency: cur,
+      paymentMethod: cur === "USD" ? "paypal" : "toss",
+    });
 
     // 4. 품절 처리 (원자적 업데이트 — confirm 라우트와 동일한 방식)
     //    이미 결제는 Toss에서 완료 확인된 상태이므로, 레이스에서 졌더라도 주문 자체는 생성한다.

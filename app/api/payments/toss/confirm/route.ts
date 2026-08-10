@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendOrderEmails } from "@/lib/orderEmail";
 
 async function cancelTossPayment(paymentKey: string, reason: string) {
   const secretKey = process.env.TOSS_SECRET_KEY!;
@@ -151,6 +152,25 @@ export async function POST(req: NextRequest) {
         console.error("[orders] DB insert failed:", dbError.message);
         return NextResponse.json({ error: "Failed to save order to database" }, { status: 500 });
       }
+
+      // 주문이 새로 생성됐을 때만 발송 (중복 발송 방지). 실패해도 주문 처리는 계속 진행.
+      await sendOrderEmails({
+        orderId,
+        customerName: pendingOrder.customer?.name ?? "",
+        customerEmail: pendingOrder.customer?.email ?? "",
+        customerPhone: pendingOrder.customer?.phone ?? null,
+        shippingAddress: pendingOrder.customer
+          ? {
+              address: pendingOrder.customer.address,
+              city: pendingOrder.customer.city,
+              country: pendingOrder.customer.country,
+            }
+          : null,
+        items: pendingOrder.items ?? [],
+        amount,
+        currency: cur,
+        paymentMethod: cur === "USD" ? "paypal" : "toss",
+      });
     }
 
     // 5. 성공 시 pending_orders 테이블에서 임시 데이터 삭제
