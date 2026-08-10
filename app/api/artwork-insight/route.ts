@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { getArtworkById, artists } from "@/lib/mockData";
+import { getArtworkById, artists as mockArtists } from "@/lib/mockData";
+import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -8,22 +9,41 @@ export async function POST(request: Request) {
   try {
     const { artworkId, message, history } = await request.json();
 
-    const work = getArtworkById(artworkId);
+    // 1. Supabase DB에서 최신 작품 정보 조회
+    const { data: dbArt } = await supabase
+      .from("artworks")
+      .select("*")
+      .eq("id", artworkId)
+      .maybeSingle();
+
+    const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(artworkId);
     if (!work) {
       return NextResponse.json({ error: "Artwork not found" }, { status: 404 });
     }
 
-    const artist = artists.find((a) => a.id === work.artistId);
+    // 2. Supabase DB에서 최신 작가 정보 조회
+    let artist = mockArtists.find((a) => a.id === work.artistId);
+    if (work.artistId) {
+      const { data: dbArtist } = await supabase
+        .from("artists")
+        .select("*")
+        .eq("id", work.artistId)
+        .maybeSingle();
+      if (dbArtist) {
+        artist = mapDbArtistToArtist(dbArtist);
+      }
+    }
 
     const systemPrompt = `You are a thoughtful art guide at FOEM (Field of Emotion), a Seoul-based contemporary art gallery. You help visitors explore and connect with artworks on an emotional and intellectual level.
 
-The artwork you are discussing:
+The artwork you are discussing (using live gallery database):
 - Title: ${work.title}${work.title_ko ? ` / ${work.title_ko}` : ""}
 - Artist: ${work.artistName}${artist?.name_ko ? ` (${artist.name_ko})` : ""}
-- Year: ${work.year}
+- Year: ${work.year ?? "unspecified"}
 - Medium: ${work.medium ?? "unspecified"}
 - Dimensions: ${work.dimensions ?? "unspecified"}
 - Category: ${work.category}
+- Price Display Estimate: ${work.priceDisplay ?? (work.price > 0 ? `${work.price.toLocaleString("ko-KR")}원` : "Contact Gallery")}
 - Emotional qualities: ${work.emotions?.join(", ") ?? "not specified"}
 ${work.artistStatement ? `- Artist's statement: "${work.artistStatement}"` : ""}
 ${work.description ? `- Description: ${work.description}` : ""}
