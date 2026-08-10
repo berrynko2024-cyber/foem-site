@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCart } from "@/store/CartContext";
 import { formatPrice, convertPrice } from "@/lib/currency";
 import CurrencySelector from "@/components/CurrencySelector";
+import { supabase } from "@/lib/supabase";
 
 declare global {
   interface Window {
@@ -82,7 +83,7 @@ function loadTossWidgetScript(): Promise<void> {
 }
 
 export default function CheckoutPage() {
-  const { items, displayCurrency, rates, convertToDisplay, totalInDisplayCurrency } = useCart();
+  const { items, removeItem, displayCurrency, rates, convertToDisplay, totalInDisplayCurrency } = useCart();
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     displayCurrency === "KRW" ? "toss" : "paypal"
@@ -95,10 +96,33 @@ export default function CheckoutPage() {
     city: "",
     country: "KR",
   });
+  const [removedSoldOutTitles, setRemovedSoldOutTitles] = useState<string[]>([]);
 
   useEffect(() => {
     setPaymentMethod(displayCurrency === "KRW" ? "toss" : "paypal");
   }, [displayCurrency]);
+
+  // 체크아웃 진입 시 한 번, 장바구니에 담긴 작품 중 그새 품절된 게 있는지 실시간 확인해서 걸러낸다.
+  // (최종 방어선은 결제 승인 API의 원자적 가드지만, 여기서 미리 걸러야 고객이 헛되이
+  //  결제 정보를 다 입력한 뒤에야 실패를 겪는 걸 막을 수 있다.)
+  const checkedRef = useRef(false);
+  useEffect(() => {
+    if (checkedRef.current || items.length === 0) return;
+    checkedRef.current = true;
+
+    const ids = items.map((i) => i.id);
+    supabase
+      .from("artworks")
+      .select("id, title, is_sold")
+      .in("id", ids)
+      .then(({ data, error }) => {
+        if (error || !data) return;
+        const soldOut = data.filter((a) => a.is_sold);
+        if (soldOut.length === 0) return;
+        soldOut.forEach((a) => removeItem(a.id));
+        setRemovedSoldOutTitles(soldOut.map((a) => a.title));
+      });
+  }, [items, removeItem]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -215,9 +239,17 @@ export default function CheckoutPage() {
     }
   };
 
+  const soldOutBanner = removedSoldOutTitles.length > 0 && (
+    <div className="border border-[#E8B4B4] bg-[#FBEDED] text-[#9A3E3E] text-sm px-4 py-3 mb-8">
+      죄송합니다. 다음 작품이 이미 판매 완료되어 장바구니에서 제외되었습니다:{" "}
+      <strong>{removedSoldOutTitles.join(", ")}</strong>
+    </div>
+  );
+
   if (items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-32 text-center">
+      <div className="max-w-3xl mx-auto px-6 py-32 text-center">
+        {soldOutBanner}
         <p className="text-[#9A9A9A] text-sm">No items to checkout.</p>
       </div>
     );
@@ -225,7 +257,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-      <div className="flex items-center justify-between mb-14 flex-wrap gap-4">
+      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <h1
           className="text-4xl font-normal text-[#1A1A1A]"
           style={{ fontFamily: "var(--font-playfair)" }}
@@ -234,6 +266,8 @@ export default function CheckoutPage() {
         </h1>
         <CurrencySelector />
       </div>
+
+      {soldOutBanner}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Form */}
