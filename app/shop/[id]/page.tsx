@@ -207,17 +207,16 @@ export default async function ArtworkPage({
             )}
 
             {/* CTA */}
-            {work.artistId !== "a2" && (
-              <>
-                <ArtworkCTA work={work} />
-                <p className="text-[11px] text-[#9A9A9A] mt-4 text-center">
-                  Worldwide shipping · Certificate of authenticity included
-                </p>
-              </>
-            )}
+            {work.artistId !== "a2" && <ArtworkCTA work={work} />}
 
             {/* AI Chat */}
             <ArtworkChat artworkId={work.id} artworkTitle={work.title} />
+
+            {work.artistId !== "a2" && (
+              <p className="text-[11px] text-[#9A9A9A] mt-4 text-center">
+                Worldwide shipping · Certificate of authenticity included
+              </p>
+            )}
           </div>
         </div>
       </div>

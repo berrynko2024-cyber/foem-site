@@ -76,12 +76,21 @@ export default function ArtworkChat({ artworkId, artworkTitle }: Props) {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full mt-6 border border-[#d4e8da] text-[#268042] text-xs tracking-[0.15em] uppercase py-3 px-4 flex items-center justify-center gap-2 hover:bg-[#e8f5ee] transition-colors duration-200"
+        className="w-full mt-8 border border-[#268042]/20 bg-[#f2f8f5] text-[#268042] text-xs tracking-[0.15em] uppercase py-3.5 px-4 flex items-center justify-center gap-2.5 hover:bg-[#268042] hover:text-white transition-all duration-300 rounded-none shadow-sm font-medium active:scale-[0.99] group"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 2h10v8H8l-3 2v-2H2V2Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
+        <svg 
+          width="15" 
+          height="15" 
+          viewBox="0 0 14 14" 
+          fill="none"
+          className="transition-transform duration-300 group-hover:scale-110"
+        >
+          <path d="M2 2h10v8H8l-3 2v-2H2V2Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
         </svg>
-        Talk about this work
+        <span>Talk about this work</span>
+        <span className="text-[10px] text-current/60 font-normal lowercase tracking-normal font-sans">
+          — AI 도슨트 가이드
+        </span>
       </button>
     );
   }
