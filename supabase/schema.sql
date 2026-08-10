@@ -64,3 +64,79 @@ DROP POLICY IF EXISTS "Anyone can select pending" ON pending_orders;
 --    관리자 페이지(/admin/orders)는 서버 컴포넌트에서 service_role로 조회한다.
 DROP POLICY IF EXISTS "Anyone can select" ON orders;
 DROP POLICY IF EXISTS "Only Authenticated can select orders" ON orders;
+
+-- ─────────────────────────────────────────────────────────────
+-- artists / exhibitions / art_fairs (2026-08 mockData.ts → DB 이관)
+-- artworks와 동일한 원칙: id는 mockData의 id를 그대로 재사용, FK 제약 없음(느슨한 참조),
+-- anon은 SELECT만 가능, 쓰기는 전부 service_role 서버 라우트 경유.
+-- ─────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS artists (
+  id TEXT PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  name_ko TEXT,
+  bio TEXT NOT NULL,
+  bio_ko TEXT NOT NULL,
+  photo TEXT NOT NULL,
+  photo_filter TEXT,
+  instagram TEXT,
+  youtube TEXT,
+  statement TEXT,
+  statement_ko TEXT,
+  artwork_count INT DEFAULT 0,
+  works_grid INT,
+  works_layout TEXT,
+  medium TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS exhibitions (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  title_en TEXT,
+  artists TEXT[] NOT NULL,
+  venue TEXT,
+  location TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('current','upcoming','past')),
+  cover_image TEXT NOT NULL,
+  hero_image TEXT,
+  description TEXT,
+  description_ko TEXT,
+  video_url TEXT,
+  orientation TEXT,
+  photos JSONB DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS art_fairs (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  venue TEXT NOT NULL,
+  location TEXT NOT NULL,
+  artists TEXT[] NOT NULL,
+  preview_date DATE,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('current','upcoming','past')),
+  cover_image TEXT NOT NULL,
+  description TEXT,
+  artwork_ids TEXT[],
+  booth_number TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE artists ENABLE ROW LEVEL SECURITY;
+ALTER TABLE exhibitions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE art_fairs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public Read Artists" ON artists;
+CREATE POLICY "Public Read Artists" ON artists FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public Read Exhibitions" ON exhibitions;
+CREATE POLICY "Public Read Exhibitions" ON exhibitions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public Read Art Fairs" ON art_fairs;
+CREATE POLICY "Public Read Art Fairs" ON art_fairs FOR SELECT USING (true);

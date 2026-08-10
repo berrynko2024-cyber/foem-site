@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Artwork, artists, getArtistBySlug, getArtworksByArtist, getVideosByArtist } from "@/lib/mockData";
+import { Artwork, getArtistBySlug, getArtworksByArtist, getVideosByArtist } from "@/lib/mockData";
 import VideoPlayer from "@/components/VideoPlayer";
-import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
+import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -65,8 +65,10 @@ const colSpanClass: Record<4 | 6 | 8 | 12, string> = {
   12: 'col-span-12',
 };
 
-export function generateStaticParams() {
-  return artists.map((a) => ({ slug: a.slug }));
+async function getArtist(slug: string) {
+  const { data } = await supabase.from("artists").select("*").eq("slug", slug).maybeSingle();
+  if (data) return mapDbArtistToArtist(data);
+  return getArtistBySlug(slug);
 }
 
 export async function generateMetadata({
@@ -75,7 +77,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
+  const artist = await getArtist(slug);
   if (!artist) return {};
 
   const description = artist.bio.slice(0, 155) + "…";
@@ -105,7 +107,7 @@ export default async function ArtistPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
+  const artist = await getArtist(slug);
 
   if (!artist) notFound();
 

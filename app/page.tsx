@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { artworks, artists, artistVideos } from "@/lib/mockData";
+import { artworks, artists as mockArtists, artistVideos } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
-import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
+import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
 
 // artworks가 Supabase에서 로드되므로, 어드민에서 수정한 내용이 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -28,7 +28,11 @@ export default async function HomePage() {
   const finalArtworks = mappedDbArtworks.length > 0 ? mappedDbArtworks : artworks;
 
   const galleryItems = finalArtworks.filter(a => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/')) as any[];
-  const featuredArtists = artists;
+
+  // Supabase에서 artists 목록 조회
+  const { data: dbArtists } = await supabase.from("artists").select("*");
+  const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
+  const featuredArtists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
 
   return (
     <div>

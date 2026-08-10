@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { artFairs, type ArtFair } from "@/lib/mockData";
+import { artFairs as mockArtFairs, type ArtFair } from "@/lib/mockData";
+import { supabase, mapDbArtFairToArtFair } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Art Fair",
@@ -88,7 +91,11 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
   );
 }
 
-export default function ArtFairPage() {
+export default async function ArtFairPage() {
+  const { data: dbArtFairs } = await supabase.from("art_fairs").select("*");
+  const mappedDbArtFairs = dbArtFairs ? dbArtFairs.map(mapDbArtFairToArtFair) : [];
+  const artFairs = mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs;
+
   const sorted = [...artFairs].sort(
     (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]
   );

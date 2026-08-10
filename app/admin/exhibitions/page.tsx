@@ -1,25 +1,25 @@
 import Link from "next/link";
-import { artists } from "@/lib/mockData";
-import { supabase, mapDbArtistToArtist } from "@/lib/supabase";
-import DeleteArtistButton from "@/components/admin/DeleteArtistButton";
+import { exhibitions } from "@/lib/mockData";
+import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
+import DeleteExhibitionButton from "@/components/admin/DeleteExhibitionButton";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminArtistsPage() {
-  const { data: dbArtists } = await supabase
-    .from("artists")
+export default async function AdminExhibitionsPage() {
+  const { data: dbExhibitions } = await supabase
+    .from("exhibitions")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
-  const finalArtists = mappedDbArtists.length > 0 ? mappedDbArtists : artists;
+  const mappedDbExhibitions = dbExhibitions ? dbExhibitions.map(mapDbExhibitionToExhibition) : [];
+  const finalExhibitions = mappedDbExhibitions.length > 0 ? mappedDbExhibitions : exhibitions;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
       <div className="flex items-center gap-3 text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A] mb-8">
         <Link href="/admin" className="hover:text-[#1A1A1A] transition-colors">Admin</Link>
         <span>/</span>
-        <span className="text-[#4A4A4A]">Artists</span>
+        <span className="text-[#4A4A4A]">Exhibitions</span>
       </div>
 
       <div className="flex items-center justify-between mb-10">
@@ -27,47 +27,46 @@ export default async function AdminArtistsPage() {
           className="text-3xl font-normal text-[#1A1A1A]"
           style={{ fontFamily: "var(--font-playfair)" }}
         >
-          Artists
+          Exhibitions
         </h1>
         <Link
-          href="/admin/artists/new"
+          href="/admin/exhibitions/new"
           className="text-xs tracking-[0.15em] uppercase px-5 py-2.5 bg-[#1A1A1A] text-[#F5F3EF] hover:bg-[#2D2D2D] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 active:scale-[0.98]"
         >
-          + Add artist
+          + Add exhibition
         </Link>
       </div>
 
       <div className="border border-[#E8E6E2]">
-        <div className="grid grid-cols-[2fr_1fr_auto] gap-4 px-5 py-3 border-b border-[#E8E6E2] bg-[#EFEDE8]">
-          {["Name", "Works", "Actions"].map((h) => (
+        <div className="grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-5 py-3 border-b border-[#E8E6E2] bg-[#EFEDE8]">
+          {["Title", "Status", "Dates", "Actions"].map((h) => (
             <span key={h} className="text-[11px] tracking-[0.12em] uppercase text-[#9A9A9A]">
               {h}
             </span>
           ))}
         </div>
 
-        {finalArtists.map((artist) => (
+        {finalExhibitions.map((ex) => (
           <div
-            key={artist.id}
-            className="grid grid-cols-[2fr_1fr_auto] gap-4 px-5 py-4 border-b border-[#E8E6E2] last:border-0 items-center hover:bg-[#FAFAF8] transition-colors"
+            key={ex.id}
+            className="grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-5 py-4 border-b border-[#E8E6E2] last:border-0 items-center hover:bg-[#FAFAF8] transition-colors"
           >
             <div>
               <p className="text-sm text-[#1A1A1A]" style={{ fontFamily: "var(--font-playfair)" }}>
-                {artist.name}
+                {ex.title}
               </p>
-              {artist.instagram && (
-                <p className="text-[11px] text-[#9A9A9A]">{artist.instagram}</p>
-              )}
+              <p className="text-[11px] text-[#9A9A9A]">{ex.artists.join(", ")}</p>
             </div>
-            <p className="text-sm text-[#4A4A4A]">{artist.artworkCount}</p>
+            <p className="text-sm text-[#4A4A4A] capitalize">{ex.status}</p>
+            <p className="text-sm text-[#4A4A4A]">{ex.startDate} ~ {ex.endDate}</p>
             <div className="flex gap-3">
               <Link
-                href={`/admin/artists/${artist.id}/edit`}
+                href={`/admin/exhibitions/${ex.id}/edit`}
                 className="text-[11px] tracking-[0.1em] uppercase text-[#9A9A9A] hover:text-[#1A1A1A] transition-colors focus:outline-none"
               >
                 Edit
               </Link>
-              <DeleteArtistButton id={artist.id} name={artist.name} />
+              <DeleteExhibitionButton id={ex.id} title={ex.title} />
             </div>
           </div>
         ))}

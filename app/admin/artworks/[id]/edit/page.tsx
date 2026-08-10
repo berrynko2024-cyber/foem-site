@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArtworkForm from "@/components/admin/ArtworkForm";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { artists as mockArtists } from "@/lib/mockData";
+import { mapDbArtistToArtist } from "@/lib/supabase";
 
 export default async function EditArtworkPage({
   params,
@@ -13,6 +15,10 @@ export default async function EditArtworkPage({
   const { data } = await supabase.from("artworks").select("*").eq("id", id).maybeSingle();
 
   if (!data) notFound();
+
+  const { data: dbArtists } = await supabase.from("artists").select("*").order("name");
+  const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
+  const artists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16">
@@ -33,6 +39,7 @@ export default async function EditArtworkPage({
 
       <ArtworkForm
         mode="edit"
+        artists={artists}
         initial={{
           id: data.id,
           title: data.title ?? "",

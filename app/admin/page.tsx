@@ -139,6 +139,8 @@ export default function AdminPage() {
           { href: "/admin/orders", label: "Orders", description: "Track and manage customer orders" },
           { href: "/admin/artworks", label: "Manage artworks", description: "Add, edit, or remove works from the shop" },
           { href: "/admin/artists", label: "Manage artists", description: "Add new artists and update profiles" },
+          { href: "/admin/exhibitions", label: "Manage exhibitions", description: "Add, edit, or remove exhibitions" },
+          { href: "/admin/art-fairs", label: "Manage art fairs", description: "Add, edit, or remove art fair listings" },
         ].map(({ href, label, description }) => (
           <Link
             key={href}

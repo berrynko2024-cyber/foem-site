@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { artists } from "@/lib/mockData";
+import type { Artist } from "@/lib/mockData";
 
 type FormMode = "create" | "edit";
 
@@ -35,7 +35,7 @@ const emptyForm: ArtworkFormData = {
   currency: "KRW",
   category: "painting",
   images: "",
-  artist_id: artists[0]?.id ?? "",
+  artist_id: "",
   stock: "1",
   is_sold: false,
   year: "",
@@ -48,12 +48,18 @@ const emptyForm: ArtworkFormData = {
 export default function ArtworkForm({
   mode,
   initial,
+  artists,
 }: {
   mode: FormMode;
   initial?: Partial<ArtworkFormData>;
+  artists: Artist[];
 }) {
   const router = useRouter();
-  const [form, setForm] = useState<ArtworkFormData>({ ...emptyForm, ...initial });
+  const [form, setForm] = useState<ArtworkFormData>({
+    ...emptyForm,
+    artist_id: artists[0]?.id ?? "",
+    ...initial,
+  });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);

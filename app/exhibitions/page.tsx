@@ -1,7 +1,10 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { exhibitions, type Exhibition } from "@/lib/mockData";
+import { exhibitions as mockExhibitions, type Exhibition } from "@/lib/mockData";
+import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Exhibitions",
@@ -84,7 +87,11 @@ function SectionLabel({ label }: { label: string }) {
   );
 }
 
-export default function ExhibitionsPage() {
+export default async function ExhibitionsPage() {
+  const { data: dbExhibitions } = await supabase.from("exhibitions").select("*");
+  const mappedDbExhibitions = dbExhibitions ? dbExhibitions.map(mapDbExhibitionToExhibition) : [];
+  const exhibitions = mappedDbExhibitions.length > 0 ? mappedDbExhibitions : mockExhibitions;
+
   const byDate = (a: Exhibition, b: Exhibition) =>
     new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
 

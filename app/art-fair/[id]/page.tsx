@@ -2,17 +2,28 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { artFairs, artworks, getArtworkById } from "@/lib/mockData";
+import { artFairs as mockArtFairs, getArtworkById } from "@/lib/mockData";
+import { supabase, mapDbArtFairToArtFair, mapDbArtworkToArtwork } from "@/lib/supabase";
 
 type Props = { params: Promise<{ id: string }> };
 
-export async function generateStaticParams() {
-  return artFairs.map((f) => ({ id: f.id }));
+async function getArtFair(id: string) {
+  const { data } = await supabase.from("art_fairs").select("*").eq("id", id).maybeSingle();
+  if (data) return mapDbArtFairToArtFair(data);
+  return mockArtFairs.find((f) => f.id === id);
 }
+
+async function getAllArtFairs() {
+  const { data } = await supabase.from("art_fairs").select("*");
+  const mapped = data ? data.map(mapDbArtFairToArtFair) : [];
+  return mapped.length > 0 ? mapped : mockArtFairs;
+}
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const fair = artFairs.find((f) => f.id === id);
+  const fair = await getArtFair(id);
   if (!fair) return {};
   return {
     title: `${fair.name} — FOEM`,
@@ -55,13 +66,25 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default async function ArtFairDetailPage({ params }: Props) {
   const { id } = await params;
-  const fair = artFairs.find((f) => f.id === id);
+  const fair = await getArtFair(id);
   if (!fair) notFound();
 
-  const featuredWorks = (fair.artworkIds ?? [])
-    .map((wid) => getArtworkById(wid))
-    .filter(Boolean)
-    .filter((w) => w!.images[0].startsWith("/artworks/"));
+  const artworkIds = fair.artworkIds ?? [];
+  let featuredWorks: NonNullable<ReturnType<typeof getArtworkById>>[] = [];
+  if (artworkIds.length > 0) {
+    const { data: dbWorks } = await supabase.from("artworks").select("*").in("id", artworkIds);
+    const mappedDbWorks = dbWorks ? dbWorks.map(mapDbArtworkToArtwork) : [];
+    const worksById = new Map(
+      (mappedDbWorks.length > 0 ? mappedDbWorks : artworkIds.map((wid) => getArtworkById(wid)).filter(Boolean))
+        .map((w) => [w!.id, w!])
+    );
+    featuredWorks = artworkIds
+      .map((wid) => worksById.get(wid))
+      .filter(Boolean)
+      .filter((w) => w!.images[0].startsWith("/artworks/")) as NonNullable<ReturnType<typeof getArtworkById>>[];
+  }
+
+  const otherFairs = await getAllArtFairs();
 
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
@@ -221,7 +244,7 @@ export default async function ArtFairDetailPage({ params }: Props) {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {artFairs
+            {otherFairs
               .filter((f) => f.id !== fair.id)
               .slice(0, 3)
               .map((f) => (

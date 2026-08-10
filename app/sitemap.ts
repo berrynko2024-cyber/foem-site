@@ -1,9 +1,21 @@
 import { MetadataRoute } from "next";
-import { artists, artworks } from "@/lib/mockData";
+import { artists as mockArtists, artworks as mockArtworks } from "@/lib/mockData";
+import { supabase, mapDbArtistToArtist, mapDbArtworkToArtwork } from "@/lib/supabase";
 
 const BASE = "https://www.foem.co.kr";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [{ data: dbArtists }, { data: dbArtworks }] = await Promise.all([
+    supabase.from("artists").select("*"),
+    supabase.from("artworks").select("*"),
+  ]);
+
+  const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
+  const artists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
+
+  const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
+  const artworks = mappedDbArtworks.length > 0 ? mappedDbArtworks : mockArtworks;
+
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, priority: 1.0, changeFrequency: "weekly" },
     { url: `${BASE}/shop`, priority: 0.9, changeFrequency: "weekly" },

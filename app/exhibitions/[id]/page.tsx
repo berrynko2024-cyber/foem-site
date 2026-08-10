@@ -2,18 +2,23 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { exhibitions } from "@/lib/mockData";
+import { exhibitions as mockExhibitions } from "@/lib/mockData";
+import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
 import { ExhibitionGallery } from "./ExhibitionGallery";
 
 type Props = { params: Promise<{ id: string }> };
 
-export async function generateStaticParams() {
-  return exhibitions.map((ex) => ({ id: ex.id }));
+async function getExhibition(id: string) {
+  const { data } = await supabase.from("exhibitions").select("*").eq("id", id).maybeSingle();
+  if (data) return mapDbExhibitionToExhibition(data);
+  return mockExhibitions.find((e) => e.id === id);
 }
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const ex = exhibitions.find((e) => e.id === id);
+  const ex = await getExhibition(id);
   if (!ex) return {};
   return {
     title: `${ex.title} — FOEM`,
@@ -45,7 +50,7 @@ const statusLabel: Record<string, string> = {
 
 export default async function ExhibitionDetailPage({ params }: Props) {
   const { id } = await params;
-  const ex = exhibitions.find((e) => e.id === id);
+  const ex = await getExhibition(id);
   if (!ex) notFound();
 
   const hasDescription = ex.description || ex.descriptionKo || ex.videoUrl;
