@@ -1,12 +1,24 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 function FailContent() {
   const searchParams = useSearchParams();
   const message = searchParams.get("message") || "The payment was cancelled or failed.";
+  const orderId = searchParams.get("orderId");
+
+  useEffect(() => {
+    if (!orderId) return;
+    fetch("/api/payments/cancel-pending", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId }),
+    }).catch(() => {
+      // 정리 실패는 치명적이지 않음 — 만료된 pending_orders는 크론이 뒤늦게 정리한다
+    });
+  }, [orderId]);
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-32 text-center">

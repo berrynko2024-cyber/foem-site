@@ -4,6 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Artwork, artists, getArtistBySlug, getArtworksByArtist, getVideosByArtist } from "@/lib/mockData";
 import VideoPlayer from "@/components/VideoPlayer";
+import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
+
+// 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
+export const dynamic = "force-dynamic";
 
 type RowItem = { work: Artwork; colSpan: 4 | 6 | 8 | 12 };
 
@@ -105,7 +109,15 @@ export default async function ArtistPage({
 
   if (!artist) notFound();
 
-  const allWorks = [...getArtworksByArtist(artist.id)];
+  // Supabase DB에서 해당 작가의 작품 조회
+  const { data: dbArtworks } = await supabase
+    .from("artworks")
+    .select("*")
+    .eq("artist_id", artist.id);
+
+  const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
+  const allWorks = mappedDbArtworks.length > 0 ? (mappedDbArtworks as Artwork[]) : [...getArtworksByArtist(artist.id)];
+
   const hasSeries = allWorks.some(w => w.series);
   const works = artist.id === 'a8'
     ? allWorks.reverse()

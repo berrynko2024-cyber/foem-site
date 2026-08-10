@@ -6,8 +6,16 @@ import { getArtworkById, artworks, artists } from "@/lib/mockData";
 import ArtworkCTA from "@/components/ArtworkCTA";
 import ArtworkImageGallery from "@/components/ArtworkImageGallery";
 import ArtworkChat from "@/components/ArtworkChat";
+import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
 
-export function generateStaticParams() {
+// 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
+export const dynamic = "force-dynamic";
+
+export async function generateStaticParams() {
+  const { data } = await supabase.from("artworks").select("id");
+  if (data && data.length > 0) {
+    return data.map((a) => ({ id: a.id }));
+  }
   return artworks.map((a) => ({ id: a.id }));
 }
 
@@ -17,7 +25,13 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const work = getArtworkById(id);
+  const { data: dbArt } = await supabase
+    .from("artworks")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(id);
   if (!work) return {};
 
   const priceText = work.isSold
@@ -47,13 +61,27 @@ export default async function ArtworkPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const work = getArtworkById(id);
+  const { data: dbArt } = await supabase
+    .from("artworks")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
 
+  const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(id);
   if (!work) notFound();
 
-  const related = artworks
-    .filter((a) => a.category === work.category && a.id !== work.id && a.images[0].startsWith('/artworks/'))
-    .slice(0, 3);
+  // Related works 조회 (동일 카테고리)
+  const { data: dbRelated } = await supabase
+    .from("artworks")
+    .select("*")
+    .eq("category", work.category)
+    .neq("id", work.id)
+    .limit(10);
+
+  const mappedRelated = dbRelated ? dbRelated.map(mapDbArtworkToArtwork) : [];
+  const related = (mappedRelated.length > 0 ? mappedRelated : artworks.filter((a) => a.category === work.category && a.id !== work.id))
+    .filter((a) => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/'))
+    .slice(0, 3) as any[];
 
   const jsonLd = {
     "@context": "https://schema.org",

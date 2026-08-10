@@ -119,6 +119,44 @@ export default function CheckoutPage() {
     setLoading(true);
 
     const orderId = crypto.randomUUID();
+
+    // Calculate final payment amount depending on payment method
+    let finalAmount = Math.round(totalInDisplayCurrency);
+    let totalInUSD = 0;
+    if (paymentMethod === "paypal") {
+      const usdRates = rates;
+      totalInUSD = items.reduce(
+        (sum, i) => sum + convertPrice(i.price, i.currency, "USD", usdRates!) * i.quantity,
+        0
+      );
+      finalAmount = Math.round(totalInUSD * 100) / 100;
+    }
+
+    // 1. Register pending order in DB
+    try {
+      const initRes = await fetch("/api/payments/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          customer: form,
+          items,
+          currency: displayCurrency,
+          amount: finalAmount,
+        }),
+      });
+
+      if (!initRes.ok) {
+        const initErr = await initRes.json();
+        throw new Error(initErr.error || "결제 초기화에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "결제 준비 중 오류가 발생했습니다.";
+      alert(msg);
+      setLoading(false);
+      return;
+    }
+
     localStorage.setItem(
       "foem_pending_order",
       JSON.stringify({ orderId, customer: form, items, currency: displayCurrency })
@@ -135,7 +173,7 @@ export default function CheckoutPage() {
             ? items[0].title
             : `${items[0].title} 외 ${items.length - 1}점`;
         await tossPayments.requestPayment("카드", {
-          amount: Math.round(totalInDisplayCurrency),
+          amount: finalAmount,
           orderId,
           orderName,
           customerName: form.name,
@@ -148,12 +186,6 @@ export default function CheckoutPage() {
         // own checkout page converts to the buyer's local currency automatically
         // (confirmed in Toss's overseas-payment deck), so EUR selection here is
         // a display estimate; the widget submission is always USD-denominated.
-        const usdRates = rates; // narrowed non-null by the guard above (paymentMethod === "paypal" requires rates)
-        const totalInUSD = items.reduce(
-          (sum, i) => sum + convertPrice(i.price, i.currency, "USD", usdRates!) * i.quantity,
-          0
-        );
-
         await loadTossWidgetScript();
         const TossPaymentsV2 = (
           window as unknown as {

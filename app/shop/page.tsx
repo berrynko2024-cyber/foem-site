@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { artworks, type Artwork } from "@/lib/mockData";
+import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
 
 const categories = [
   { value: "all", label: "All" },
@@ -65,8 +66,32 @@ export default function ShopPage() {
   const [activeArtist, setActiveArtist] = useState<string>("all");
   const [activePriceRange, setActivePriceRange] = useState<string>("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [shopArtworks, setShopArtworks] = useState<Artwork[]>(artworks);
+  const [loading, setLoading] = useState(true);
 
-  const shopArtworks = artworks;
+  useEffect(() => {
+    async function loadArtworks() {
+      try {
+        const { data, error } = await supabase
+          .from("artworks")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Failed to fetch artworks:", error);
+          setShopArtworks(artworks);
+        } else if (data && data.length > 0) {
+          setShopArtworks(data.map(mapDbArtworkToArtwork) as Artwork[]);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setShopArtworks(artworks);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadArtworks();
+  }, []);
 
   const availableEmotions = useMemo(() => {
     const set = new Set<string>();

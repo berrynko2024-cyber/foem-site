@@ -1,24 +1,45 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { artworks, artists } from "@/lib/mockData";
 
-const ADMIN_PASSWORD = "foem2024";
-
 export default function AdminPage() {
+  const router = useRouter();
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setAuthenticated(true);
-    } else {
-      setError("Incorrect password.");
-      setPassword("");
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        setAuthenticated(true);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Incorrect password.");
+        setPassword("");
+      }
+    } catch {
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    setAuthenticated(false);
+    router.refresh();
   };
 
   if (!authenticated) {
@@ -55,9 +76,10 @@ export default function AdminPage() {
 
             <button
               type="submit"
-              className="w-full py-3 text-xs tracking-[0.15em] uppercase bg-[#1A1A1A] text-[#F5F3EF] hover:bg-[#2D2D2D] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 active:scale-[0.98]"
+              disabled={loading}
+              className="w-full py-3 text-xs tracking-[0.15em] uppercase bg-[#1A1A1A] text-[#F5F3EF] hover:bg-[#2D2D2D] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1A1A1A] focus:ring-offset-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Enter
+              {loading ? "Checking…" : "Enter"}
             </button>
           </form>
         </div>
@@ -81,7 +103,7 @@ export default function AdminPage() {
           </h1>
         </div>
         <button
-          onClick={() => setAuthenticated(false)}
+          onClick={handleLogout}
           className="text-xs tracking-[0.12em] uppercase text-[#9A9A9A] hover:text-[#1A1A1A] transition-colors"
         >
           Log out
