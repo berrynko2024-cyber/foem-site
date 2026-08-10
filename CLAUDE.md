@@ -179,10 +179,14 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - 탭: Current / Upcoming / Past
 - 데이터: `exhibitions` 배열 (`lib/mockData.ts`)
 
-### 개별 작품 현황
-- 작가별 작품 목록·가격·판매상태는 `lib/mockData.ts`의 `artworks` 배열이 유일한 원본(source of truth)
-- 여기에 표로 다시 옮겨적지 말 것 — 작품이 자주 추가/삭제되어 바로 오래된 정보가 됨
-- 작가별 개수는 위 "현재 작가 현황" 표 참고
+### 개별 작품 현황 (2026.08 — Supabase 마이그레이션 이후)
+- 작품 데이터의 원본(source of truth)은 **Supabase `artworks` 테이블**. `lib/mockData.ts`의 `artworks` 배열은 DB 조회 실패 시에만 쓰이는 비상 폴백.
+- 홈/샵/작가 상세/어드민 목록 페이지는 전부 `force-dynamic`으로 Supabase에서 매 요청마다 직접 읽음 (정적 캐싱 없음)
+- 작품 등록/수정/삭제 방법 (둘 다 즉시 반영됨, 동일한 결과):
+  - Claude Code 세션에서 요청 → `lib/supabaseAdmin.ts`(service role)로 직접 DB 반영
+  - `/admin/artworks`에서 직접 등록/수정/삭제 (실제 CRUD 동작함, `/api/admin/artworks*` 라우트)
+- `mockData.ts`는 더 이상 "여기에 추가하면 끝"이 아님 — DB에도 반영해야 사이트에 보임. 폴백용으로 mockData.ts도 함께 업데이트해두면 좋지만 필수는 아님.
+- 작가별 개수는 위 "현재 작가 현황" 표 참고 (단, 실제 최신 개수는 DB가 우선)
 
 ### 영상 현황
 - Betty Moon: ✅ 영상 있음 (v1)
