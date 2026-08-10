@@ -188,6 +188,12 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - `mockData.ts`는 더 이상 "여기에 추가하면 끝"이 아님 — DB에도 반영해야 사이트에 보임. 폴백용으로 mockData.ts도 함께 업데이트해두면 좋지만 필수는 아님.
 - 작가별 개수는 위 "현재 작가 현황" 표 참고 (단, 실제 최신 개수는 DB가 우선)
 
+### 작품 이미지 업로드 (Supabase Storage)
+- Storage 버킷 `artworks` (public) 사용. 업로드는 `/api/admin/upload`(service role, 어드민 세션 필요) → 공개 CDN URL 반환
+- `/admin/artworks/new`, `/admin/artworks/[id]/edit` 폼에 드래그앤드롭 업로드 영역 있음 — 업로드하면 자동으로 `images` 배열에 URL 추가
+- 기존 로컬 이미지(`public/artworks/...`)는 마이그레이션 안 함, 계속 그대로 사용 — 새로 추가하는 이미지부터 Storage 사용
+- `next.config.ts`의 `images.remotePatterns`에 `*.supabase.co` 등록됨 → `next/image`가 자동으로 WebP 등 최적화 포맷으로 서빙
+
 ### 영상 현황
 - Betty Moon: ✅ 영상 있음 (v1)
 - Young Jae Lee: ✅ 영상 있음 (v2)

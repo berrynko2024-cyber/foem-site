@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { artists } from "@/lib/mockData";
 
 type FormMode = "create" | "edit";
@@ -55,9 +56,52 @@ export default function ArtworkForm({
   const [form, setForm] = useState<ArtworkFormData>({ ...emptyForm, ...initial });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof ArtworkFormData>(key: K, value: ArtworkFormData[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const imageList = form.images.split("\n").map((s) => s.trim()).filter(Boolean);
+
+  const uploadFiles = async (files: FileList | File[]) => {
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (imageFiles.length === 0) return;
+
+    setUploading(true);
+    setUploadError("");
+    const uploadedUrls: string[] = [];
+
+    for (const file of imageFiles) {
+      try {
+        const body = new FormData();
+        body.append("file", file);
+        const res = await fetch("/api/admin/upload", { method: "POST", body });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "업로드 실패");
+        uploadedUrls.push(data.url);
+      } catch (err) {
+        setUploadError(err instanceof Error ? err.message : "업로드 중 오류가 발생했습니다.");
+      }
+    }
+
+    if (uploadedUrls.length > 0) {
+      setForm((f) => ({
+        ...f,
+        images: [...imageList, ...uploadedUrls].join("\n"),
+      }));
+    }
+    setUploading(false);
+  };
+
+  const removeImage = (url: string) => {
+    setForm((f) => ({
+      ...f,
+      images: imageList.filter((u) => u !== url).join("\n"),
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,13 +209,67 @@ export default function ArtworkForm({
       </div>
 
       <div>
-        <label className={labelClass}>Images (한 줄에 경로 하나씩, 예: /artworks/artist-slug/file.jpg)</label>
-        <textarea
-          className={inputClass}
-          rows={3}
-          value={form.images}
-          onChange={(e) => set("images", e.target.value)}
-        />
+        <label className={labelClass}>Images</label>
+
+        {imageList.length > 0 && (
+          <div className="grid grid-cols-4 gap-3 mb-3">
+            {imageList.map((url) => (
+              <div key={url} className="relative aspect-square border border-[#E8E6E2] group">
+                <Image src={url} alt="" fill sizes="120px" className="object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeImage(url)}
+                  className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none focus:opacity-100"
+                  aria-label="이미지 삭제"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div
+          onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+          onDragLeave={() => setDragActive(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragActive(false);
+            if (e.dataTransfer.files?.length) uploadFiles(e.dataTransfer.files);
+          }}
+          onClick={() => fileInputRef.current?.click()}
+          className={`border border-dashed px-4 py-6 text-center cursor-pointer transition-colors ${
+            dragActive ? "border-[#1A1A1A] bg-[#F5F3EF]" : "border-[#E8E6E2] hover:border-[#9A9A9A]"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) uploadFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          <p className="text-xs text-[#9A9A9A]">
+            {uploading ? "업로드 중…" : "이미지를 드래그하거나 클릭해서 업로드"}
+          </p>
+        </div>
+
+        {uploadError && <p className="text-xs text-red-500 mt-2">{uploadError}</p>}
+
+        <details className="mt-3">
+          <summary className="text-[11px] text-[#9A9A9A] cursor-pointer">경로 직접 입력 (기존 로컬 이미지 등)</summary>
+          <textarea
+            className={`${inputClass} mt-2`}
+            rows={3}
+            value={form.images}
+            onChange={(e) => set("images", e.target.value)}
+            placeholder="/artworks/artist-slug/file.jpg"
+          />
+        </details>
       </div>
 
       <div className="grid grid-cols-3 gap-6">
