@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { artFairs as mockArtFairs, type ArtFair } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,8 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
           sizes="(max-width: 768px) 100vw, 50vw"
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(fair.coverImage)}
         />
         <div className="absolute top-3 left-3 bg-[#F6F4EB] text-[#268042] text-[10px] tracking-[0.15em] uppercase px-3 py-1">
           {STATUS_LABEL[fair.status]}

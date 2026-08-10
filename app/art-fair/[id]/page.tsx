@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { artFairs as mockArtFairs, getArtworkById } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair, mapDbArtworkToArtwork } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -97,6 +98,8 @@ export default async function ArtFairDetailPage({ params }: Props) {
           fill
           className="object-contain object-center"
           priority
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(fair.coverImage)}
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute top-6 left-6 z-10">
@@ -204,6 +207,8 @@ export default async function ArtFairDetailPage({ params }: Props) {
                         fill
                         className={`${isWide || work.orientation === "square" ? "object-contain" : "object-cover"} transition-transform duration-700 group-hover:scale-[1.03]`}
                         sizes="(max-width: 640px) 50vw, 25vw"
+                        placeholder="blur"
+                        blurDataURL={getBlurDataUrl(work.images[0])}
                       />
                       {work.isSold && (
                         <div className="absolute top-2 left-2 bg-[#1A1A1A] text-[#F6F4EB] text-[10px] tracking-[0.1em] uppercase px-2 py-0.5">
@@ -260,6 +265,8 @@ export default async function ArtFairDetailPage({ params }: Props) {
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
                       sizes="80px"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl(f.coverImage)}
                     />
                   </div>
                   <div>

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Artist } from "@/lib/mockData";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 const MEDIUM_TABS = [
   { value: "all", label: "All" },
@@ -60,6 +61,8 @@ export default function ArtistsGrid({ artists }: { artists: Artist[] }) {
                 fill
                 className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-[1.03]"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                placeholder="blur"
+                blurDataURL={getBlurDataUrl(artist.photo)}
               />
             </div>
             <div className="p-6">

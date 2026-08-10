@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { exhibitions as mockExhibitions } from "@/lib/mockData";
 import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 import { ExhibitionGallery } from "./ExhibitionGallery";
 
 type Props = { params: Promise<{ id: string }> };
@@ -66,6 +67,8 @@ export default async function ExhibitionDetailPage({ params }: Props) {
           fill
           className={`${ex.orientation === "portrait" && !ex.heroImage ? "object-contain" : "object-cover"} object-center`}
           priority
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(ex.heroImage ?? ex.coverImage)}
         />
         <div className="absolute top-6 left-6 z-10">
           <Link

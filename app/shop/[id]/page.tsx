@@ -7,6 +7,7 @@ import ArtworkCTA from "@/components/ArtworkCTA";
 import ArtworkImageGallery from "@/components/ArtworkImageGallery";
 import ArtworkChat from "@/components/ArtworkChat";
 import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -241,6 +242,8 @@ export default async function ArtworkPage({
                       fill
                       className={`${(r.orientation === 'landscape' || r.orientation === 'square') && !r.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                       sizes="(max-width: 640px) 100vw, 33vw"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl(r.images[0])}
                     />
                   </div>
                   <div className="p-5">

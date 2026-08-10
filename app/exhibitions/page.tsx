@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { exhibitions as mockExhibitions, type Exhibition } from "@/lib/mockData";
 import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,8 @@ function ExhibitionCard({ ex }: { ex: Exhibition }) {
             ex.orientation === 'portrait' ? 'object-contain' : 'object-cover'
           }`}
           sizes="(max-width: 768px) 100vw, 50vw"
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(ex.coverImage)}
         />
         {ex.videoUrl && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">

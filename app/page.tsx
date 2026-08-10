@@ -6,6 +6,7 @@ import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 // artworks가 Supabase에서 로드되므로, 어드민에서 수정한 내용이 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -108,6 +109,8 @@ export default async function HomePage() {
                     alt={artist.name}
                     fill
                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                    placeholder="blur"
+                    blurDataURL={getBlurDataUrl(artist.photo)}
                   />
                 </div>
                 <p className="text-[11px] tracking-[0.15em] uppercase text-[#5a9e72] mb-1">

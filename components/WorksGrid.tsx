@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Artwork } from "@/lib/mockData";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 const DISPLAY_COUNT = 6;
 const INTERVAL_MS = 10000;
@@ -54,6 +55,8 @@ export default function WorksGrid({ items }: { items: Artwork[] }) {
             fill
             className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, 33vw"
+            placeholder="blur"
+            blurDataURL={getBlurDataUrl(artwork.images[0])}
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
           <div className="absolute bottom-0 left-0 right-0 px-4 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 type Photo = {
   src: string;
@@ -53,6 +54,8 @@ export function ExhibitionGallery({ photos, title }: { photos: Photo[]; title: s
               fill
               className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
               sizes="(max-width: 768px) 50vw, 33vw"
+              placeholder="blur"
+              blurDataURL={getBlurDataUrl(photo.src)}
             />
           </button>
         ))}
@@ -101,6 +104,8 @@ export function ExhibitionGallery({ photos, title }: { photos: Photo[]; title: s
               className="object-contain"
               sizes="92vw"
               priority
+              placeholder="blur"
+              blurDataURL={getBlurDataUrl(current.src)}
             />
           </div>
 

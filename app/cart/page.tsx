@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCart } from "@/store/CartContext";
 import { formatPrice } from "@/lib/currency";
 import CurrencySelector from "@/components/CurrencySelector";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, displayCurrency, convertToDisplay, totalInDisplayCurrency } =
@@ -57,6 +58,8 @@ export default function CartPage() {
                     fill
                     className="object-cover"
                     sizes="96px"
+                    placeholder="blur"
+                    blurDataURL={getBlurDataUrl(item.image)}
                   />
                 </div>
               </Link>

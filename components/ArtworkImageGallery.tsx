@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 type Props = {
   images: string[];
@@ -39,6 +40,8 @@ export default function ArtworkImageGallery({ images, title, orientation, isSold
           className={fitClass}
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(images[0])}
         />
         {isSold && (
           <div className="absolute top-4 left-4 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
@@ -60,6 +63,8 @@ export default function ArtworkImageGallery({ images, title, orientation, isSold
           className={`${fitClass} transition-opacity duration-300`}
           priority={selected === 0}
           sizes="(max-width: 1024px) 100vw, 50vw"
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl(images[selected])}
         />
         {isSold && (
           <div className="absolute top-4 left-4 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
@@ -87,6 +92,8 @@ export default function ArtworkImageGallery({ images, title, orientation, isSold
               fill
               className="object-cover"
               sizes="64px"
+              placeholder="blur"
+              blurDataURL={getBlurDataUrl(src)}
             />
           </button>
         ))}

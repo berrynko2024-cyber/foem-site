@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Artwork, getArtistBySlug, getArtworksByArtist, getVideosByArtist } from "@/lib/mockData";
 import VideoPlayer from "@/components/VideoPlayer";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
+import { getBlurDataUrl } from "@/lib/blurUrl";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -187,6 +188,8 @@ export default async function ArtistPage({
               style={artist.photoFilter ? { filter: artist.photoFilter } : undefined}
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
+              placeholder="blur"
+              blurDataURL={getBlurDataUrl(artist.photo)}
             />
           </div>
 
@@ -278,7 +281,7 @@ export default async function ArtistPage({
               const SeriesWorkCard = ({ work, colClass, aspectClass, imgClass }: { work: Artwork; colClass: string; aspectClass: string; imgClass: string }) => (
                 <Link href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
                   <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
-                    <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                    <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" placeholder="blur" blurDataURL={getBlurDataUrl(work.images[0])} />
                     {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
                   </div>
                   <div className="p-5">
@@ -336,6 +339,8 @@ export default async function ArtistPage({
                             fill
                             className={`${work.orientation === 'landscape' && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            placeholder="blur"
+                            blurDataURL={getBlurDataUrl(work.images[0])}
                           />
                           {work.isSold && (
                             <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
@@ -373,7 +378,7 @@ export default async function ArtistPage({
                 const WorkCard = ({ work, colClass, aspectClass, imgClass }: { work: typeof works[0]; colClass: string; aspectClass: string; imgClass: string }) => (
                   <Link key={work.id} href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
                     <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
-                      <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 50vw, 33vw" />
+                      <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 50vw, 33vw" placeholder="blur" blurDataURL={getBlurDataUrl(work.images[0])} />
                       {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
                     </div>
                     <div className="p-5">
@@ -412,6 +417,8 @@ export default async function ArtistPage({
                             fill
                             className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : (work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
+                            placeholder="blur"
+                            blurDataURL={getBlurDataUrl(work.images[0])}
                           />
                           {work.isSold && (
                             <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>
