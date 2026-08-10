@@ -135,16 +135,17 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - Sold 표시: 좌상단 검정 뱃지 통일
 - 가격란: `isSold`이면 "Sold Out", `priceDisplay` 있으면 그대로, 없으면 원화
 
-### 현재 작가 현황 (2026-07-20 기준)
+### 현재 작가 현황 (2026-08-10 기준)
 | ID | slug | medium | 작품 | 영상 |
 |----|------|--------|------|------|
 | a1 | betty-moon | photography | ✅ 6개 | ✅ |
-| a2 | uiyeong-park | painting | ✅ 10개 | ⏳ |
-| a4 | harin-j | painting | ✅ 5개 | ⏳ |
+| a2 | uiyeong-park | painting | ✅ 10개 | ✅ |
+| a4 | harin-j | painting | ✅ 5개 | ✅ |
 | a5 | sung-eun-park | painting | ✅ 6개 | ✅ |
 | a6 | byeong-gwan-seo | sculpture | ⏳ 준비중 (artworkCount: 0) | ⏳ |
 | a7 | jae-eun-jeong | painting | ✅ 16개 (Interval 10 + 구조와 속력 6) | ⏳ |
 | a8 | young-jae-lee | glass | ✅ 8개 | ✅ |
+| a9 | ha-jeong-lim | glass | ⏳ 준비중 (artworkCount: 0) | ⏳ |
 
 ### 작품 없는 작가 처리
 - `artworkCount: 0`으로 설정
