@@ -1,12 +1,19 @@
 /**
- * Next.js의 이미지 최적화 서버를 이용해 초소형 미니 캐시 URL을 생성합니다.
- * 이 URL은 <Image placeholder="blur" blurDataURL={...} /> 의 blurDataURL 속성에 런타임에 직접 매핑됩니다.
- *
- * w=32, q=75를 쓰는 이유: next.config.ts에 images.imageSizes/qualities를 별도 설정하지 않아
- * Next.js 기본 허용값(imageSizes 최솟값 32, qualities 기본값 75)만 통과된다.
- * 다른 값(예: w=16, q=10)을 쓰면 최적화 서버가 400 Bad Request로 거부한다.
+ * Next.js 이미지 최적화 서버(/_next/image)로 특정 너비의 최적화된 URL을 만든다.
+ * width/quality는 next.config.ts의 images.imageSizes/deviceSizes/qualities 허용 목록에
+ * 있는 값만 써야 한다(기본값: imageSizes [32,48,64,96,128,256,384], deviceSizes
+ * [640,750,828,1080,1200,1920,2048,3840], qualities [75]). 허용 목록 밖의 값은
+ * 최적화 서버가 400 Bad Request로 거부한다.
+ */
+export function getOptimizedUrl(url: string | undefined, width: number, quality = 75): string | undefined {
+  if (!url) return undefined;
+  return `/_next/image?url=${encodeURIComponent(url)}&w=${width}&q=${quality}`;
+}
+
+/**
+ * 가로 32px 초소형 블러 플레이스홀더 URL.
+ * <Image placeholder="blur" blurDataURL={...} /> 또는 <NaturalImage>의 배경으로 쓴다.
  */
 export function getBlurDataUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-  return `/_next/image?url=${encodeURIComponent(url)}&w=32&q=75`;
+  return getOptimizedUrl(url, 32, 75);
 }

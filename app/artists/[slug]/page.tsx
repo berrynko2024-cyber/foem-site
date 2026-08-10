@@ -6,6 +6,7 @@ import { Artwork, getArtistBySlug, getArtworksByArtist, getVideosByArtist } from
 import VideoPlayer from "@/components/VideoPlayer";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import NaturalImage from "@/components/NaturalImage";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -51,12 +52,6 @@ function buildRows(works: Artwork[]): RowItem[][] {
   }
 
   return rows;
-}
-
-function getAspectClass(orientation?: string): string {
-  if (orientation === 'landscape') return 'aspect-[3/2]';
-  if (orientation === 'square') return 'aspect-square';
-  return 'aspect-[3/4]';
 }
 
 const colSpanClass: Record<4 | 6 | 8 | 12, string> = {
@@ -278,10 +273,10 @@ export default async function ArtistPage({
                 if (!groupMap.has(key)) groupMap.set(key, []);
                 groupMap.get(key)!.push(w);
               }
-              const SeriesWorkCard = ({ work, colClass, aspectClass, imgClass }: { work: Artwork; colClass: string; aspectClass: string; imgClass: string }) => (
+              const SeriesWorkCard = ({ work, colClass }: { work: Artwork; colClass: string }) => (
                 <Link href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
-                  <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
-                    <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" placeholder="blur" blurDataURL={getBlurDataUrl(work.images[0])} />
+                  <div className="relative bg-[#e8f0eb]">
+                    <NaturalImage src={work.images[0]} alt={work.title} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                     {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
                   </div>
                   <div className="p-5">
@@ -310,9 +305,9 @@ export default async function ArtistPage({
                           </div>
                         )}
                         <div className="grid grid-cols-12 gap-px bg-[#d4e8da]">
-                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
-                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-[3/2]" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
-                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} aspectClass="aspect-square" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
+                          {portraits.map(w => <SeriesWorkCard key={w.id} work={w} colClass={portraits.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : portraits.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
+                          {landscapes.map(w => <SeriesWorkCard key={w.id} work={w} colClass={landscapes.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : landscapes.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
+                          {squares.map(w => <SeriesWorkCard key={w.id} work={w} colClass={squares.length % 3 === 0 ? 'col-span-12 sm:col-span-4' : squares.length % 2 === 0 ? 'col-span-12 sm:col-span-6' : 'col-span-12 sm:col-span-4'} />)}
                         </div>
                       </div>
                     );
@@ -332,15 +327,11 @@ export default async function ArtistPage({
                         href={`/shop/${work.id}`}
                         className={`${colSpanClass[colSpan]} group bg-[#F6F4EB] block overflow-hidden`}
                       >
-                        <div className={`relative ${getAspectClass(work.orientation)} bg-[#e8f0eb] overflow-hidden`}>
-                          <Image
+                        <div className="relative bg-[#e8f0eb]">
+                          <NaturalImage
                             src={work.images[0]}
                             alt={work.title}
-                            fill
-                            className={`${work.orientation === 'landscape' && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            placeholder="blur"
-                            blurDataURL={getBlurDataUrl(work.images[0])}
                           />
                           {work.isSold && (
                             <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">
@@ -375,10 +366,10 @@ export default async function ArtistPage({
                   : rawPortraits;
                 const landscapes = works.filter(w => w.orientation === 'landscape');
                 const squares = works.filter(w => w.orientation === 'square');
-                const WorkCard = ({ work, colClass, aspectClass, imgClass }: { work: typeof works[0]; colClass: string; aspectClass: string; imgClass: string }) => (
+                const WorkCard = ({ work, colClass }: { work: typeof works[0]; colClass: string }) => (
                   <Link key={work.id} href={`/shop/${work.id}`} className={`group bg-[#F6F4EB] overflow-hidden block ${colClass}`}>
-                    <div className={`relative overflow-hidden bg-[#e8f0eb] ${aspectClass}`}>
-                      <Image src={work.images[0]} alt={work.title} fill className={`${imgClass} transition-transform duration-700 group-hover:scale-[1.03]`} sizes="(max-width: 640px) 50vw, 33vw" placeholder="blur" blurDataURL={getBlurDataUrl(work.images[0])} />
+                    <div className="relative bg-[#e8f0eb]">
+                      <NaturalImage src={work.images[0]} alt={work.title} sizes="(max-width: 640px) 50vw, 33vw" />
                       {work.isSold && <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>}
                     </div>
                     <div className="p-5">
@@ -392,9 +383,9 @@ export default async function ArtistPage({
                 );
                 return (
                   <div className="grid grid-cols-6 gap-px bg-[#d4e8da]">
-                    {portraits.map(w => <WorkCard key={w.id} work={w} colClass="col-span-2" aspectClass="aspect-[4/5]" imgClass="object-cover" />)}
-                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" aspectClass="aspect-[3/2]" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
-                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3 flex flex-col" aspectClass="flex-1 min-h-0" imgClass={w.fillFrame ? "object-cover" : "object-contain"} />)}
+                    {portraits.map(w => <WorkCard key={w.id} work={w} colClass="col-span-2" />)}
+                    {landscapes.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" />)}
+                    {squares.map(w => <WorkCard key={w.id} work={w} colClass="col-span-3" />)}
                   </div>
                 );
               }
@@ -410,15 +401,11 @@ export default async function ArtistPage({
                         href={`/shop/${work.id}`}
                         className={`group bg-[#F6F4EB] overflow-hidden block${isFeatured ? ' col-span-2 lg:col-span-3' : ''}`}
                       >
-                        <div className={`relative overflow-hidden bg-[#e8f0eb]${twoCol ? ' aspect-[3/2]' : isFeatured ? ' aspect-[3/2]' : ' aspect-[4/5]'}`}>
-                          <Image
+                        <div className="relative bg-[#e8f0eb]">
+                          <NaturalImage
                             src={work.images[0]}
                             alt={work.title}
-                            fill
-                            className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : (work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
-                            placeholder="blur"
-                            blurDataURL={getBlurDataUrl(work.images[0])}
                           />
                           {work.isSold && (
                             <div className="absolute top-3 left-3 bg-[#1A1A1A] text-[#F5F3EF] text-[11px] tracking-[0.15em] uppercase px-3 py-1">Sold</div>

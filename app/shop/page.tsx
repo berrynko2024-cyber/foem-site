@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { artworks, type Artwork } from "@/lib/mockData";
 import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
+import NaturalImage from "@/components/NaturalImage";
 
 const categories = [
   { value: "all", label: "All" },
@@ -290,13 +291,11 @@ export default function ShopPage() {
 function ArtworkCard({ work }: { work: Artwork }) {
   return (
     <Link href={`/shop/${work.id}`} className="group block">
-      <div className="relative overflow-hidden bg-[#F2F2F2]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative bg-[#F2F2F2]">
+        <NaturalImage
           src={work.images[0]}
           alt={work.title}
-          loading="lazy"
-          className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.02]"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
         {work.isSold && (
           <div className="absolute top-3 left-3 bg-black text-white text-[11px] tracking-[0.15em] uppercase px-3 py-1">
