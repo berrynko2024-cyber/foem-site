@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { ArtistVideo } from "@/lib/mockData";
+import { ArtistVideo, artists as allArtists } from "@/lib/mockData";
 
 /** YouTube watch URL / 단축 URL에서 11자리 영상 ID 추출 */
 function extractYoutubeId(url: string): string | null {
@@ -13,12 +13,20 @@ function extractYoutubeId(url: string): string | null {
   return match ? match[1] : null;
 }
 
-function PlayIcon() {
+/** 영상 매체 라벨: 작가의 medium을 캡션 3번째 줄에 표기 */
+const MEDIUM_LABEL: Record<string, string> = {
+  photography: "Photography",
+  painting: "Painting",
+  sculpture: "Sculpture",
+  glass: "Glass",
+};
+
+function artistMedium(artistId: string): string | null {
+  const a = allArtists.find((x) => x.id === artistId);
+  if (!a?.medium) return null;
   return (
-    <svg viewBox="0 0 24 24" className="w-10 h-10 md:w-12 md:h-12 drop-shadow-lg">
-      <circle cx="12" cy="12" r="12" fill="white" fillOpacity="0.2" />
-      <polygon points="10,8 10,16 17,12" fill="white" />
-    </svg>
+    MEDIUM_LABEL[a.medium] ??
+    a.medium.charAt(0).toUpperCase() + a.medium.slice(1)
   );
 }
 
@@ -57,108 +65,82 @@ export function VideoCard({
       }.jpg`
     : null;
 
+  const medium = artistMedium(video.artistId);
+
   return (
     <Link
       href={`/artists/${video.artistSlug}`}
-      className={`relative overflow-hidden group cursor-pointer bg-[#e8f0eb] block ${className}`}
+      className={`group block ${className}`}
     >
-      {!imgLoaded && !imgError && (
-        <div className="absolute inset-0 bg-[#e8f0eb] animate-pulse z-10 pointer-events-none" />
-      )}
+      {/* Thumbnail */}
+      <div className="relative aspect-video overflow-hidden bg-[#e8f0eb]">
+        {!imgLoaded && !imgError && (
+          <div className="absolute inset-0 bg-[#e8f0eb] animate-pulse z-10 pointer-events-none" />
+        )}
 
-      {!imgError && thumbSrc && (
-        <Image
-          src={thumbSrc}
-          alt={video.title}
-          fill
-          className={`object-cover transition-all duration-500 group-hover:scale-[1.03] ${
-            imgLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          onLoad={() => setImgLoaded(true)}
-          onError={() => {
-            if (!useFallbackThumb && youtubeId) {
-              setUseFallbackThumb(true);
-            } else {
-              setImgError(true);
-              setImgLoaded(false);
-            }
-          }}
-        />
-      )}
+        {!imgError && thumbSrc && (
+          <Image
+            src={thumbSrc}
+            alt={video.title}
+            fill
+            className={`object-cover transition-opacity duration-500 group-hover:opacity-90 ${
+              imgLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            onLoad={() => setImgLoaded(true)}
+            onError={() => {
+              if (!useFallbackThumb && youtubeId) {
+                setUseFallbackThumb(true);
+              } else {
+                setImgError(true);
+                setImgLoaded(false);
+              }
+            }}
+          />
+        )}
 
-      {(imgError || !thumbSrc) && (
-        <div className="absolute inset-0 bg-[#e8f0eb] flex flex-col items-center justify-center gap-2 px-4">
-          <FilmIcon className="w-8 h-8 text-[#5a9e72]" />
-          <p
-            className="text-[10px] tracking-[0.2em] uppercase text-[#5a9e72] text-center mt-1"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {video.artistName}
-          </p>
-          <p
-            className="text-[11px] font-semibold text-[#268042] text-center leading-snug"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {video.title}
-          </p>
-          {youtubeId && (
-            <div className="mt-2 opacity-50">
-              <PlayIcon />
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-all duration-300 flex items-center justify-center">
-        <div className="opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-300">
-          <PlayIcon />
-        </div>
+        {(imgError || !thumbSrc) && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <FilmIcon className="w-8 h-8 text-[#5a9e72]" />
+          </div>
+        )}
       </div>
 
-      {imgLoaded && (
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/60 to-transparent">
+      {/* Caption below */}
+      <div className="mt-3">
+        <p
+          className="text-[15px] md:text-base text-[#268042] leading-snug"
+          style={{ fontFamily: "var(--font-inter)", fontWeight: 600 }}
+        >
+          {video.artistName}
+        </p>
+        <p
+          className="text-[13px] md:text-sm text-[#5a9e72] leading-snug mt-0.5"
+          style={{ fontFamily: "var(--font-inter)" }}
+        >
+          {video.title}
+        </p>
+        {medium && (
           <p
-            className="text-[10px] tracking-[0.2em] uppercase text-white/70 mb-0.5"
+            className="text-[11px] tracking-[0.08em] uppercase text-[#5a9e72]/70 mt-1.5"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            {video.artistName}
+            {medium}
           </p>
-          <p
-            className="text-[12px] font-semibold text-white leading-tight"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {video.title}
-          </p>
-        </div>
-      )}
-
-      {video.duration && (
-        <div className="absolute top-3 right-3 z-20">
-          <span
-            className={`text-[10px] tracking-[0.1em] px-1.5 py-0.5 ${
-              imgLoaded
-                ? "text-white/80 bg-black/40"
-                : "text-[#5a9e72] bg-[#d4e8da]"
-            }`}
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {video.duration}
-          </span>
-        </div>
-      )}
+        )}
+      </div>
     </Link>
   );
 }
 
 export default function VideoGrid({ videos }: { videos: ArtistVideo[] }) {
-  const featured = videos[0];
-  const bottomLeft = videos[1];
-  const tall = videos[2];
+  const topRow = videos.slice(0, 3);
+  const bottomRow = videos.slice(3, 6);
+
+  if (topRow.length === 0) return null;
 
   return (
-    <section className="max-w-[65vw] mx-auto pb-24 md:pb-36">
+    <section className="max-w-7xl mx-auto px-6 pb-24 md:pb-36">
       <div className="mb-6">
         <p
           className="text-[10px] tracking-[0.3em] uppercase text-[#268042]"
@@ -168,12 +150,19 @@ export default function VideoGrid({ videos }: { videos: ArtistVideo[] }) {
         </p>
       </div>
 
-      {featured && <VideoCard video={featured} className="w-full aspect-video" />}
+      {/* Top row — 3 up */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10">
+        {topRow.map((v) => (
+          <VideoCard key={v.id} video={v} />
+        ))}
+      </div>
 
-      {(bottomLeft || tall) && (
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-2.5 mt-2.5">
-          {bottomLeft && <VideoCard video={bottomLeft} className="aspect-video" />}
-          {tall && <VideoCard video={tall} className="aspect-video md:aspect-auto" />}
+      {/* Bottom row — 3 up */}
+      {bottomRow.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10 mt-10">
+          {bottomRow.map((v) => (
+            <VideoCard key={v.id} video={v} />
+          ))}
         </div>
       )}
     </section>

@@ -30,7 +30,7 @@ export default function VideoPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {artistVideos.map((video) => (
-          <VideoCard key={video.id} video={video} className="aspect-video" />
+          <VideoCard key={video.id} video={video} />
         ))}
       </div>
     </div>

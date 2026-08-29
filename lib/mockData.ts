@@ -1399,6 +1399,15 @@ export const artistVideos: ArtistVideo[] = [
     thumbnail: "https://img.youtube.com/vi/uKPer7-AmKI/maxresdefault.jpg",
   },
   {
+    id: "v7",
+    artistId: "a1",
+    artistSlug: "betty-moon",
+    artistName: "Betty Moon",
+    title: "BETTY MOON FINE ART PHOTOGRAPHER",
+    url: "https://www.youtube.com/watch?v=lZQNhFRw6Yk",
+    thumbnail: "https://img.youtube.com/vi/lZQNhFRw6Yk/maxresdefault.jpg",
+  },
+  {
     id: "v5",
     artistId: "a4",
     artistSlug: "harin-j",
@@ -1432,15 +1441,6 @@ export const artistVideos: ArtistVideo[] = [
     title: "Sung Eun Park",
     duration: "",
     url: "https://youtu.be/-Ldafm_vp88?si=ZVg74h3fDi3_YNbt",
-  },
-  {
-    id: "v7",
-    artistId: "a1",
-    artistSlug: "betty-moon",
-    artistName: "Betty Moon",
-    title: "BETTY MOON FINE ART PHOTOGRAPHER",
-    url: "https://www.youtube.com/watch?v=lZQNhFRw6Yk",
-    thumbnail: "https://img.youtube.com/vi/lZQNhFRw6Yk/maxresdefault.jpg",
   },
   {
     id: "v1",
