@@ -142,7 +142,7 @@ cd /Users/ko/Projects/foem-site && npm run dev
 | a2 | uiyeong-park | painting | ✅ 10개 | ✅ |
 | a4 | harin-j | painting | ✅ 5개 | ✅ |
 | a5 | sung-eun-park | painting | ✅ 6개 | ✅ |
-| a6 | byeong-gwan-seo | sculpture | ⏳ 준비중 (artworkCount: 0) | ⏳ |
+| a6 | byeong-gwan-seo | sculpture | ✅ 10개 | ✅ (v6) |
 | a7 | jae-eun-jeong | painting | ✅ 16개 (Interval 10 + 구조와 속력 6) | ⏳ |
 | a8 | young-jae-lee | glass | ✅ 8개 | ✅ |
 | a9 | ha-jeong-lim | glass | ⏳ 준비중 (artworkCount: 0) | ⏳ |
@@ -196,9 +196,10 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - `next.config.ts`의 `images.remotePatterns`에 `*.supabase.co` 등록됨 → `next/image`가 자동으로 WebP 등 최적화 포맷으로 서빙
 
 ### 영상 현황
-- Betty Moon: ✅ 영상 있음 (v1)
+- Betty Moon: ✅ 영상 있음 (v7 프로필 + v1 Mother Nature Exhibition)
 - Young Jae Lee: ✅ 영상 있음 (v2)
 - Sung Eun Park: ✅ 영상 있음 (v3)
 - Uiyeong Park: ✅ 영상 있음 (v4)
 - Harin J: ✅ 영상 있음 (v5)
-- Jae-eun Jeong, Byeong-gwan Seo: ⏳ 준비중
+- Byeong Gwan Seo: ✅ 영상 있음 (v6)
+- Jae-eun Jeong: ⏳ 준비중
