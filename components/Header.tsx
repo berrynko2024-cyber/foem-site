@@ -18,6 +18,7 @@ const NAV_LEFT = [
 
 const NAV_RIGHT = [
   { href: "https://www.instagram.com/foem_korea/", label: "Instagram", external: true },
+  { href: "https://www.youtube.com/@foemart", label: "YouTube", external: true },
 ];
 
 const navLinkClass =
@@ -86,6 +87,18 @@ export default function Header() {
               >
                 {label}
               </Link>
+            ))}
+            {NAV_RIGHT.map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] tracking-[0.22em] uppercase text-[#268042]"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
             ))}
           </nav>
         </div>

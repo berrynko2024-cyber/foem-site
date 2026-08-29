@@ -103,6 +103,19 @@ export default function AboutPage() {
                   @foem_korea
                 </a>
               </div>
+              <div>
+                <p className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-1">
+                  YouTube
+                </p>
+                <a
+                  href="https://www.youtube.com/@foemart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-[#268042] hover:opacity-60 transition-opacity duration-200"
+                >
+                  @foemart
+                </a>
+              </div>
             </div>
           </div>
         </div>
