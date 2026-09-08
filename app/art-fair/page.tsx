@@ -4,6 +4,7 @@ import Link from "next/link";
 import { artFairs as mockArtFairs, type ArtFair } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { withResolvedStatus } from "@/lib/artFairStatus";
 
 export const dynamic = "force-dynamic";
 
@@ -94,14 +95,75 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
   );
 }
 
+function FeaturedFairCard({ fair }: { fair: ArtFair }) {
+  return (
+    <Link href={`/art-fair/${fair.id}`} className="group block mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="relative aspect-[4/3] md:aspect-[3/2] overflow-hidden bg-[#e8f0eb] order-1 md:order-none">
+          <Image
+            src={fair.coverImage}
+            alt={fair.name}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 60vw"
+            priority
+            placeholder="blur"
+            blurDataURL={getBlurDataUrl(fair.coverImage)}
+          />
+          <div className="absolute top-3 left-3 bg-[#268042] text-[#F6F4EB] text-[10px] tracking-[0.15em] uppercase px-3 py-1">
+            {STATUS_LABEL[fair.status]}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs tracking-[0.15em] uppercase text-[#9A9A9A] mb-3">
+            {fair.artists.join(", ")}
+          </p>
+          <h2
+            className="text-4xl md:text-6xl font-bold uppercase text-[#268042] mb-4 leading-[1.05] group-hover:text-[#1a5c30] transition-colors"
+            style={{ fontFamily: "var(--font-oswald)" }}
+          >
+            {fair.name}
+          </h2>
+          <p className="text-sm text-[#4A4A4A] mb-1">
+            {fair.venue} · {fair.location}
+            {fair.boothNumber && ` · Booth ${fair.boothNumber}`}
+          </p>
+          <p className="text-sm text-[#9A9A9A] mb-5">
+            {fair.previewDate && `VIP Preview ${formatDate(fair.previewDate)} · `}
+            {formatDateRange(fair.startDate, fair.endDate)}
+          </p>
+          {fair.description && (
+            <p className="text-base text-[#4A4A4A] leading-relaxed mb-5 line-clamp-4">
+              {fair.description}
+            </p>
+          )}
+          <span className="text-[11px] tracking-[0.15em] uppercase text-[#268042] border-b border-[#268042] pb-0.5 group-hover:text-[#1a5c30] group-hover:border-[#1a5c30] transition-colors">
+            {fair.artworkIds && fair.artworkIds.length > 0
+              ? `View ${fair.artworkIds.length} works presented →`
+              : "View the booth →"}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default async function ArtFairPage() {
   const { data: dbArtFairs } = await supabase.from("art_fairs").select("*");
   const mappedDbArtFairs = dbArtFairs ? dbArtFairs.map(mapDbArtFairToArtFair) : [];
-  const artFairs = mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs;
+  const rawArtFairs = mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs;
+  const artFairs = withResolvedStatus(rawArtFairs);
 
   const sorted = [...artFairs].sort(
     (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]
   );
+
+  // 진행 중이거나 임박한 페어가 있으면 첫 번째를 대형 피처 카드로 분리
+  const featured =
+    sorted[0] && (sorted[0].status === "current" || sorted[0].status === "upcoming")
+      ? sorted[0]
+      : null;
+  const rest = featured ? sorted.slice(1) : sorted;
 
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
@@ -119,11 +181,15 @@ export default async function ArtFairPage() {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
-          {sorted.map((fair) => (
-            <ArtFairCard key={fair.id} fair={fair} />
-          ))}
-        </div>
+        {featured && <FeaturedFairCard fair={featured} />}
+
+        {rest.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
+            {rest.map((fair) => (
+              <ArtFairCard key={fair.id} fair={fair} />
+            ))}
+          </div>
+        )}
 
       </div>
     </div>

@@ -5,19 +5,21 @@ import { notFound } from "next/navigation";
 import { artFairs as mockArtFairs, getArtworkById } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair, mapDbArtworkToArtwork } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { resolveArtFairStatus, withResolvedStatus } from "@/lib/artFairStatus";
 
 type Props = { params: Promise<{ id: string }> };
 
 async function getArtFair(id: string) {
   const { data } = await supabase.from("art_fairs").select("*").eq("id", id).maybeSingle();
-  if (data) return mapDbArtFairToArtFair(data);
-  return mockArtFairs.find((f) => f.id === id);
+  const fair = data ? mapDbArtFairToArtFair(data) : mockArtFairs.find((f) => f.id === id);
+  if (!fair) return undefined;
+  return { ...fair, status: resolveArtFairStatus(fair) };
 }
 
 async function getAllArtFairs() {
   const { data } = await supabase.from("art_fairs").select("*");
   const mapped = data ? data.map(mapDbArtFairToArtFair) : [];
-  return mapped.length > 0 ? mapped : mockArtFairs;
+  return withResolvedStatus(mapped.length > 0 ? mapped : mockArtFairs);
 }
 
 export const dynamic = "force-dynamic";

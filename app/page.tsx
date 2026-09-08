@@ -1,12 +1,13 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { artworks, artists as mockArtists, artistVideos } from "@/lib/mockData";
+import { artworks, artists as mockArtists, artistVideos, artFairs as mockArtFairs } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
-import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
+import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { pickHighlightFair } from "@/lib/artFairStatus";
 
 // artworks가 Supabase에서 로드되므로, 어드민에서 수정한 내용이 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -35,6 +36,22 @@ export default async function HomePage() {
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
   const featuredArtists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
 
+  // Supabase에서 art fair 목록 조회 → 지금 강조할 페어 하나 선택 (진행 중 우선, 없으면 임박한 예정)
+  const { data: dbArtFairs } = await supabase.from("art_fairs").select("*");
+  const mappedDbArtFairs = dbArtFairs ? dbArtFairs.map(mapDbArtFairToArtFair) : [];
+  const highlightFair = pickHighlightFair(
+    mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs
+  );
+  const fairDateRange = highlightFair
+    ? (() => {
+        const fmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
+        const yr = new Intl.DateTimeFormat("en-US", { year: "numeric" });
+        const s = new Date(highlightFair.startDate);
+        const e = new Date(highlightFair.endDate);
+        return `${fmt.format(s)} – ${fmt.format(e)}, ${yr.format(e)}`;
+      })()
+    : "";
+
   return (
     <div>
       {/* Hero — fullscreen centered typography */}
@@ -58,6 +75,51 @@ export default async function HomePage() {
           FIELD OF EMOTIONS
         </p>
       </section>
+
+      {/* Art Fair highlight — 진행 중이거나 임박한 페어가 있을 때만 노출 */}
+      {highlightFair && (
+        <section className="border-t border-b border-[#d4e8da] bg-[#eef5f0]">
+          <div className="max-w-7xl mx-auto px-6 py-14 md:py-20">
+            <Link href={`/art-fair/${highlightFair.id}`} className="group block">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
+                <div className="relative aspect-[3/2] overflow-hidden bg-[#e8f0eb]">
+                  <Image
+                    src={highlightFair.coverImage}
+                    alt={highlightFair.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    placeholder="blur"
+                    blurDataURL={getBlurDataUrl(highlightFair.coverImage)}
+                  />
+                </div>
+                <div>
+                  <p
+                    className="text-[10px] tracking-[0.3em] uppercase text-[#268042] mb-4"
+                    style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
+                  >
+                    {highlightFair.status === "current" ? "FOEM · On Now" : "FOEM · Art Fair"}
+                  </p>
+                  <h2
+                    className="text-3xl md:text-5xl font-bold uppercase text-[#268042] leading-[1.05] mb-4"
+                    style={{ fontFamily: "var(--font-oswald)" }}
+                  >
+                    {highlightFair.name}
+                  </h2>
+                  <p className="text-sm text-[#5a9e72] mb-1">
+                    {highlightFair.venue} · {highlightFair.location}
+                    {highlightFair.boothNumber && ` · Booth ${highlightFair.boothNumber}`}
+                  </p>
+                  <p className="text-sm text-[#5a9e72] mb-6">{fairDateRange}</p>
+                  <span className="text-xs tracking-[0.15em] uppercase text-[#268042] border-b border-[#268042] pb-0.5 group-hover:text-[#1a5c30] group-hover:border-[#1a5c30] transition-colors">
+                    View the booth →
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Video Grid */}
       <VideoGrid videos={artistVideos} />
