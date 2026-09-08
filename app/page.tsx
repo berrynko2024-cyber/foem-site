@@ -31,7 +31,7 @@ export default async function HomePage() {
   const galleryItems = finalArtworks.filter(a => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/')) as any[];
 
   // Supabase에서 artists 목록 조회
-  const { data: dbArtists } = await supabase.from("artists").select("*");
+  const { data: dbArtists } = await supabase.from("artists").select("*").order("id", { ascending: true });
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
   const featuredArtists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
 

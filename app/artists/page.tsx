@@ -5,7 +5,7 @@ import ArtistsGrid from "@/components/ArtistsGrid";
 export const dynamic = "force-dynamic";
 
 export default async function ArtistsPage() {
-  const { data: dbArtists } = await supabase.from("artists").select("*");
+  const { data: dbArtists } = await supabase.from("artists").select("*").order("id", { ascending: true });
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
   const artists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
 
