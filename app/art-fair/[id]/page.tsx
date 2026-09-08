@@ -82,7 +82,7 @@ export default async function ArtFairDetailPage({ params }: Props) {
     featuredWorks = artworkIds
       .map((wid) => worksById.get(wid))
       .filter(Boolean)
-      .filter((w) => w!.images[0].startsWith("/artworks/")) as NonNullable<ReturnType<typeof getArtworkById>>[];
+      .filter((w) => w!.images[0]?.startsWith("/artworks/") || w!.images[0]?.includes("supabase.co")) as NonNullable<ReturnType<typeof getArtworkById>>[];
   }
 
   const otherFairs = await getAllArtFairs();

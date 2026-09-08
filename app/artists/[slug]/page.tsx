@@ -100,7 +100,8 @@ export default async function ArtistPage({
   const { data: dbArtworks } = await supabase
     .from("artworks")
     .select("*")
-    .eq("artist_id", artist.id);
+    .eq("artist_id", artist.id)
+    .order("created_at", { ascending: true });
 
   const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
   const allWorks = mappedDbArtworks.length > 0 ? (mappedDbArtworks as Artwork[]) : [...getArtworksByArtist(artist.id)];
