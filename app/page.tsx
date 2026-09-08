@@ -82,16 +82,18 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-6 py-14 md:py-20">
             <Link href={`/art-fair/${highlightFair.id}`} className="group block">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
-                <div className="relative aspect-[3/2] overflow-hidden bg-[#e8f0eb]">
-                  <Image
-                    src={highlightFair.coverImage}
-                    alt={highlightFair.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    placeholder="blur"
-                    blurDataURL={getBlurDataUrl(highlightFair.coverImage)}
-                  />
+                <div className="flex justify-center md:justify-start">
+                  <div className="relative w-full max-w-[360px] md:max-w-[420px] aspect-[4/5] overflow-hidden bg-[#e8f0eb]">
+                    <Image
+                      src={highlightFair.coverImage}
+                      alt={highlightFair.name}
+                      fill
+                      className="object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 90vw, 420px"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl(highlightFair.coverImage)}
+                    />
+                  </div>
                 </div>
                 <div>
                   <p
