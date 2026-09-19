@@ -135,17 +135,17 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - Sold 표시: 좌상단 검정 뱃지 통일
 - 가격란: `isSold`이면 "Sold Out", `priceDisplay` 있으면 그대로, 없으면 원화
 
-### 현재 작가 현황 (2026-08-10 기준)
+### 현재 작가 현황 (2026-09-20 기준)
 | ID | slug | medium | 작품 | 영상 |
 |----|------|--------|------|------|
-| a1 | betty-moon | photography | ✅ 6개 | ✅ |
-| a2 | uiyeong-park | painting | ✅ 10개 | ✅ |
-| a4 | harin-j | painting | ✅ 5개 | ✅ |
-| a5 | sung-eun-park | painting | ✅ 6개 | ✅ |
-| a6 | byeong-gwan-seo | sculpture | ✅ 10개 | ✅ (v6) |
+| a1 | betty-moon | photography | ✅ 10개 | ✅ (v7, v1) |
+| a2 | uiyeong-park | painting | ✅ 15개 | ✅ (v4) |
+| a4 | harin-j | painting | ✅ 10개 | ✅ (v5) |
+| a5 | sung-eun-park | painting | ✅ 15개 | ✅ (v3) |
+| a6 | byeong-gwan-seo | sculpture | ✅ 15개 | ✅ (v6) |
 | a7 | jae-eun-jeong | painting | ✅ 16개 (Interval 10 + 구조와 속력 6) | ⏳ |
-| a8 | young-jae-lee | glass | ✅ 8개 | ✅ |
-| a9 | ha-jeong-lim | glass | ⏳ 준비중 (artworkCount: 0) | ⏳ |
+| a8 | young-jae-lee | glass | ✅ 12개 | ✅ (v2) |
+| a9 | ha-jeong-lim | glass | ✅ 6개 (Positions Berlin 참가작) | ⏳ |
 
 ### 작품 없는 작가 처리
 - `artworkCount: 0`으로 설정
@@ -161,12 +161,14 @@ cd /Users/ko/Projects/foem-site && npm run dev
 
 ### Art Fair 사진 폴더 규칙
 - 경로: `public/art-fairs/{fair-slug}/cover.jpg` (또는 .png)
-- 현재 폴더: artankara-2026 ✅, hong-kong-2026 ✅, kiaf-2026 ⏳, frieze-seoul-2025 ⏳, art-busan-2025 ⏳
+- 현재 폴더: positions-berlin-2026 ✅, artankara-2026 ✅, hong-kong-2026 ✅, kiaf-2026 ⏳, frieze-seoul-2025 ⏳, art-busan-2025 ⏳
 
 ### 현재 Art Fair 데이터
 | ID | 이름 | 상태 |
 |----|------|------|
-| f5 | Affordable Art Fair Hong Kong 2026 | current |
+| f9 | Positions Berlin Art Fair 2026 | upcoming |
+| f5 | Affordable Art Fair Hong Kong 2026 | past |
+| f7 | BANK Art Fair 2026 Spring | past |
 | f1 | KIAF SEOUL 2026 | upcoming |
 | f2 | Frieze Seoul 2025 | past |
 | f3 | Art Busan 2025 | past |
