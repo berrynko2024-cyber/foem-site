@@ -154,9 +154,11 @@ export default async function ArtFairPage() {
   const rawArtFairs = mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs;
   const artFairs = withResolvedStatus(rawArtFairs);
 
-  const sorted = [...artFairs].sort(
-    (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]
-  );
+  const sorted = [...artFairs].sort((a, b) => {
+    const statusDiff = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+    if (statusDiff !== 0) return statusDiff;
+    return b.startDate.localeCompare(a.startDate);
+  });
 
   // 진행 중이거나 임박한 페어가 있으면 첫 번째를 대형 피처 카드로 분리
   const featured =
