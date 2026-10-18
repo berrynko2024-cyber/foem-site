@@ -126,6 +126,7 @@ export function buildSeoMetadata({
       url,
       siteName: "FOEM",
       type: "website",
+      locale: "ko_KR",
       images: ogImages,
     },
     twitter: {

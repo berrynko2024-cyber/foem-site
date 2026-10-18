@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     url: "https://www.foem.co.kr",
     siteName: "FOEM",
     type: "website",
-    locale: "en_US",
+    locale: "ko_KR",
     images: [
       {
         url: "/og-main.png",
@@ -85,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable} ${oswald.variable} ${barlowCondensed.variable}`}>
+    <html lang="ko" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable} ${oswald.variable} ${barlowCondensed.variable}`}>
       <head>
         <meta name="naver-site-verification" content="cbcba41d399c86f33645e8cab8c3c33014d71d54" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-FDMPT09PHJ" />
