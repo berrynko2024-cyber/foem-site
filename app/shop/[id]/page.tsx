@@ -8,6 +8,7 @@ import ArtworkImageGallery from "@/components/ArtworkImageGallery";
 import ArtworkChat from "@/components/ArtworkChat";
 import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { artworkSeo, buildSeoMetadata } from "@/lib/seo";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -35,25 +36,15 @@ export async function generateMetadata({
   const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(id);
   if (!work) return {};
 
-  const priceText = work.isSold
-    ? "Sold"
-    : work.priceDisplay ?? `₩${work.price.toLocaleString()}`;
+  const artistSlug = artists.find((a) => a.id === work.artistId)?.slug;
+  const { title, description } = artworkSeo(work, artistSlug);
 
-  return {
-    title: `${work.title} — ${work.artistName}`,
-    description: `${work.title} by ${work.artistName}. ${work.medium ?? ""} ${work.dimensions ?? ""}. ${priceText}.`.trim(),
-    openGraph: {
-      title: `${work.title} by ${work.artistName}`,
-      description: `${work.medium ?? ""} ${work.dimensions ?? ""}. ${priceText}.`.trim(),
-      url: `https://www.foem.co.kr/shop/${id}`,
-      images: work.images[0]?.startsWith("/artworks/")
-        ? [{ url: work.images[0], alt: work.title }]
-        : [],
-    },
-    alternates: {
-      canonical: `https://www.foem.co.kr/shop/${id}`,
-    },
-  };
+  return buildSeoMetadata({
+    title,
+    description,
+    path: `/shop/${id}`,
+    images: work.images[0] ? [{ url: work.images[0], alt: work.title }] : undefined,
+  });
 }
 
 export default async function ArtworkPage({
@@ -89,9 +80,9 @@ export default async function ArtworkPage({
     "@type": "Product",
     name: work.title,
     description: work.description || `${work.title} by ${work.artistName}`,
-    image: work.images[0]?.startsWith("/artworks/")
+    image: work.images[0]?.startsWith("/")
       ? `https://www.foem.co.kr${work.images[0]}`
-      : undefined,
+      : work.images[0] || undefined,
     brand: { "@type": "Brand", name: "FOEM" },
     creator: { "@type": "Person", name: work.artistName },
     offers: {

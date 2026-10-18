@@ -8,15 +8,13 @@ import MailingListForm from "@/components/MailingListForm";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 import { pickHighlightFair } from "@/lib/artFairStatus";
+import { buildSeoMetadata, HOME_SEO } from "@/lib/seo";
+import { withLiveWorkCounts, formatWorkCount } from "@/lib/workCounts";
 
 // artworks가 Supabase에서 로드되므로, 어드민에서 수정한 내용이 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "https://www.foem.co.kr",
-  },
-};
+export const metadata: Metadata = buildSeoMetadata({ ...HOME_SEO, path: "" });
 
 export default async function HomePage() {
   // Supabase에서 artworks 목록 조회
@@ -34,7 +32,10 @@ export default async function HomePage() {
   // Supabase에서 artists 목록 조회
   const { data: dbArtists } = await supabase.from("artists").select("*").order("id", { ascending: true });
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
-  const featuredArtists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
+  const featuredArtists = withLiveWorkCounts(
+    mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists,
+    finalArtworks
+  );
 
   // Supabase에서 art fair 목록 조회 → 지금 강조할 페어 하나 선택 (진행 중 우선, 없으면 임박한 예정)
   const { data: dbArtFairs } = await supabase.from("art_fairs").select("*");
@@ -178,7 +179,7 @@ export default async function HomePage() {
                   />
                 </div>
                 <p className="text-[11px] tracking-[0.15em] uppercase text-[#5a9e72] mb-1">
-                  {artist.artworkCount} works
+                  {formatWorkCount(artist.artworkCount, artist.availableCount)}
                 </p>
                 <h3
                   className="text-xl font-normal text-[#268042]"

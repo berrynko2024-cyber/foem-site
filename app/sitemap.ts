@@ -4,6 +4,9 @@ import { supabase, mapDbArtistToArtist, mapDbArtworkToArtwork } from "@/lib/supa
 
 const BASE = "https://www.foem.co.kr";
 
+// 사이트맵은 기본적으로 빌드 시점에 고정된다. 어드민에서 작품을 추가해도 재배포 없이 1시간 안에 반영되도록 주기적으로 다시 만든다.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [{ data: dbArtists }, { data: dbArtworks }] = await Promise.all([
     supabase.from("artists").select("*"),
@@ -27,8 +30,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/about`, priority: 0.5, changeFrequency: "yearly" },
   ];
 
+  // 이미지가 있는 작품은 로컬(/artworks/)이든 Supabase Storage든 모두 포함
   const artworkPages: MetadataRoute.Sitemap = artworks
-    .filter((a) => a.images[0]?.startsWith("/artworks/"))
+    .filter((a) => a.images[0])
     .map((a) => ({
       url: `${BASE}/shop/${a.id}`,
       priority: 0.8,

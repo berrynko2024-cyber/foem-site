@@ -7,6 +7,8 @@ import VideoPlayer from "@/components/VideoPlayer";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 import NaturalImage from "@/components/NaturalImage";
+import { buildSeoMetadata, ARTIST_SEO } from "@/lib/seo";
+import { formatWorkCount } from "@/lib/workCounts";
 
 // 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
 export const dynamic = "force-dynamic";
@@ -65,24 +67,22 @@ export async function generateMetadata({
   const artist = await getArtist(slug);
   if (!artist) return {};
 
-  const description = artist.bio.slice(0, 155) + "…";
   const koKeywords = artist.name_ko ? artist.name_ko.split(" ") : [];
-
   const titleKo = artist.name_ko ? ` (${artist.name_ko})` : "";
+  // 한국어 문구가 준비된 작가는 그걸 쓰고, 새로 추가된 작가는 영문 bio로 폴백
+  const seo = ARTIST_SEO[slug] ?? {
+    title: `${artist.name}${titleKo} | FOEM 포엠`,
+    description: artist.bio.slice(0, 155) + "…",
+  };
 
   return {
-    title: `${artist.name}${titleKo}`,
-    description,
-    keywords: [artist.name, ...koKeywords, "FOEM", "아트갤러리", "현대미술", "원화"],
-    openGraph: {
-      title: `${artist.name}${titleKo} — FOEM`,
-      description,
-      url: `https://www.foem.co.kr/artists/${slug}`,
-      images: artist.photo ? [{ url: artist.photo, alt: artist.name }] : [],
-    },
-    alternates: {
-      canonical: `https://www.foem.co.kr/artists/${slug}`,
-    },
+    ...buildSeoMetadata({
+      title: seo.title,
+      description: seo.description,
+      path: `/artists/${slug}`,
+      images: artist.photo ? [{ url: artist.photo, alt: artist.name }] : undefined,
+    }),
+    keywords: [artist.name, ...koKeywords, "FOEM", "포엠", "아트갤러리", "현대미술", "원화"],
   };
 }
 
@@ -106,12 +106,10 @@ export default async function ArtistPage({
   const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
   const allWorks = mappedDbArtworks.length > 0 ? (mappedDbArtworks as Artwork[]) : [...getArtworksByArtist(artist.id)];
 
+  // 홈·작가 목록의 작품 수와 맞도록 전체 작품을 보여준다 (시리즈 없는 작가는 최신 추가순).
   const hasSeries = allWorks.some(w => w.series);
-  const works = artist.id === 'a8'
-    ? allWorks.reverse()
-    : hasSeries
-      ? allWorks
-      : allWorks.reverse().slice(0, 6);
+  const works = hasSeries ? allWorks : allWorks.reverse();
+  const availableCount = works.filter(w => !w.isSold).length;
   const videos = getVideosByArtist(artist.id);
   const featuredVideo = videos[0] ?? null;
 
@@ -225,7 +223,7 @@ export default async function ArtistPage({
 
             <div className="mt-8 pt-8 border-t border-[#d4e8da]">
               <p className="text-[11px] tracking-[0.15em] uppercase text-[#5a9e72]">
-                {works.length > 0 ? `${works.length} works available` : "Works coming soon"}
+                {formatWorkCount(works.length, availableCount)}
               </p>
             </div>
           </div>

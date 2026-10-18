@@ -3,8 +3,8 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Artist } from "@/lib/mockData";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { formatWorkCount, type ArtistWithCounts } from "@/lib/workCounts";
 
 const MEDIUM_TABS = [
   { value: "all", label: "All" },
@@ -14,7 +14,7 @@ const MEDIUM_TABS = [
   { value: "glass", label: "Glass" },
 ];
 
-export default function ArtistsGrid({ artists }: { artists: Artist[] }) {
+export default function ArtistsGrid({ artists }: { artists: ArtistWithCounts[] }) {
   const [activeMedium, setActiveMedium] = useState("all");
 
   const filtered = useMemo(
@@ -76,7 +76,7 @@ export default function ArtistsGrid({ artists }: { artists: Artist[] }) {
                 {artist.bio}
               </p>
               <p className="text-[11px] tracking-[0.15em] uppercase text-[#9A9A9A]">
-                {artist.artworkCount > 0 ? `${artist.artworkCount} works available` : "Works coming soon"}
+                {formatWorkCount(artist.artworkCount, artist.availableCount)}
               </p>
             </div>
           </Link>

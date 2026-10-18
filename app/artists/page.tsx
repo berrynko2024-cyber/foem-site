@@ -1,13 +1,18 @@
 import { artists as mockArtists } from "@/lib/mockData";
 import { supabase, mapDbArtistToArtist } from "@/lib/supabase";
+import { withLiveWorkCounts } from "@/lib/workCounts";
 import ArtistsGrid from "@/components/ArtistsGrid";
 
 export const dynamic = "force-dynamic";
 
 export default async function ArtistsPage() {
-  const { data: dbArtists } = await supabase.from("artists").select("*").order("id", { ascending: true });
+  const [{ data: dbArtists }, { data: dbWorks }] = await Promise.all([
+    supabase.from("artists").select("*").order("id", { ascending: true }),
+    supabase.from("artworks").select("artist_id, is_sold"),
+  ]);
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
-  const artists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
+  const works = (dbWorks ?? []).map((w) => ({ artistId: w.artist_id as string, isSold: !!w.is_sold }));
+  const artists = withLiveWorkCounts(mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists, works);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
