@@ -43,7 +43,7 @@ export default function InquiryForm({ artworkId, artworkTitle, artistName }: Inq
     return (
       <div className="border border-[#E8E6E2] p-6 text-center">
         <p className="text-sm text-[#4A4A4A] mb-1">문의가 접수되었습니다 · Your inquiry has been received.</p>
-        <p className="text-xs text-[#9A9A9A]">빠른 시일 내에 연락드리겠습니다 · We'll be in touch shortly.</p>
+        <p className="text-xs text-[#9A9A9A]">빠른 시일 내에 연락드리겠습니다 · We&apos;ll be in touch shortly.</p>
       </div>
     );
   }

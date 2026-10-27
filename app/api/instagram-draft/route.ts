@@ -198,8 +198,6 @@ ${VIRAL_RULES}
   }
 
   if (type === "fair") {
-    const active = [...artFairs.filter((f) => f.status === "current" || f.status === "upcoming"),
-      ...artFairs.filter((f) => f.status === "past").slice(0, 2)];
     const current = artFairs.find((f) => f.status === "current");
     const upcoming = artFairs.find((f) => f.status === "upcoming");
     const currentExhibitions = exhibitions.filter((e) => e.status === "current" || e.status === "upcoming");

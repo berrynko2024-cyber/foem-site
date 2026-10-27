@@ -166,7 +166,7 @@ cd /Users/ko/Projects/foem-site && npm run dev
 ### 현재 Art Fair 데이터
 | ID | 이름 | 상태 |
 |----|------|------|
-| f9 | Positions Berlin Art Fair 2026 | upcoming |
+| f9 | Positions Berlin Art Fair 2026 | past |
 | f5 | Affordable Art Fair Hong Kong 2026 | past |
 | f7 | BANK Art Fair 2026 Spring | past |
 | f1 | KIAF SEOUL 2026 | upcoming |

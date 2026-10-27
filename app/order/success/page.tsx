@@ -8,8 +8,14 @@ import { useCart } from "@/store/CartContext";
 function SuccessContent() {
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [confirmStatus, setConfirmStatus] = useState<"loading" | "success" | "error">("loading");
   const [orderId, setOrderId] = useState("");
+
+  // 결제 파라미터가 없으면 승인 요청 없이 바로 에러 화면
+  const hasPaymentParams = Boolean(
+    searchParams.get("paymentKey") && searchParams.get("orderId") && searchParams.get("amount")
+  );
+  const status = hasPaymentParams ? confirmStatus : "error";
 
   useEffect(() => {
     const paymentKey = searchParams.get("paymentKey");
@@ -39,14 +45,12 @@ function SuccessContent() {
             localStorage.removeItem("foem_pending_order");
             clearCart();
             setOrderId(tossOrderId.slice(0, 8).toUpperCase());
-            setStatus("success");
+            setConfirmStatus("success");
           } else {
-            setStatus("error");
+            setConfirmStatus("error");
           }
         })
-        .catch(() => setStatus("error"));
-    } else {
-      setStatus("error");
+        .catch(() => setConfirmStatus("error"));
     }
   }, [searchParams, clearCart]);
 

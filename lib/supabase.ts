@@ -6,8 +6,88 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// DB 행 타입 — supabase/schema.sql의 컬럼 정의와 1:1로 맞출 것 (컬럼 추가 시 여기도 같이 추가)
+type DbArtworkRow = {
+  id: string;
+  title: string;
+  title_ko: string | null;
+  description: string | null;
+  description_ko: string | null;
+  price: number | string; // NUMERIC은 문자열로 올 수 있음
+  currency: Artwork["currency"] | null;
+  category: Artwork["category"];
+  images: string[] | null;
+  artist_id: string;
+  artist_name: string;
+  stock: number | null;
+  is_sold: boolean | null;
+  year: number;
+  medium: string | null;
+  dimensions: string | null;
+  orientation: Artwork["orientation"] | null;
+  price_display: string | null;
+  emotions: string[] | null;
+  artist_statement: string | null;
+  fill_frame: boolean | null;
+  series: string | null;
+};
+
+type DbArtistRow = {
+  id: string;
+  slug: string;
+  name: string;
+  name_ko: string | null;
+  bio: string;
+  bio_ko: string;
+  photo: string;
+  photo_filter: string | null;
+  instagram: string | null;
+  youtube: string | null;
+  statement: string | null;
+  statement_ko: string | null;
+  artwork_count: number | null;
+  works_grid: Artist["worksGrid"] | null;
+  works_layout: Artist["worksLayout"] | null;
+  medium: string | null;
+};
+
+type DbExhibitionRow = {
+  id: string;
+  title: string;
+  title_en: string | null;
+  artists: string[] | null;
+  venue: string | null;
+  location: string;
+  start_date: string;
+  end_date: string;
+  status: Exhibition["status"];
+  cover_image: string;
+  hero_image: string | null;
+  description: string | null;
+  description_ko: string | null;
+  video_url: string | null;
+  orientation: Exhibition["orientation"] | null;
+  photos: Exhibition["photos"] | null;
+};
+
+type DbArtFairRow = {
+  id: string;
+  name: string;
+  venue: string;
+  location: string;
+  booth_number: string | null;
+  artists: string[] | null;
+  preview_date: string | null;
+  start_date: string;
+  end_date: string;
+  status: ArtFair["status"];
+  cover_image: string;
+  description: string | null;
+  artwork_ids: string[] | null;
+};
+
 // Database snake_case 필드를 프론트엔드 camelCase Artwork 타입으로 변환하는 매핑 헬퍼
-export function mapDbArtworkToArtwork(dbArt: any): Artwork {
+export function mapDbArtworkToArtwork(dbArt: DbArtworkRow | null): Artwork {
   if (!dbArt) return {} as Artwork;
   return {
     id: dbArt.id,
@@ -35,7 +115,7 @@ export function mapDbArtworkToArtwork(dbArt: any): Artwork {
   };
 }
 
-export function mapDbArtistToArtist(dbArtist: any): Artist {
+export function mapDbArtistToArtist(dbArtist: DbArtistRow): Artist {
   return {
     id: dbArtist.id,
     slug: dbArtist.slug,
@@ -56,7 +136,7 @@ export function mapDbArtistToArtist(dbArtist: any): Artist {
   };
 }
 
-export function mapDbExhibitionToExhibition(dbEx: any): Exhibition {
+export function mapDbExhibitionToExhibition(dbEx: DbExhibitionRow): Exhibition {
   return {
     id: dbEx.id,
     title: dbEx.title,
@@ -77,7 +157,7 @@ export function mapDbExhibitionToExhibition(dbEx: any): Exhibition {
   };
 }
 
-export function mapDbArtFairToArtFair(dbFair: any): ArtFair {
+export function mapDbArtFairToArtFair(dbFair: DbArtFairRow): ArtFair {
   return {
     id: dbFair.id,
     name: dbFair.name,

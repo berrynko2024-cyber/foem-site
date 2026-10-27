@@ -28,18 +28,25 @@ export default function ArtworkChat({ artworkId, artworkTitle }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (open && messages.length === 0) {
-      setMessages([
-        {
-          role: "assistant",
-          content: `I'm here to help you explore "${artworkTitle}". What would you like to know — the emotion behind it, the technique, or the artist's intention?`,
-        },
-      ]);
-    }
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [open]);
+
+  function openChat() {
+    setOpen(true);
+    // 처음 열 때만 인사 메시지 추가 (닫았다 다시 열면 기존 대화 유지)
+    setMessages((prev) =>
+      prev.length > 0
+        ? prev
+        : [
+            {
+              role: "assistant",
+              content: `I'm here to help you explore "${artworkTitle}". What would you like to know — the emotion behind it, the technique, or the artist's intention?`,
+            },
+          ]
+    );
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -75,7 +82,7 @@ export default function ArtworkChat({ artworkId, artworkTitle }: Props) {
   if (!open) {
     return (
       <button
-        onClick={() => setOpen(true)}
+        onClick={openChat}
         className="w-full mt-8 border border-[#268042]/20 bg-[#f2f8f5] text-[#268042] text-xs tracking-[0.15em] uppercase py-3.5 px-4 flex items-center justify-center gap-2.5 hover:bg-[#268042] hover:text-white transition-all duration-300 rounded-none shadow-sm font-medium active:scale-[0.99] group"
       >
         <svg 

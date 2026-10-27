@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/store/CartContext";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -88,17 +89,6 @@ export default function RootLayout({
     <html lang="ko" className={`${inter.variable} ${playfair.variable} ${bebasNeue.variable} ${oswald.variable} ${barlowCondensed.variable}`}>
       <head>
         <meta name="naver-site-verification" content="cbcba41d399c86f33645e8cab8c3c33014d71d54" />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-FDMPT09PHJ" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-FDMPT09PHJ');
-            `,
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -130,6 +120,16 @@ export default function RootLayout({
           <Footer />
         </CartProvider>
         <Analytics />
+        {/* Google Analytics — next/script로 로드해 첫 화면 렌더링을 막지 않음 */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-FDMPT09PHJ" strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-FDMPT09PHJ');
+          `}
+        </Script>
       </body>
     </html>
   );

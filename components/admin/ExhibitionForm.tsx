@@ -301,7 +301,7 @@ export default function ExhibitionForm({
       </div>
 
       <div>
-        <label className={labelClass}>Photos (선택, JSON 배열 — [{"{"}"src": "/exhibitions/.../a.jpg", "caption": "...", "captionKo": "...", "orientation": "landscape"{"}"}])</label>
+        <label className={labelClass}>{'Photos (선택, JSON 배열 — [{"src": "/exhibitions/.../a.jpg", "caption": "...", "captionKo": "...", "orientation": "landscape"}])'}</label>
         <textarea
           className={`${inputClass} font-mono`}
           rows={6}

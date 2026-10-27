@@ -27,7 +27,7 @@ export default async function HomePage() {
   const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
   const finalArtworks = mappedDbArtworks.length > 0 ? mappedDbArtworks : artworks;
 
-  const galleryItems = finalArtworks.filter(a => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/')) as any[];
+  const galleryItems = finalArtworks.filter(a => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/'));
 
   // Supabase에서 artists 목록 조회
   const { data: dbArtists } = await supabase.from("artists").select("*").order("id", { ascending: true });

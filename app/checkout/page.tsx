@@ -98,9 +98,12 @@ export default function CheckoutPage() {
   });
   const [removedSoldOutTitles, setRemovedSoldOutTitles] = useState<string[]>([]);
 
-  useEffect(() => {
+  // 표시 통화가 바뀌면 결제수단을 기본값으로 되돌린다 (effect 대신 렌더 중에 조정 — 불필요한 재렌더 방지)
+  const [prevCurrency, setPrevCurrency] = useState(displayCurrency);
+  if (prevCurrency !== displayCurrency) {
+    setPrevCurrency(displayCurrency);
     setPaymentMethod(displayCurrency === "KRW" ? "toss" : "paypal");
-  }, [displayCurrency]);
+  }
 
   // 체크아웃 진입 시 한 번, 장바구니에 담긴 작품 중 그새 품절된 게 있는지 실시간 확인해서 걸러낸다.
   // (최종 방어선은 결제 승인 API의 원자적 가드지만, 여기서 미리 걸러야 고객이 헛되이

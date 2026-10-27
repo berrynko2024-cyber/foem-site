@@ -73,7 +73,7 @@ export default async function ArtworkPage({
   const mappedRelated = dbRelated ? dbRelated.map(mapDbArtworkToArtwork) : [];
   const related = (mappedRelated.length > 0 ? mappedRelated : artworks.filter((a) => a.category === work.category && a.id !== work.id))
     .filter((a) => a && a.images && a.images[0] && a.images[0].startsWith('/artworks/'))
-    .slice(0, 3) as any[];
+    .slice(0, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -189,10 +189,10 @@ export default async function ArtworkPage({
             {work.artistStatement && (
               <div className="mb-8 border-l-2 border-[#d4e8da] pl-4">
                 <p className="text-[10px] tracking-[0.2em] uppercase text-[#9A9A9A] mb-2">
-                  Artist's note
+                  Artist&apos;s note
                 </p>
                 <p className="text-sm text-[#4A4A4A] leading-relaxed italic">
-                  "{work.artistStatement}"
+                  &quot;{work.artistStatement}&quot;
                 </p>
               </div>
             )}
