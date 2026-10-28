@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const fair = await getArtFair(id);
   if (!fair) return {};
   return {
-    title: `${fair.name} — FOEM`,
+    title: fair.name,
     description: fair.description ?? `FOEM at ${fair.name}, ${fair.location}.`,
     openGraph: {
       title: `${fair.name} — FOEM`,

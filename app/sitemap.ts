@@ -1,6 +1,17 @@
 import { MetadataRoute } from "next";
-import { artists as mockArtists, artworks as mockArtworks } from "@/lib/mockData";
-import { supabase, mapDbArtistToArtist, mapDbArtworkToArtwork } from "@/lib/supabase";
+import {
+  artists as mockArtists,
+  artworks as mockArtworks,
+  artFairs as mockArtFairs,
+  exhibitions as mockExhibitions,
+} from "@/lib/mockData";
+import {
+  supabase,
+  mapDbArtistToArtist,
+  mapDbArtworkToArtwork,
+  mapDbArtFairToArtFair,
+  mapDbExhibitionToExhibition,
+} from "@/lib/supabase";
 
 const BASE = "https://www.foem.co.kr";
 
@@ -8,10 +19,19 @@ const BASE = "https://www.foem.co.kr";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [{ data: dbArtists }, { data: dbArtworks }] = await Promise.all([
-    supabase.from("artists").select("*"),
-    supabase.from("artworks").select("*"),
-  ]);
+  const [{ data: dbArtists }, { data: dbArtworks }, { data: dbArtFairs }, { data: dbExhibitions }] =
+    await Promise.all([
+      supabase.from("artists").select("*"),
+      supabase.from("artworks").select("*"),
+      supabase.from("art_fairs").select("*"),
+      supabase.from("exhibitions").select("*"),
+    ]);
+
+  const mappedDbArtFairs = dbArtFairs ? dbArtFairs.map(mapDbArtFairToArtFair) : [];
+  const artFairs = mappedDbArtFairs.length > 0 ? mappedDbArtFairs : mockArtFairs;
+
+  const mappedDbExhibitions = dbExhibitions ? dbExhibitions.map(mapDbExhibitionToExhibition) : [];
+  const exhibitions = mappedDbExhibitions.length > 0 ? mappedDbExhibitions : mockExhibitions;
 
   const mappedDbArtists = dbArtists ? dbArtists.map(mapDbArtistToArtist) : [];
   const artists = mappedDbArtists.length > 0 ? mappedDbArtists : mockArtists;
@@ -28,6 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/video`, priority: 0.6, changeFrequency: "monthly" },
     { url: `${BASE}/consulting`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE}/about`, priority: 0.5, changeFrequency: "yearly" },
+    { url: `${BASE}/join`, priority: 0.5, changeFrequency: "monthly" },
   ];
 
   // 이미지가 있는 작품은 로컬(/artworks/)이든 Supabase Storage든 모두 포함
@@ -45,5 +66,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly" as const,
   }));
 
-  return [...staticPages, ...artworkPages, ...artistPages];
+  const artFairPages: MetadataRoute.Sitemap = artFairs.map((f) => ({
+    url: `${BASE}/art-fair/${f.id}`,
+    priority: 0.6,
+    changeFrequency: "monthly" as const,
+  }));
+
+  const exhibitionPages: MetadataRoute.Sitemap = exhibitions.map((e) => ({
+    url: `${BASE}/exhibitions/${e.id}`,
+    priority: 0.6,
+    changeFrequency: "monthly" as const,
+  }));
+
+  return [...staticPages, ...artworkPages, ...artistPages, ...artFairPages, ...exhibitionPages];
 }

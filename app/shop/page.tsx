@@ -6,7 +6,7 @@ import ShopClient from "./ShopClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Shop — FOEM",
+  title: "Shop",
   description: "Explore all original artworks and limited editions curated by FOEM.",
   alternates: {
     canonical: "https://www.foem.co.kr/shop",

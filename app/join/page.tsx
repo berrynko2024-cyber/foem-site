@@ -3,8 +3,11 @@ import Link from "next/link";
 import JoinForm from "./JoinForm";
 
 export const metadata: Metadata = {
-  title: "Join — FOEM",
+  title: "Join",
   description: "FOEM과 함께할 작가를 모집합니다. 2026 베를린 Positions Art Fair 공동 참가 작가를 모집 중입니다.",
+  alternates: {
+    canonical: "https://www.foem.co.kr/join",
+  },
   openGraph: {
     title: "FOEM — 작가 참여 모집",
     description: "아티스트 영상으로 더 풍부하게 전달하고, 세계 무대로 함께 나갑니다. 2026 베를린 Positions Art Fair 참가 확정.",
