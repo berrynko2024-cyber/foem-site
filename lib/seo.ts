@@ -11,9 +11,9 @@ const SITE = "https://www.foem.co.kr";
 const DEFAULT_OG_IMAGE = { url: "/og-main.png", width: 1200, height: 630, alt: "FOEM — Field of Emotion" };
 
 export const HOME_SEO = {
-  title: "FOEM 포엠 — 독립 작가 원화·사진 작품 갤러리",
+  title: "FOEM 포엠 | 글로벌 컨템포러리 아트 · 작품 구매",
   description:
-    "회화, 파인아트 사진, 유리, 철 조각까지. 포엠(FOEM)은 국내외 아트페어에서 활동하는 독립 작가들의 원화를 소개하고 판매합니다. 정품 인증서 포함, 해외 배송 가능.",
+    "유럽·아시아 아트페어에서 주목받은 컨템포러리 작가들의 회화, 사진, 유리, 조각. 포엠(FOEM)에서 소장하세요. 정품 인증서 포함, 해외 배송.",
 };
 
 export const ARTISTS_SEO = {
