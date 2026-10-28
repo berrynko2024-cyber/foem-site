@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-main.png",
-        width: 1200,
-        height: 630,
+        width: 2172,
+        height: 1258,
         alt: "FOEM — Field of Emotion",
       },
     ],

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "FOEM — 작가 참여 모집",
     description: "아티스트 영상으로 더 풍부하게 전달하고, 세계 무대로 함께 나갑니다. 2026 베를린 Positions Art Fair 참가 확정.",
     url: "https://www.foem.co.kr/join",
-    images: [{ url: "https://www.foem.co.kr/og-main.png", width: 1200, height: 630 }],
+    images: [{ url: "https://www.foem.co.kr/og-main.png", width: 2172, height: 1258 }],
   },
   twitter: {
     card: "summary_large_image",

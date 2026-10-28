@@ -8,7 +8,7 @@ import type { Artwork } from "@/lib/mockData";
  */
 
 const SITE = "https://www.foem.co.kr";
-const DEFAULT_OG_IMAGE = { url: "/og-main.png", width: 1200, height: 630, alt: "FOEM — Field of Emotion" };
+const DEFAULT_OG_IMAGE = { url: "/og-main.png", width: 2172, height: 1258, alt: "FOEM — Field of Emotion" };
 
 export const HOME_SEO = {
   title: "FOEM 포엠 | 글로벌 컨템포러리 아트 · 작품 구매",

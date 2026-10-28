@@ -67,6 +67,26 @@ export default async function HomePage() {
 
   return (
     <div>
+      {/* 구글 검색 썸네일로 로고를 쓰도록 대표 이미지 명시 (보장은 아님, 구글이 최종 선택) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: HOME_SEO.title,
+            description: HOME_SEO.description,
+            url: "https://www.foem.co.kr",
+            primaryImageOfPage: {
+              "@type": "ImageObject",
+              url: "https://www.foem.co.kr/og-main.png",
+              width: 2172,
+              height: 1258,
+            },
+            image: "https://www.foem.co.kr/og-main.png",
+          }),
+        }}
+      />
       {/* Hero — fullscreen centered typography */}
       <section className="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-6 text-center">
         {/* Main title */}
