@@ -146,3 +146,6 @@ CREATE POLICY "Public Read Exhibitions" ON exhibitions FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Public Read Art Fairs" ON art_fairs;
 CREATE POLICY "Public Read Art Fairs" ON art_fairs FOR SELECT USING (true);
+
+-- 2026-10-28: 아트페어 상세 URL을 /art-fair/{slug}로 (예: positions-berlin-2026). 없으면 id로 폴백
+ALTER TABLE art_fairs ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;

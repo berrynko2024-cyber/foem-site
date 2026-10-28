@@ -18,7 +18,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const supabase = getSupabaseAdmin();
 
     const updatable = [
-      "name", "venue", "location", "artists", "preview_date", "start_date", "end_date",
+      "slug", "name", "venue", "location", "artists", "preview_date", "start_date", "end_date",
       "status", "cover_image", "description", "artwork_ids", "booth_number",
     ] as const;
 

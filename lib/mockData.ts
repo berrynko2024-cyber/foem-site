@@ -2672,6 +2672,7 @@ export const artistVideos: ArtistVideo[] = [
 
 export type ArtFair = {
   id: string;
+  slug?: string; // 상세 URL용 (/art-fair/{slug}), 없으면 id 사용
   name: string;
   venue: string;
   location: string;
@@ -2689,6 +2690,7 @@ export type ArtFair = {
 export const artFairs: ArtFair[] = [
   {
     id: "f9",
+    slug: "positions-berlin-2026",
     name: "Positions Berlin Art Fair 2026",
     venue: "Flughafen Tempelhof, Hangar 5–6",
     location: "Berlin, Germany",
@@ -2703,6 +2705,7 @@ export const artFairs: ArtFair[] = [
   },
   {
     id: "f5",
+    slug: "affordable-art-fair-hong-kong-2026",
     name: "Affordable Art Fair Hong Kong 2026",
     venue: "Hong Kong Convention & Exhibition Centre",
     location: "Hong Kong",
@@ -2717,6 +2720,7 @@ export const artFairs: ArtFair[] = [
   },
   {
     id: "f7",
+    slug: "bank-art-fair-2026-spring",
     name: "BANK Art Fair 2026 Spring",
     venue: "SETEC",
     location: "Seoul, Korea",
@@ -2729,6 +2733,7 @@ export const artFairs: ArtFair[] = [
   },
   {
     id: "f4",
+    slug: "artankara-2026",
     name: "ARTANKARA 2026",
     venue: "ATO Congresium",
     location: "Ankara, Turkey",
@@ -2743,6 +2748,7 @@ export const artFairs: ArtFair[] = [
   },
   {
     id: "f8",
+    slug: "seoul-art-show-2025",
     name: "Seoul Art Show 2025",
     venue: "COEX",
     location: "Seoul, Korea",
@@ -2755,6 +2761,7 @@ export const artFairs: ArtFair[] = [
   },
   {
     id: "f6",
+    slug: "aqua-art-miami-2025",
     name: "AQUA Art Miami 2025",
     venue: "Aqua Hotel",
     location: "Miami Beach, FL",

@@ -12,6 +12,7 @@ import {
   mapDbArtFairToArtFair,
   mapDbExhibitionToExhibition,
 } from "@/lib/supabase";
+import { artFairPath } from "@/lib/artFairStatus";
 
 const BASE = "https://www.foem.co.kr";
 
@@ -67,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const artFairPages: MetadataRoute.Sitemap = artFairs.map((f) => ({
-    url: `${BASE}/art-fair/${f.id}`,
+    url: `${BASE}${artFairPath(f)}`,
     priority: 0.6,
     changeFrequency: "monthly" as const,
   }));

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { artFairs as mockArtFairs, type ArtFair } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
-import { withResolvedStatus } from "@/lib/artFairStatus";
+import { withResolvedStatus, artFairPath } from "@/lib/artFairStatus";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +48,7 @@ const STATUS_ORDER: Record<ArtFair["status"], number> = {
 
 function ArtFairCard({ fair }: { fair: ArtFair }) {
   return (
-    <Link href={`/art-fair/${fair.id}`} className="group block">
+    <Link href={artFairPath(fair)} className="group block">
       <div className="relative aspect-[4/3] overflow-hidden bg-[#e8f0eb] mb-5">
         <Image
           src={fair.coverImage}
@@ -97,7 +97,7 @@ function ArtFairCard({ fair }: { fair: ArtFair }) {
 
 function FeaturedFairCard({ fair }: { fair: ArtFair }) {
   return (
-    <Link href={`/art-fair/${fair.id}`} className="group block mb-16">
+    <Link href={artFairPath(fair)} className="group block mb-16">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
         <div className="relative aspect-[4/3] md:aspect-[3/2] overflow-hidden bg-[#e8f0eb] order-1 md:order-none">
           <Image

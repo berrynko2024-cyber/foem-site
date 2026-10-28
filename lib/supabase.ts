@@ -72,6 +72,7 @@ type DbExhibitionRow = {
 
 type DbArtFairRow = {
   id: string;
+  slug: string | null;
   name: string;
   venue: string;
   location: string;
@@ -160,6 +161,7 @@ export function mapDbExhibitionToExhibition(dbEx: DbExhibitionRow): Exhibition {
 export function mapDbArtFairToArtFair(dbFair: DbArtFairRow): ArtFair {
   return {
     id: dbFair.id,
+    slug: dbFair.slug || undefined,
     name: dbFair.name,
     venue: dbFair.venue,
     location: dbFair.location,

@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       .from("art_fairs")
       .insert({
         id: body.id,
+        slug: body.slug || null,
         name: body.name,
         venue: body.venue,
         location: body.location,

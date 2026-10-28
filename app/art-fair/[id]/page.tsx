@@ -1,17 +1,23 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { artFairs as mockArtFairs, getArtworkById } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair, mapDbArtworkToArtwork } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
-import { resolveArtFairStatus, withResolvedStatus } from "@/lib/artFairStatus";
+import { resolveArtFairStatus, withResolvedStatus, artFairPath } from "@/lib/artFairStatus";
 
+// URL 세그먼트는 slug(positions-berlin-2026) 또는 예전 id(f9) 둘 다 받는다 — id로 오면 slug 주소로 308 이동
 type Props = { params: Promise<{ id: string }> };
 
-async function getArtFair(id: string) {
-  const { data } = await supabase.from("art_fairs").select("*").eq("id", id).maybeSingle();
-  const fair = data ? mapDbArtFairToArtFair(data) : mockArtFairs.find((f) => f.id === id);
+async function getArtFair(key: string) {
+  const { data: bySlug } = await supabase.from("art_fairs").select("*").eq("slug", key).maybeSingle();
+  const { data } = bySlug
+    ? { data: bySlug }
+    : await supabase.from("art_fairs").select("*").eq("id", key).maybeSingle();
+  const fair = data
+    ? mapDbArtFairToArtFair(data)
+    : mockArtFairs.find((f) => f.slug === key || f.id === key);
   if (!fair) return undefined;
   return { ...fair, status: resolveArtFairStatus(fair) };
 }
@@ -37,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [{ url: fair.coverImage }],
     },
     alternates: {
-      canonical: `https://www.foem.co.kr/art-fair/${id}`,
+      canonical: `https://www.foem.co.kr${artFairPath(fair)}`,
     },
   };
 }
@@ -71,6 +77,7 @@ export default async function ArtFairDetailPage({ params }: Props) {
   const { id } = await params;
   const fair = await getArtFair(id);
   if (!fair) notFound();
+  if (fair.slug && id !== fair.slug) permanentRedirect(artFairPath(fair));
 
   const artworkIds = fair.artworkIds ?? [];
   let featuredWorks: NonNullable<ReturnType<typeof getArtworkById>>[] = [];
@@ -257,7 +264,7 @@ export default async function ArtFairDetailPage({ params }: Props) {
               .map((f) => (
                 <Link
                   key={f.id}
-                  href={`/art-fair/${f.id}`}
+                  href={artFairPath(f)}
                   className="group flex gap-4 items-start"
                 >
                   <div className="relative w-20 h-14 flex-shrink-0 overflow-hidden bg-[#e8f0eb]">

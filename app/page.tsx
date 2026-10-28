@@ -7,7 +7,7 @@ import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
 import { supabase, mapDbArtworkToArtwork, mapDbArtistToArtist, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
-import { pickHighlightFair } from "@/lib/artFairStatus";
+import { pickHighlightFair, artFairPath } from "@/lib/artFairStatus";
 import { buildSeoMetadata, HOME_SEO } from "@/lib/seo";
 import { withLiveWorkCounts, formatWorkCount } from "@/lib/workCounts";
 
@@ -113,7 +113,7 @@ export default async function HomePage() {
       {highlightFair && (
         <section className="border-t border-b border-[#d4e8da] bg-[#eef5f0]">
           <div className="max-w-7xl mx-auto px-6 py-14 md:py-20">
-            <Link href={`/art-fair/${highlightFair.id}`} className="group block">
+            <Link href={artFairPath(highlightFair)} className="group block">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 items-center">
                 <div className="flex justify-center md:justify-start">
                   <div className="relative w-full max-w-[360px] md:max-w-[420px] aspect-[4/5] overflow-hidden bg-[#e8f0eb]">

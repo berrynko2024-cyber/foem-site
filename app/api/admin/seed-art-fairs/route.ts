@@ -7,6 +7,7 @@ export async function GET() {
     const supabase = getSupabaseAdmin();
     const formattedArtFairs = artFairs.map((fair) => ({
       id: fair.id,
+      slug: fair.slug || null,
       name: fair.name,
       venue: fair.venue,
       location: fair.location,

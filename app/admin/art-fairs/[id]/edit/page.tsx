@@ -35,6 +35,7 @@ export default async function EditArtFairPage({
         mode="edit"
         initial={{
           id: data.id,
+          slug: data.slug ?? "",
           name: data.name ?? "",
           venue: data.venue ?? "",
           location: data.location ?? "",

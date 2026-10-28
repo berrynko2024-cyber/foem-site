@@ -8,6 +8,7 @@ type FormMode = "create" | "edit";
 
 type ArtFairFormData = {
   id: string;
+  slug: string;
   name: string;
   venue: string;
   location: string;
@@ -24,6 +25,7 @@ type ArtFairFormData = {
 
 const emptyForm: ArtFairFormData = {
   id: "",
+  slug: "",
   name: "",
   venue: "",
   location: "",
@@ -86,6 +88,7 @@ export default function ArtFairForm({
 
     const payload = {
       id: form.id.trim(),
+      slug: form.slug.trim() || undefined,
       name: form.name.trim(),
       venue: form.venue.trim(),
       location: form.location.trim(),
@@ -153,6 +156,16 @@ export default function ArtFairForm({
       <div>
         <label className={labelClass}>Name</label>
         <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} />
+      </div>
+
+      <div>
+        <label className={labelClass}>URL slug (페이지 주소 — 영문 소문자·숫자·하이픈)</label>
+        <input
+          className={inputClass}
+          value={form.slug}
+          onChange={(e) => set("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+          placeholder="예: positions-berlin-2026 → /art-fair/positions-berlin-2026"
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-6">

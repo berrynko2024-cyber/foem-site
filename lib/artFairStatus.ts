@@ -1,5 +1,10 @@
 import { type ArtFair } from "./mockData";
 
+/** 아트페어 상세 페이지 경로 — slug가 있으면 /art-fair/{slug}, 없으면 /art-fair/{id} */
+export function artFairPath(fair: Pick<ArtFair, "id" | "slug">): string {
+  return `/art-fair/${fair.slug ?? fair.id}`;
+}
+
 /**
  * DB·목데이터에 저장된 status 값 대신 오늘 날짜 기준으로 페어 상태를 계산한다.
  * 시작일~종료일(종료일 당일 포함) 사이면 "current",
