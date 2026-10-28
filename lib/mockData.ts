@@ -2657,6 +2657,7 @@ export const artistVideos: ArtistVideo[] = [
     title: "Sung Eun Park",
     duration: "",
     url: "https://youtu.be/-Ldafm_vp88?si=ZVg74h3fDi3_YNbt",
+    thumbnail: "https://img.youtube.com/vi/-Ldafm_vp88/maxresdefault.jpg",
   },
   {
     id: "v1",

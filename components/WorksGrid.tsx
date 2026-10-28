@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import type { Artwork } from "@/lib/mockData";
-import { getBlurDataUrl } from "@/lib/blurUrl";
+import ArtworkCard from "@/components/ArtworkCard";
 
-const DISPLAY_COUNT = 6;
+const DISPLAY_COUNT = 8;
 const INTERVAL_MS = 10000;
 const FADE_OUT_MS = 2000;
 const EXCHANGE_MS = 3000;
@@ -40,37 +38,17 @@ export default function WorksGrid({ items }: { items: Artwork[] }) {
   }, [items]);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-[#d4e8da]">
+    // 샵 페이지와 동일한 카드/그리드 (원본 비율, 제목+가격)
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16 items-start">
       {displayed.map((artwork, idx) => (
-        <Link
+        <div
           key={idx}
-          href={`/shop/${artwork.id}`}
-          className={`group relative overflow-hidden bg-[#F6F4EB] aspect-square transition-opacity duration-[2000ms] ${
+          className={`transition-opacity duration-[2000ms] ${
             fadingIdx === idx ? "opacity-0" : "opacity-100"
           }`}
         >
-          <Image
-            src={artwork.images[0]}
-            alt={artwork.title}
-            fill
-            className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
-            sizes="(max-width: 768px) 50vw, 33vw"
-            placeholder="blur"
-            blurDataURL={getBlurDataUrl(artwork.images[0])}
-          />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
-          <div className="absolute bottom-0 left-0 right-0 px-4 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/60 to-transparent">
-            <p className="text-[10px] tracking-[0.2em] uppercase text-white/70 mb-0.5">
-              {artwork.artistName}
-            </p>
-            <p
-              className="text-[12px] font-normal text-white leading-snug"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              {artwork.title}
-            </p>
-          </div>
-        </Link>
+          <ArtworkCard work={artwork} />
+        </div>
       ))}
     </div>
   );

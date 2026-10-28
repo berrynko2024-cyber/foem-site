@@ -44,13 +44,8 @@ function FilmIcon({ className }: { className?: string }) {
   );
 }
 
-export function VideoCard({
-  video,
-  className = "",
-}: {
-  video: ArtistVideo;
-  className?: string;
-}) {
+/** 썸네일 영역 — hqdefault 먼저, 실패 시 maxresdefault, 그것도 실패하면 아이콘 */
+function VideoThumb({ video, sizes }: { video: ArtistVideo; sizes: string }) {
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [useFallbackThumb, setUseFallbackThumb] = useState(false);
@@ -65,6 +60,49 @@ export function VideoCard({
       }.jpg`
     : null;
 
+  return (
+    <div className="relative aspect-video overflow-hidden bg-[#e8f0eb]">
+      {!imgLoaded && !imgError && (
+        <div className="absolute inset-0 bg-[#e8f0eb] animate-pulse z-10 pointer-events-none" />
+      )}
+
+      {!imgError && thumbSrc && (
+        <Image
+          src={thumbSrc}
+          alt={video.title}
+          fill
+          className={`object-cover transition-opacity duration-500 group-hover:opacity-90 ${
+            imgLoaded ? "opacity-100" : "opacity-0"
+          }`}
+          sizes={sizes}
+          onLoad={() => setImgLoaded(true)}
+          onError={() => {
+            if (!useFallbackThumb && youtubeId) {
+              setUseFallbackThumb(true);
+            } else {
+              setImgError(true);
+              setImgLoaded(false);
+            }
+          }}
+        />
+      )}
+
+      {(imgError || !thumbSrc) && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <FilmIcon className="w-8 h-8 text-[#5a9e72]" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function VideoCard({
+  video,
+  className = "",
+}: {
+  video: ArtistVideo;
+  className?: string;
+}) {
   const medium = artistMedium(video.artistId);
 
   return (
@@ -72,39 +110,7 @@ export function VideoCard({
       href={`/artists/${video.artistSlug}`}
       className={`group block ${className}`}
     >
-      {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden bg-[#e8f0eb]">
-        {!imgLoaded && !imgError && (
-          <div className="absolute inset-0 bg-[#e8f0eb] animate-pulse z-10 pointer-events-none" />
-        )}
-
-        {!imgError && thumbSrc && (
-          <Image
-            src={thumbSrc}
-            alt={video.title}
-            fill
-            className={`object-cover transition-opacity duration-500 group-hover:opacity-90 ${
-              imgLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            onLoad={() => setImgLoaded(true)}
-            onError={() => {
-              if (!useFallbackThumb && youtubeId) {
-                setUseFallbackThumb(true);
-              } else {
-                setImgError(true);
-                setImgLoaded(false);
-              }
-            }}
-          />
-        )}
-
-        {(imgError || !thumbSrc) && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <FilmIcon className="w-8 h-8 text-[#5a9e72]" />
-          </div>
-        )}
-      </div>
+      <VideoThumb video={video} sizes="(max-width: 768px) 100vw, 50vw" />
 
       {/* Caption below */}
       <div className="mt-3">
@@ -133,34 +139,75 @@ export function VideoCard({
   );
 }
 
-export default function VideoGrid({ videos }: { videos: ArtistVideo[] }) {
-  const topRow = videos.slice(0, 3);
-  const bottomRow = videos.slice(3, 6);
-
-  if (topRow.length === 0) return null;
+/** 오늘의 추천 — 큰 영상 + 우측 캡션 */
+function FeaturedVideo({ video }: { video: ArtistVideo }) {
+  const medium = artistMedium(video.artistId);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 pb-24 md:pb-36">
-      <div className="mb-6">
+    <Link
+      href={`/artists/${video.artistSlug}`}
+      className="group grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 items-end"
+    >
+      <div className="md:col-span-2">
+        <VideoThumb video={video} sizes="(max-width: 768px) 100vw, 66vw" />
+      </div>
+      <div className="md:pb-2">
         <p
-          className="text-[10px] tracking-[0.3em] uppercase text-[#268042]"
+          className="text-[10px] tracking-[0.3em] uppercase text-[#268042] mb-4"
           style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
         >
-          Watch
+          Today&apos;s Pick · 오늘의 추천
         </p>
+        <h3
+          className="text-3xl md:text-5xl font-normal text-[#268042] leading-tight mb-3"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          {video.artistName}
+        </h3>
+        <p className="text-sm text-[#5a9e72] mb-1">{video.title}</p>
+        {medium && (
+          <p className="text-[11px] tracking-[0.08em] uppercase text-[#5a9e72]/70 mb-6">
+            {medium}
+          </p>
+        )}
+        <span className="text-xs tracking-[0.15em] uppercase text-[#268042] border-b border-[#268042] pb-0.5 group-hover:text-[#1a5c30] group-hover:border-[#1a5c30] transition-colors">
+          Meet the artist →
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+export default function VideoGrid({
+  videos,
+  featuredId,
+}: {
+  videos: ArtistVideo[];
+  featuredId?: string;
+}) {
+  if (videos.length === 0) return null;
+
+  const featured = videos.find((v) => v.id === featuredId) ?? videos[0];
+  const rest = videos.filter((v) => v.id !== featured.id);
+
+  return (
+    <section className="max-w-[1600px] mx-auto px-6 pb-24 md:pb-36">
+      <div className="mb-12">
+        <h2
+          className="text-3xl md:text-4xl font-normal text-[#268042]"
+          style={{ fontFamily: "var(--font-playfair)" }}
+        >
+          Watch
+        </h2>
       </div>
 
-      {/* Top row — 3 up */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10">
-        {topRow.map((v) => (
-          <VideoCard key={v.id} video={v} />
-        ))}
-      </div>
+      {/* 오늘의 추천 (히어로) */}
+      <FeaturedVideo video={featured} />
 
-      {/* Bottom row — 3 up */}
-      {bottomRow.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10 mt-10">
-          {bottomRow.map((v) => (
+      {/* 나머지 — 한 줄에 3개 */}
+      {rest.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-10 mt-12 md:mt-16">
+          {rest.map((v) => (
             <VideoCard key={v.id} video={v} />
           ))}
         </div>

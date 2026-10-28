@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { artworks, artists as mockArtists, artistVideos, artFairs as mockArtFairs } from "@/lib/mockData";
+import { artworks, artists as mockArtists, artistVideos, artFairs as mockArtFairs, type ArtistVideo } from "@/lib/mockData";
 import VideoGrid from "@/components/VideoGrid";
 import WorksGrid from "@/components/WorksGrid";
 import MailingListForm from "@/components/MailingListForm";
@@ -15,6 +15,16 @@ import { withLiveWorkCounts, formatWorkCount } from "@/lib/workCounts";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = buildSeoMetadata({ ...HOME_SEO, path: "" });
+
+// 오늘의 추천 영상 — 고화질 썸네일(thumbnail 지정) 있는 영상 중 작가당 1개, 한국 날짜 기준으로 매일 순환
+function pickTodaysVideoId(videos: ArtistVideo[]): string | undefined {
+  const pool = videos.filter(
+    (v, i, all) => v.thumbnail && all.findIndex((x) => x.thumbnail && x.artistId === v.artistId) === i
+  );
+  if (pool.length === 0) return undefined;
+  const kstDay = Math.floor((Date.now() + 9 * 60 * 60 * 1000) / 86_400_000);
+  return pool[kstDay % pool.length].id;
+}
 
 export default async function HomePage() {
   // Supabase에서 artworks 목록 조회
@@ -52,6 +62,8 @@ export default async function HomePage() {
         return `${fmt.format(s)} – ${fmt.format(e)}, ${yr.format(e)}`;
       })()
     : "";
+
+  const todaysPickVideoId = pickTodaysVideoId(artistVideos);
 
   return (
     <div>
@@ -125,17 +137,17 @@ export default async function HomePage() {
       )}
 
       {/* Video Grid */}
-      <VideoGrid videos={artistVideos} />
+      <VideoGrid videos={artistVideos} featuredId={todaysPickVideoId} />
 
       {/* Curated Works Grid */}
-      <section className="max-w-[65vw] mx-auto pb-24 md:pb-36">
-        <div className="flex items-end justify-between mb-8">
-          <p
-            className="text-[10px] tracking-[0.3em] uppercase text-[#268042]"
-            style={{ fontFamily: "var(--font-inter)", fontWeight: 700 }}
+      <section className="max-w-[1440px] mx-auto px-6 pb-24 md:pb-36">
+        <div className="flex items-end justify-between mb-12">
+          <h2
+            className="text-3xl md:text-4xl font-normal text-[#268042]"
+            style={{ fontFamily: "var(--font-playfair)" }}
           >
             Works
-          </p>
+          </h2>
           <Link
             href="/shop"
             className="text-xs tracking-[0.15em] uppercase text-[#5a9e72] hover:text-[#268042] transition-colors duration-200"
@@ -149,7 +161,7 @@ export default async function HomePage() {
 
       {/* Artists Section */}
       <section className="border-t border-[#d4e8da]">
-        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32">
+        <div className="max-w-[1440px] mx-auto px-6 py-24 md:py-32">
           <div className="flex items-end justify-between mb-12">
             <h2
               className="text-3xl md:text-4xl font-normal text-[#268042]"
@@ -165,7 +177,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredArtists.map((artist) => (
               <Link key={artist.id} href={`/artists/${artist.slug}`} className="group">
                 <div className="relative aspect-[4/5] overflow-hidden bg-[#e8f0eb] mb-4">
