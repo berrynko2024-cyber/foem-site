@@ -184,10 +184,12 @@ cd /Users/ko/Projects/foem-site && npm run dev
 
 ### 개별 작품 현황 (2026.08 — Supabase 마이그레이션 이후)
 - 작품 데이터의 원본(source of truth)은 **Supabase `artworks` 테이블**. `lib/mockData.ts`의 `artworks` 배열은 DB 조회 실패 시에만 쓰이는 비상 폴백.
-- 홈/샵/작가 상세/어드민 목록 페이지는 전부 `force-dynamic`으로 Supabase에서 매 요청마다 직접 읽음 (정적 캐싱 없음)
-- 작품 등록/수정/삭제 방법 (둘 다 즉시 반영됨, 동일한 결과):
-  - Claude Code 세션에서 요청 → `lib/supabaseAdmin.ts`(service role)로 직접 DB 반영
-  - `/admin/artworks`에서 직접 등록/수정/삭제 (실제 CRUD 동작함, `/api/admin/artworks*` 라우트)
+- **2026-10-28부터 공개 페이지(홈/샵/작가/아트페어/전시 + 각 상세)는 ISR 캐시** (`revalidate = 3600`). 어드민 목록 페이지만 `force-dynamic`
+  - 어드민 CRUD·시딩·결제 승인/웹훅/취소 API는 성공 시 `revalidatePublicPages()`(`lib/revalidate.ts`)로 캐시를 즉시 무효화 → 사이트에 바로 반영
+  - 새로 데이터 바꾸는 API를 만들면 여기에도 `revalidatePublicPages()` 호출 추가할 것
+- 작품 등록/수정/삭제 방법:
+  - `/admin/artworks`에서 직접 등록/수정/삭제 → **즉시 반영** (`/api/admin/artworks*` 라우트가 캐시 무효화)
+  - Claude Code 세션에서 `lib/supabaseAdmin.ts`/REST로 DB 직접 수정 → **캐시 무효화가 안 일어나 최대 1시간 뒤 반영**. 바로 보여야 하면 같은 변경을 어드민 API(`/api/admin/*`, 로그인 쿠키 필요)로 하거나 재배포(git push)
 - `mockData.ts`는 더 이상 "여기에 추가하면 끝"이 아님 — DB에도 반영해야 사이트에 보임. 폴백용으로 mockData.ts도 함께 업데이트해두면 좋지만 필수는 아님.
 - 작가별 개수는 위 "현재 작가 현황" 표 참고 (단, 실제 최신 개수는 DB가 우선)
 
