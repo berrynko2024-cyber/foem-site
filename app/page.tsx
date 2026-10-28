@@ -11,8 +11,8 @@ import { pickHighlightFair, artFairPath } from "@/lib/artFairStatus";
 import { buildSeoMetadata, HOME_SEO } from "@/lib/seo";
 import { withLiveWorkCounts, formatWorkCount } from "@/lib/workCounts";
 
-// artworks가 Supabase에서 로드되므로, 어드민에서 수정한 내용이 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
-export const dynamic = "force-dynamic";
+// 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
+export const revalidate = 3600;
 
 export const metadata: Metadata = buildSeoMetadata({ ...HOME_SEO, path: "" });
 

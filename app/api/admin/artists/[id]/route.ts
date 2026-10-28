@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -35,6 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { data, error } = await supabase.from("artists").update(patch).eq("id", id).select().single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    revalidatePublicPages();
     return NextResponse.json({ success: true, data });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";
@@ -48,5 +50,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { error } = await supabase.from("artists").delete().eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidatePublicPages();
   return NextResponse.json({ success: true });
 }

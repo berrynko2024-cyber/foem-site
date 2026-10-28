@@ -10,8 +10,13 @@ import NaturalImage from "@/components/NaturalImage";
 import { buildSeoMetadata, ARTIST_SEO } from "@/lib/seo";
 import { formatWorkCount } from "@/lib/workCounts";
 
-// 어드민에서 작품을 등록/수정/삭제하면 재배포 없이 바로 반영되도록 정적 캐싱을 끈다.
-export const dynamic = "force-dynamic";
+// 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
+export const revalidate = 3600;
+
+// 상세 페이지는 빌드 시 미리 만들지 않고 첫 방문 때 생성해 캐시
+export async function generateStaticParams() {
+  return [];
+}
 
 /**
  * 전시회 스타일 작품 타일 — 행 높이를 고정하고 폭은 NaturalImage가 실측한 원본

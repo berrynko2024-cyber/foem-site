@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { cancelTossPayment } from "@/lib/toss";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 type OrderItem = { id: string };
 
@@ -67,5 +68,6 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     }
   }
 
+  revalidatePublicPages();
   return NextResponse.json({ success: true });
 }

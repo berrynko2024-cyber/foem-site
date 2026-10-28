@@ -28,7 +28,13 @@ async function getAllArtFairs() {
   return withResolvedStatus(mapped.length > 0 ? mapped : mockArtFairs);
 }
 
-export const dynamic = "force-dynamic";
+// 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
+export const revalidate = 3600;
+
+// 상세 페이지는 빌드 시 미리 만들지 않고 첫 방문 때 생성해 캐시
+export async function generateStaticParams() {
+  return [];
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;

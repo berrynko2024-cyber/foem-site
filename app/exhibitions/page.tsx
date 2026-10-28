@@ -5,7 +5,8 @@ import { exhibitions as mockExhibitions, type Exhibition } from "@/lib/mockData"
 import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 
-export const dynamic = "force-dynamic";
+// 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Exhibitions",

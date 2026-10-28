@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { artists } from "@/lib/mockData";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 export async function GET() {
   try {
@@ -32,6 +33,7 @@ export async function GET() {
       return NextResponse.json({ error: error.message, details: error }, { status: 500 });
     }
 
+    revalidatePublicPages();
     return NextResponse.json({
       success: true,
       message: `${formattedArtists.length} artists seeded successfully.`,

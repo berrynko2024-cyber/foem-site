@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendOrderEmails } from "@/lib/orderEmail";
 import { cancelTossPayment } from "@/lib/toss";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 export async function POST(req: NextRequest) {
   try {
@@ -160,6 +161,7 @@ export async function POST(req: NextRequest) {
     // 5. 성공 시 pending_orders 테이블에서 임시 데이터 삭제
     await supabase.from("pending_orders").delete().eq("order_id", orderId);
 
+    revalidatePublicPages();
     return NextResponse.json({ success: true, orderId });
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Internal Server Error";

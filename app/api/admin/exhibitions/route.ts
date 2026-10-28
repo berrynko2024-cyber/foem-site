@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    revalidatePublicPages();
     return NextResponse.json({ success: true, data });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";

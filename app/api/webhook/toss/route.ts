@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendOrderEmails } from "@/lib/orderEmail";
+import { revalidatePublicPages } from "@/lib/revalidate";
 
 /**
  * Toss 웹훅 검증 방식
@@ -159,6 +160,7 @@ export async function POST(req: NextRequest) {
     await supabase.from("pending_orders").delete().eq("order_id", orderId);
 
     console.info(`[Webhook] Order ${orderId} successfully restored and saved to DB.`);
+    revalidatePublicPages();
     return NextResponse.json({ success: true, restored: true });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Internal Server Error";
