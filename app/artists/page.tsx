@@ -2,6 +2,7 @@ import { artists as mockArtists } from "@/lib/mockData";
 import { supabase, mapDbArtistToArtist } from "@/lib/supabase";
 import { withLiveWorkCounts } from "@/lib/workCounts";
 import ArtistsGrid from "@/components/ArtistsGrid";
+import { ARTISTS_SEO } from "@/lib/seo";
 
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
@@ -25,6 +26,9 @@ export default async function ArtistsPage() {
         >
           Artists
         </h1>
+        <p className="text-sm text-[#4A4A4A] leading-relaxed max-w-2xl mt-6">
+          {ARTISTS_SEO.description}
+        </p>
       </div>
 
       <ArtistsGrid artists={artists} />

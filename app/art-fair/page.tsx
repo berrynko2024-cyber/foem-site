@@ -5,22 +5,12 @@ import { artFairs as mockArtFairs, type ArtFair } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 import { withResolvedStatus, artFairPath } from "@/lib/artFairStatus";
+import { buildSeoMetadata, ART_FAIR_SEO } from "@/lib/seo";
 
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Art Fair",
-  description: "FOEM participates in international art fairs. Discover where to find us — KIAF, Frieze Seoul, Art Busan, and more.",
-  openGraph: {
-    title: "Art Fair — FOEM",
-    description: "FOEM at international art fairs — KIAF, Frieze Seoul, Art Busan, and more.",
-    url: "https://www.foem.co.kr/art-fair",
-  },
-  alternates: {
-    canonical: "https://www.foem.co.kr/art-fair",
-  },
-};
+export const metadata: Metadata = buildSeoMetadata({ ...ART_FAIR_SEO, path: "/art-fair" });
 
 function formatDateRange(start: string, end: string): string {
   const s = new Date(start);
@@ -182,6 +172,9 @@ export default async function ArtFairPage() {
           >
             Art Fair
           </h1>
+          <p className="text-sm text-[#4A4A4A] leading-relaxed max-w-2xl mt-6">
+            {ART_FAIR_SEO.intro}
+          </p>
         </div>
 
         {featured && <FeaturedFairCard fair={featured} />}

@@ -201,7 +201,12 @@ export default async function ArtistPage({
             )}
 
             {!artist.statement && (
-              <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4">{artist.bio}</p>
+              <div className="mb-4">
+                <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4">{artist.bio}</p>
+                {artist.bio_ko && (
+                  <p className="text-sm text-[#9A9A9A] leading-relaxed">{artist.bio_ko}</p>
+                )}
+              </div>
             )}
             {artist.statement && (
               <div className="mb-8 pt-6 border-t border-[#d4e8da]">

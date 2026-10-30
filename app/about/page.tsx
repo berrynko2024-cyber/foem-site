@@ -1,18 +1,8 @@
 import { Metadata } from "next";
 import MailingListForm from "@/components/MailingListForm";
+import { buildSeoMetadata, ABOUT_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "FOEM is a curated art platform connecting independent artists with collectors and art lovers worldwide.",
-  openGraph: {
-    title: "About — FOEM",
-    description: "FOEM is a curated art platform connecting independent artists with collectors.",
-    url: "https://www.foem.co.kr/about",
-  },
-  alternates: {
-    canonical: "https://www.foem.co.kr/about",
-  },
-};
+export const metadata: Metadata = buildSeoMetadata({ ...ABOUT_SEO, path: "/about" });
 
 export default function AboutPage() {
   return (
@@ -48,6 +38,13 @@ export default function AboutPage() {
             and multidisciplinary artists working across Korea and beyond. We
             collaborate closely with our artists from studio to exhibition,
             connecting their work with collectors and institutions worldwide.
+          </p>
+          <p className="text-sm text-[#9A9A9A] leading-relaxed max-w-2xl mt-6">
+            포엠(FOEM, Field of Emotions)은 감각과 의미 사이를 탐구하는 작가들과
+            함께하는 서울의 컨템포러리 아트 갤러리입니다. 예술은 감정을 가장
+            직접적으로 전하는 언어라는 믿음에서 출발해, 한국과 해외에서 활동하는
+            회화·사진·조각·유리 작가들을 엄선해 소개합니다. 작업실에서 전시장까지
+            작가와 긴밀히 협업하며, 작품을 전 세계 컬렉터와 기관에 연결합니다.
           </p>
         </div>
 

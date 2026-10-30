@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { type Artwork } from "@/lib/mockData";
 import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
 import ArtworkCard from "@/components/ArtworkCard";
+import { SHOP_SEO } from "@/lib/seo";
 
 const categories = [
   { value: "all", label: "All" },
@@ -139,6 +140,9 @@ export default function ShopClient({ initialArtworks }: { initialArtworks: Artwo
           >
             All works
           </h1>
+          <p className="text-sm text-[#4A4A4A] leading-relaxed max-w-2xl mt-6">
+            {SHOP_SEO.intro}
+          </p>
         </div>
 
         {/* Category tabs */}

@@ -22,7 +22,38 @@ export const ARTISTS_SEO = {
     "베티문, 이영재, 서병관, 박의영, 박성은, 하린, 정재은, 임하정. 포엠과 함께하는 작가 8인의 작품 세계와 원화를 만나보세요.",
 };
 
-type ArtistSeo = { nameKo: string; nameEn: string; title: string; description: string };
+/** 목록 페이지는 제목·설명에 더해 페이지 상단에 보이는 한글 소개(intro)도 함께 둔다 — 화면 글이 거의 영어뿐이라 한국어 검색에 걸릴 본문이 부족했음. */
+export const SHOP_SEO = {
+  title: "작품 구매 — 회화·사진·유리·조각 원화 | FOEM 포엠",
+  description:
+    "베티문, 박의영, 박성은, 하린, 서병관, 이영재 등 포엠 작가들의 회화·사진·유리·조각 원화를 온라인으로 소장하세요. 정품 인증서 포함, 해외 배송.",
+  intro:
+    "포엠(FOEM) 작가들의 회화, 사진, 유리, 조각 원화를 한곳에서 만나보세요. 모든 작품은 정품 인증서와 함께 보내드리며 해외 배송도 가능합니다.",
+};
+
+export const ART_FAIR_SEO = {
+  title: "아트페어 — 베를린·홍콩·앙카라·마이애미 | FOEM 포엠",
+  description:
+    "포엠은 Positions Berlin, Affordable Art Fair Hong Kong, ARTANKARA, AQUA Art Miami 등 해외 아트페어에서 한국 컨템포러리 작가들을 소개합니다.",
+  intro:
+    "포엠(FOEM)은 유럽·아시아·미국의 아트페어에서 한국 컨템포러리 작가들을 소개합니다. 2026년 베를린 Positions Berlin Art Fair, 앙카라 ARTANKARA, 홍콩 Affordable Art Fair, 서울 BANK Art Fair에 참가했고, 2025년에는 마이애미 AQUA Art Miami와 서울아트쇼에 참여했습니다.",
+};
+
+export const EXHIBITIONS_SEO = {
+  title: "전시 — 포엠 작가 개인전·단체전 | FOEM 포엠",
+  description:
+    "베티문 사진전 「beyond the frame」, 수원시립만석미술관 「빛, 그림을 그리다」, 포엠 단체전 「Field of Emotions」 등 포엠 작가들의 전시 소식.",
+  intro:
+    "포엠 작가들이 참여한 개인전과 단체전을 소개합니다. 진행 중인 전시와 예정된 전시, 지난 전시 기록을 한곳에서 볼 수 있습니다.",
+};
+
+export const ABOUT_SEO = {
+  title: "포엠 소개 — 서울 강남 컨템포러리 아트 갤러리 | FOEM 포엠",
+  description:
+    "포엠(FOEM, Field of Emotions)은 감각과 의미 사이를 탐구하는 작가들과 함께하는 서울 강남의 컨템포러리 아트 갤러리입니다. 화–토 오전 11시–오후 6시.",
+};
+
+type ArtistSeo ={ nameKo: string; nameEn: string; title: string; description: string };
 
 export const ARTIST_SEO: Record<string, ArtistSeo> = {
   "betty-moon": {

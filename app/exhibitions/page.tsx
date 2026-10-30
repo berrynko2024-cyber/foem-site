@@ -4,22 +4,12 @@ import Link from "next/link";
 import { exhibitions as mockExhibitions, type Exhibition } from "@/lib/mockData";
 import { supabase, mapDbExhibitionToExhibition } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
+import { buildSeoMetadata, EXHIBITIONS_SEO } from "@/lib/seo";
 
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "Exhibitions",
-  description: "Explore current, upcoming, and past exhibitions by FOEM artists.",
-  openGraph: {
-    title: "Exhibitions — FOEM",
-    description: "Current, upcoming, and past exhibitions by FOEM artists.",
-    url: "https://www.foem.co.kr/exhibitions",
-  },
-  alternates: {
-    canonical: "https://www.foem.co.kr/exhibitions",
-  },
-};
+export const metadata: Metadata = buildSeoMetadata({ ...EXHIBITIONS_SEO, path: "/exhibitions" });
 
 function formatDateRange(start: string, end: string): string {
   const s = new Date(start);
@@ -117,6 +107,9 @@ export default async function ExhibitionsPage() {
           >
             Exhibitions
           </h1>
+          <p className="text-sm text-[#4A4A4A] leading-relaxed max-w-2xl mt-6">
+            {EXHIBITIONS_SEO.intro}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16">
