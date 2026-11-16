@@ -1,11 +1,14 @@
+import type { Metadata } from "next";
 import { artists as mockArtists } from "@/lib/mockData";
 import { supabase, mapDbArtistToArtist } from "@/lib/supabase";
 import { withLiveWorkCounts } from "@/lib/workCounts";
 import ArtistsGrid from "@/components/ArtistsGrid";
-import { ARTISTS_SEO } from "@/lib/seo";
+import { buildSeoMetadata, ARTISTS_SEO } from "@/lib/seo";
 
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
+
+export const metadata: Metadata = buildSeoMetadata({ ...ARTISTS_SEO, path: "/artists" });
 
 export default async function ArtistsPage() {
   const [{ data: dbArtists }, { data: dbWorks }] = await Promise.all([

@@ -102,8 +102,36 @@ export default async function ArtFairDetailPage({ params }: Props) {
 
   const otherFairs = await getAllArtFairs();
 
+  const coverUrl = fair.coverImage?.startsWith("http")
+    ? fair.coverImage
+    : `https://www.foem.co.kr${fair.coverImage?.startsWith("/") ? "" : "/"}${fair.coverImage}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ExhibitionEvent",
+    name: fair.name,
+    description: fair.description || undefined,
+    startDate: fair.startDate,
+    endDate: fair.endDate,
+    image: coverUrl,
+    location: {
+      "@type": "Place",
+      name: fair.venue,
+      address: fair.location,
+    },
+    organizer: {
+      "@type": "Organization",
+      name: "FOEM",
+      url: "https://www.foem.co.kr",
+    },
+  };
+
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* Hero */}
       <div className="relative w-full h-screen bg-[#1A1A1A] overflow-hidden">

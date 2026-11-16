@@ -59,11 +59,38 @@ export default async function ExhibitionDetailPage({ params }: Props) {
   const { id } = await params;
   const ex = await getExhibition(id);
   if (!ex) notFound();
-
   const hasDescription = ex.description || ex.descriptionKo || ex.videoUrl;
+
+  const coverUrl = ex.coverImage?.startsWith("http")
+    ? ex.coverImage
+    : `https://www.foem.co.kr${ex.coverImage?.startsWith("/") ? "" : "/"}${ex.coverImage}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ExhibitionEvent",
+    name: ex.title,
+    description: ex.description || ex.descriptionKo || undefined,
+    startDate: ex.startDate,
+    endDate: ex.endDate,
+    image: coverUrl,
+    location: {
+      "@type": "Place",
+      name: ex.venue || ex.location,
+      address: ex.location,
+    },
+    organizer: {
+      "@type": "Organization",
+      name: "FOEM",
+      url: "https://www.foem.co.kr",
+    },
+  };
 
   return (
     <div className="bg-[#F6F4EB] min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* 1. 풀스크린 히어로 */}
       <div className={`relative w-full h-screen bg-[#1A1A1A]`}>

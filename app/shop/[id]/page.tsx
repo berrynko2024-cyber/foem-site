@@ -84,14 +84,16 @@ export default async function ArtworkPage({
       ? `https://www.foem.co.kr${work.images[0]}`
       : work.images[0] || undefined,
     brand: { "@type": "Brand", name: "FOEM" },
+    category: work.category,
     creator: { "@type": "Person", name: work.artistName },
     offers: {
       "@type": "Offer",
       availability: work.isSold
         ? "https://schema.org/SoldOut"
         : "https://schema.org/InStock",
-      price: work.isSold ? undefined : work.price,
-      priceCurrency: "KRW",
+      price: work.price || 0,
+      priceCurrency: work.currency || "KRW",
+      itemCondition: "https://schema.org/NewCondition",
       url: `https://www.foem.co.kr/shop/${id}`,
     },
   };

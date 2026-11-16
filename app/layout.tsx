@@ -94,21 +94,31 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "FOEM",
-              alternateName: "Field of Emotion",
-              url: "https://www.foem.co.kr",
-              logo: "https://www.foem.co.kr/og-main.png",
-              description: "FOEM is a curated platform showcasing and selling original artworks by independent artists.",
-              sameAs: [
-                "https://www.instagram.com/foem_korea",
-                "https://www.youtube.com/@foemart",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  name: "FOEM",
+                  alternateName: ["Field of Emotion", "포엠"],
+                  url: "https://www.foem.co.kr",
+                },
+                {
+                  "@type": "Organization",
+                  name: "FOEM",
+                  alternateName: "Field of Emotion",
+                  url: "https://www.foem.co.kr",
+                  logo: "https://www.foem.co.kr/og-main.png",
+                  description: "FOEM is a curated platform showcasing and selling original artworks by independent artists.",
+                  sameAs: [
+                    "https://www.instagram.com/foem_korea",
+                    "https://www.youtube.com/@foemart",
+                  ],
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    email: "berrynko2024@gmail.com",
+                    contactType: "customer service",
+                  },
+                },
               ],
-              contactPoint: {
-                "@type": "ContactPoint",
-                email: "berrynko2024@gmail.com",
-                contactType: "customer service",
-              },
             }),
           }}
         />

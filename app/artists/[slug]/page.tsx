@@ -125,7 +125,11 @@ export default async function ArtistPage({
     alternateName: artist.name_ko ? artist.name_ko.split(" ") : undefined,
     description: artist.bio,
     url: `https://www.foem.co.kr/artists/${artist.slug}`,
-    image: artist.photo ? `https://www.foem.co.kr${artist.photo}` : undefined,
+    image: artist.photo
+      ? (artist.photo.startsWith("http")
+          ? artist.photo
+          : `https://www.foem.co.kr${artist.photo.startsWith("/") ? "" : "/"}${artist.photo}`)
+      : undefined,
     sameAs: artist.instagram
       ? [`https://www.instagram.com/${artist.instagram.replace("@", "")}`]
       : [],

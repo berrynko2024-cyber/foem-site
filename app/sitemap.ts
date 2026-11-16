@@ -40,44 +40,72 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const mappedDbArtworks = dbArtworks ? dbArtworks.map(mapDbArtworkToArtwork) : [];
   const artworks = mappedDbArtworks.length > 0 ? mappedDbArtworks : mockArtworks;
 
+  const now = new Date();
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE, priority: 1.0, changeFrequency: "weekly" },
-    { url: `${BASE}/shop`, priority: 0.9, changeFrequency: "weekly" },
-    { url: `${BASE}/artists`, priority: 0.9, changeFrequency: "monthly" },
-    { url: `${BASE}/art-fair`, priority: 0.7, changeFrequency: "monthly" },
-    { url: `${BASE}/exhibitions`, priority: 0.7, changeFrequency: "monthly" },
-    { url: `${BASE}/video`, priority: 0.6, changeFrequency: "monthly" },
-    { url: `${BASE}/consulting`, priority: 0.8, changeFrequency: "monthly" },
-    { url: `${BASE}/about`, priority: 0.5, changeFrequency: "yearly" },
-    { url: `${BASE}/join`, priority: 0.5, changeFrequency: "monthly" },
+    { url: BASE, lastModified: now, priority: 1.0, changeFrequency: "weekly" },
+    { url: `${BASE}/shop`, lastModified: now, priority: 0.9, changeFrequency: "weekly" },
+    { url: `${BASE}/artists`, lastModified: now, priority: 0.9, changeFrequency: "monthly" },
+    { url: `${BASE}/art-fair`, lastModified: now, priority: 0.7, changeFrequency: "monthly" },
+    { url: `${BASE}/exhibitions`, lastModified: now, priority: 0.7, changeFrequency: "monthly" },
+    { url: `${BASE}/video`, lastModified: now, priority: 0.6, changeFrequency: "monthly" },
+    { url: `${BASE}/consulting`, lastModified: now, priority: 0.8, changeFrequency: "monthly" },
+    { url: `${BASE}/about`, lastModified: now, priority: 0.5, changeFrequency: "yearly" },
+    { url: `${BASE}/join`, lastModified: now, priority: 0.5, changeFrequency: "monthly" },
   ];
+
+  const toAbsoluteUrl = (pathOrUrl?: string) => {
+    if (!pathOrUrl) return undefined;
+    if (pathOrUrl.startsWith("http")) return pathOrUrl;
+    return `${BASE}${pathOrUrl.startsWith("/") ? "" : "/"}${pathOrUrl}`;
+  };
 
   // 이미지가 있는 작품은 로컬(/artworks/)이든 Supabase Storage든 모두 포함
   const artworkPages: MetadataRoute.Sitemap = artworks
     .filter((a) => a.images[0])
-    .map((a) => ({
-      url: `${BASE}/shop/${a.id}`,
+    .map((a) => {
+      const img = toAbsoluteUrl(a.images[0]);
+      return {
+        url: `${BASE}/shop/${a.id}`,
+        lastModified: now,
+        priority: 0.8,
+        changeFrequency: "monthly" as const,
+        images: img ? [img] : undefined,
+      };
+    });
+
+  const artistPages: MetadataRoute.Sitemap = artists.map((a) => {
+    const photo = toAbsoluteUrl(a.photo);
+    return {
+      url: `${BASE}/artists/${a.slug}`,
+      lastModified: now,
       priority: 0.8,
       changeFrequency: "monthly" as const,
-    }));
+      images: photo ? [photo] : undefined,
+    };
+  });
 
-  const artistPages: MetadataRoute.Sitemap = artists.map((a) => ({
-    url: `${BASE}/artists/${a.slug}`,
-    priority: 0.8,
-    changeFrequency: "monthly" as const,
-  }));
+  const artFairPages: MetadataRoute.Sitemap = artFairs.map((f) => {
+    const cover = toAbsoluteUrl(f.coverImage);
+    return {
+      url: `${BASE}${artFairPath(f)}`,
+      lastModified: now,
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+      images: cover ? [cover] : undefined,
+    };
+  });
 
-  const artFairPages: MetadataRoute.Sitemap = artFairs.map((f) => ({
-    url: `${BASE}${artFairPath(f)}`,
-    priority: 0.6,
-    changeFrequency: "monthly" as const,
-  }));
-
-  const exhibitionPages: MetadataRoute.Sitemap = exhibitions.map((e) => ({
-    url: `${BASE}/exhibitions/${e.id}`,
-    priority: 0.6,
-    changeFrequency: "monthly" as const,
-  }));
+  const exhibitionPages: MetadataRoute.Sitemap = exhibitions.map((e) => {
+    const cover = toAbsoluteUrl(e.coverImage);
+    return {
+      url: `${BASE}/exhibitions/${e.id}`,
+      lastModified: now,
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+      images: cover ? [cover] : undefined,
+    };
+  });
 
   return [...staticPages, ...artworkPages, ...artistPages, ...artFairPages, ...exhibitionPages];
 }

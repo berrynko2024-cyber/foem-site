@@ -6,9 +6,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/api/"],
+        disallow: [
+          "/admin",
+          "/admin/",
+          "/api/",
+          "/cart",
+          "/cart/",
+          "/checkout",
+          "/checkout/",
+          "/order/",
+        ],
       },
     ],
     sitemap: "https://www.foem.co.kr/sitemap.xml",
+    host: "https://www.foem.co.kr",
   };
 }
