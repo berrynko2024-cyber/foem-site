@@ -10,6 +10,11 @@ import NaturalImage from "@/components/NaturalImage";
 import { buildSeoMetadata, ARTIST_SEO } from "@/lib/seo";
 import { formatWorkCount } from "@/lib/workCounts";
 
+// 인스타그램 외 작가 공식 프로필 (구조화 데이터 sameAs용 — Google이 작가 이름과 이 페이지를 연결하는 데 사용)
+const ARTIST_EXTRA_PROFILES: Record<string, string[]> = {
+  "betty-moon": ["https://www.youtube.com/@bettymoonstudio"],
+};
+
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
 
@@ -22,13 +27,13 @@ export async function generateStaticParams() {
  * 전시회 스타일 작품 타일 — 행 높이를 고정하고 폭은 NaturalImage가 실측한 원본
  * 비율만큼만 늘어난다. 크롭 없이 작품마다 실제 비율 차이가 폭 차이로만 드러난다.
  */
-function WorkTile({ work, heightClassName }: { work: Artwork; heightClassName?: string }) {
+function WorkTile({ work, heightClassName, artistLabel }: { work: Artwork; heightClassName?: string; artistLabel: string }) {
   return (
     <Link href={`/shop/${work.id}`} className="group flex flex-col items-start">
       <div className="relative bg-[#e8f0eb]">
         <NaturalImage
           src={work.images[0]}
-          alt={work.title}
+          alt={`${work.title} — ${artistLabel}`}
           orientation={work.orientation}
           heightClassName={heightClassName}
           sizes="300px"
@@ -117,6 +122,8 @@ export default async function ArtistPage({
   const availableCount = works.filter(w => !w.isSold).length;
   const videos = getVideosByArtist(artist.id);
   const featuredVideo = videos[0] ?? null;
+  // 이미지 검색·접근성용: "작품명 — 서병관 Byeong Gwan Seo"
+  const artistLabel = artist.name_ko ? `${artist.name_ko.split(" ")[0]} ${artist.name}` : artist.name;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -130,9 +137,10 @@ export default async function ArtistPage({
           ? artist.photo
           : `https://www.foem.co.kr${artist.photo.startsWith("/") ? "" : "/"}${artist.photo}`)
       : undefined,
-    sameAs: artist.instagram
-      ? [`https://www.instagram.com/${artist.instagram.replace("@", "")}`]
-      : [],
+    sameAs: [
+      ...(artist.instagram ? [`https://www.instagram.com/${artist.instagram.replace("@", "")}`] : []),
+      ...(ARTIST_EXTRA_PROFILES[artist.slug] ?? []),
+    ],
     memberOf: {
       "@type": "Organization",
       name: "FOEM",
@@ -214,9 +222,9 @@ export default async function ArtistPage({
             )}
             {artist.statement && (
               <div className="mb-8 pt-6 border-t border-[#d4e8da]">
-                <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4">{artist.statement}</p>
+                <p className="text-sm text-[#4A4A4A] leading-relaxed mb-4 whitespace-pre-line">{artist.statement}</p>
                 {artist.statement_ko && (
-                  <p className="text-sm text-[#9A9A9A] leading-relaxed">{artist.statement_ko}</p>
+                  <p className="text-sm text-[#9A9A9A] leading-relaxed whitespace-pre-line">{artist.statement_ko}</p>
                 )}
               </div>
             )}
@@ -285,7 +293,7 @@ export default async function ArtistPage({
                         </div>
                       )}
                       <div className="flex flex-wrap gap-x-6 gap-y-12">
-                        {seriesWorks.map(w => <WorkTile key={w.id} work={w} />)}
+                        {seriesWorks.map(w => <WorkTile key={w.id} work={w} artistLabel={artistLabel} />)}
                       </div>
                     </div>
                   ))}
@@ -309,7 +317,7 @@ export default async function ArtistPage({
                         <div className={`relative overflow-hidden bg-[#e8f0eb]${twoCol ? ' aspect-[3/2]' : isFeatured ? ' aspect-[3/2]' : ' aspect-[4/5]'}`}>
                           <Image
                             src={work.images[0]}
-                            alt={work.title}
+                            alt={`${work.title} — ${artistLabel}`}
                             fill
                             className={`${twoCol ? 'object-cover' : isFeatured ? 'object-cover' : (work.orientation === 'landscape' || work.orientation === 'square') && !work.fillFrame ? 'object-contain' : 'object-cover'} transition-transform duration-700 group-hover:scale-[1.03]`}
                             sizes={twoCol ? '50vw' : isFeatured ? '100vw' : '(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw'}
@@ -356,7 +364,7 @@ export default async function ArtistPage({
               return (
                 <div className="flex flex-wrap gap-x-6 gap-y-12">
                   {orderedWorks.map(work => (
-                    <WorkTile key={work.id} work={work} heightClassName={heightClassName} />
+                    <WorkTile key={work.id} work={work} heightClassName={heightClassName} artistLabel={artistLabel} />
                   ))}
                 </div>
               );
