@@ -13,6 +13,7 @@ import {
   mapDbExhibitionToExhibition,
 } from "@/lib/supabase";
 import { artFairPath } from "@/lib/artFairStatus";
+import { artworkPath } from "@/lib/artworkPath";
 
 const BASE = "https://www.foem.co.kr";
 
@@ -66,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((a) => {
       const img = toAbsoluteUrl(a.images[0]);
       return {
-        url: `${BASE}/shop/${a.id}`,
+        url: `${BASE}${artworkPath(a)}`,
         lastModified: now,
         priority: 0.8,
         changeFrequency: "monthly" as const,

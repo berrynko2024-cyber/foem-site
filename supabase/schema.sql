@@ -29,6 +29,10 @@ CREATE TABLE IF NOT EXISTS artworks (
 ALTER TABLE artworks ADD COLUMN IF NOT EXISTS series TEXT;
 ALTER TABLE artworks ADD COLUMN IF NOT EXISTS fill_frame BOOLEAN;
 
+-- 2026-11-19: 작품 상세 URL을 /shop/{slug}로 (예: bettymoon-murmur). 소문자·하이픈 없이 저장.
+-- 없으면 id로 폴백, id(w82)로 들어오면 slug 주소로 308 이동. 대소문자 섞어 입력해도 열림
+ALTER TABLE artworks ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
+
 -- pending_orders (임시 주문) 테이블 생성
 CREATE TABLE IF NOT EXISTS pending_orders (
   order_id UUID PRIMARY KEY,

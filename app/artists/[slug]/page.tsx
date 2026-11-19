@@ -9,6 +9,7 @@ import { getBlurDataUrl } from "@/lib/blurUrl";
 import NaturalImage from "@/components/NaturalImage";
 import { buildSeoMetadata, ARTIST_SEO } from "@/lib/seo";
 import { formatWorkCount } from "@/lib/workCounts";
+import { artworkPath } from "@/lib/artworkPath";
 
 // 인스타그램 외 작가 공식 프로필 (구조화 데이터 sameAs용 — Google이 작가 이름과 이 페이지를 연결하는 데 사용)
 const ARTIST_EXTRA_PROFILES: Record<string, string[]> = {
@@ -29,7 +30,7 @@ export async function generateStaticParams() {
  */
 function WorkTile({ work, heightClassName, artistLabel }: { work: Artwork; heightClassName?: string; artistLabel: string }) {
   return (
-    <Link href={`/shop/${work.id}`} className="group flex flex-col items-start">
+    <Link href={artworkPath(work)} className="group flex flex-col items-start">
       <div className="relative bg-[#e8f0eb]">
         <NaturalImage
           src={work.images[0]}
@@ -311,7 +312,7 @@ export default async function ArtistPage({
                     return (
                       <Link
                         key={work.id}
-                        href={`/shop/${work.id}`}
+                        href={artworkPath(work)}
                         className={`group bg-[#F6F4EB] overflow-hidden block${isFeatured ? ' col-span-2 lg:col-span-3' : ''}`}
                       >
                         <div className={`relative overflow-hidden bg-[#e8f0eb]${twoCol ? ' aspect-[3/2]' : isFeatured ? ' aspect-[3/2]' : ' aspect-[4/5]'}`}>

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getArtworkById, artworks, artists } from "@/lib/mockData";
@@ -9,16 +9,30 @@ import ArtworkChat from "@/components/ArtworkChat";
 import { supabase, mapDbArtworkToArtwork } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 import { artworkSeo, buildSeoMetadata } from "@/lib/seo";
+import { artworkPath } from "@/lib/artworkPath";
 
 // 공개 페이지는 ISR 캐시(최대 1시간) — 어드민·결제에서 데이터가 바뀌면 lib/revalidate.ts로 즉시 무효화
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const { data } = await supabase.from("artworks").select("id");
+  const { data } = await supabase.from("artworks").select("id, slug");
   if (data && data.length > 0) {
-    return data.map((a) => ({ id: a.id }));
+    return data.map((a) => ({ id: a.slug ?? a.id }));
   }
-  return artworks.map((a) => ({ id: a.id }));
+  return artworks.map((a) => ({ id: a.slug ?? a.id }));
+}
+
+// URL 세그먼트는 slug(bettymoon-murmur, 대소문자 무관) 또는 예전 id(w82) 둘 다 받는다.
+// 표준 주소(slug)와 다르게 들어오면 페이지에서 308으로 표준 주소로 보낸다
+async function getArtwork(rawKey: string) {
+  const key = decodeURIComponent(rawKey);
+  const slugKey = key.toLowerCase();
+  const { data: bySlug } = await supabase.from("artworks").select("*").eq("slug", slugKey).maybeSingle();
+  const { data } = bySlug
+    ? { data: bySlug }
+    : await supabase.from("artworks").select("*").eq("id", key).maybeSingle();
+  if (data) return mapDbArtworkToArtwork(data);
+  return artworks.find((a) => a.slug === slugKey) ?? getArtworkById(key);
 }
 
 export async function generateMetadata({
@@ -27,13 +41,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const { data: dbArt } = await supabase
-    .from("artworks")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-
-  const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(id);
+  const work = await getArtwork(id);
   if (!work) return {};
 
   const artistSlug = artists.find((a) => a.id === work.artistId)?.slug;
@@ -42,7 +50,7 @@ export async function generateMetadata({
   return buildSeoMetadata({
     title,
     description,
-    path: `/shop/${id}`,
+    path: artworkPath(work),
     images: work.images[0] ? [{ url: work.images[0], alt: work.title }] : undefined,
   });
 }
@@ -53,14 +61,9 @@ export default async function ArtworkPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { data: dbArt } = await supabase
-    .from("artworks")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-
-  const work = dbArt ? mapDbArtworkToArtwork(dbArt) : getArtworkById(id);
+  const work = await getArtwork(id);
   if (!work) notFound();
+  if (id !== (work.slug ?? work.id)) permanentRedirect(artworkPath(work));
 
   // Related works 조회 (동일 카테고리)
   const { data: dbRelated } = await supabase
@@ -94,7 +97,7 @@ export default async function ArtworkPage({
       price: work.price || 0,
       priceCurrency: work.currency || "KRW",
       itemCondition: "https://schema.org/NewCondition",
-      url: `https://www.foem.co.kr/shop/${id}`,
+      url: `https://www.foem.co.kr${artworkPath(work)}`,
     },
   };
 
@@ -226,7 +229,7 @@ export default async function ArtworkPage({
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#E8E6E2]">
               {related.map((r) => (
-                <Link key={r.id} href={`/shop/${r.id}`} className="group bg-[#EFEDE8] overflow-hidden block">
+                <Link key={r.id} href={artworkPath(r)} className="group bg-[#EFEDE8] overflow-hidden block">
                   <div className="relative aspect-[4/5] overflow-hidden bg-[#E8E6E2]">
                     <Image
                       src={r.images[0]}

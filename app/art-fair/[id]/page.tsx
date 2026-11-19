@@ -6,6 +6,7 @@ import { artFairs as mockArtFairs, getArtworkById } from "@/lib/mockData";
 import { supabase, mapDbArtFairToArtFair, mapDbArtworkToArtwork } from "@/lib/supabase";
 import { getBlurDataUrl } from "@/lib/blurUrl";
 import { resolveArtFairStatus, withResolvedStatus, artFairPath } from "@/lib/artFairStatus";
+import { artworkPath } from "@/lib/artworkPath";
 
 // URL 세그먼트는 slug(positions-berlin-2026) 또는 예전 id(f9) 둘 다 받는다 — id로 오면 slug 주소로 308 이동
 type Props = { params: Promise<{ id: string }> };
@@ -237,7 +238,7 @@ export default async function ArtFairDetailPage({ params }: Props) {
                 return (
                   <Link
                     key={work.id}
-                    href={`/shop/${work.id}`}
+                    href={artworkPath(work)}
                     className="group bg-[#F6F4EB] overflow-hidden block"
                   >
                     <div

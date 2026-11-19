@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { Resend } from "resend";
 import { artists, artworks } from "@/lib/mockData";
+import { artworkPath } from "@/lib/artworkPath";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -117,7 +118,7 @@ ${SEO_RULES}
 6. ▶ 나의 공간에 이 작품이 있다면 (인테리어/감상 제안, 300자 이상)
 7. ▶ 구매 안내 (가격 정책, 컨설팅 안내, 200자 이상)
 8. 마무리: 공감/댓글 유도 + 링크
-   "작품 상세 보기 👉 https://www.foem.co.kr/shop/${work.id}"
+   "작품 상세 보기 👉 https://www.foem.co.kr${artworkPath(work)}"
 9. 해시태그 20개: #${koName} #원화구매 #그림구매 #현대미술 #아트갤러리 #인테리어그림 #FOEM 등 포함
 
 핵심 키워드: ${koName}, 원화, 현대미술, FOEM, 그림구매

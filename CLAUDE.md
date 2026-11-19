@@ -193,6 +193,13 @@ cd /Users/ko/Projects/foem-site && npm run dev
 - `mockData.ts`는 더 이상 "여기에 추가하면 끝"이 아님 — DB에도 반영해야 사이트에 보임. 폴백용으로 mockData.ts도 함께 업데이트해두면 좋지만 필수는 아님.
 - 작가별 개수는 위 "현재 작가 현황" 표 참고 (단, 실제 최신 개수는 DB가 우선)
 
+### 작품 상세 URL (slug) — 2026-11-19
+- `artworks.slug` 컬럼 (DB + mockData `slug` 필드). 형식: **소문자, 하이픈은 작가-작품명 사이 1개만** (`bettymoon-murmur`, `bettymoon-beyondtheframefaded`)
+- 현재 Betty Moon 10개만 지정. 없는 작품은 `/shop/w29`처럼 id 그대로
+- 링크는 항상 `artworkPath(work)` (`lib/artworkPath.ts`) 사용 — `/shop/${work.id}` 직접 쓰지 말 것
+- 예전 id 주소(`/shop/w82`)는 slug 주소로 308 이동, 대소문자 섞여 들어와도 열림
+- 어드민 폼에는 slug 입력란 없음 → 새 작품에 slug 주려면 DB에서 직접 지정
+
 ### 작품 이미지 업로드 (Supabase Storage)
 - Storage 버킷 `artworks` (public) 사용. 업로드는 `/api/admin/upload`(service role, 어드민 세션 필요) → 공개 CDN URL 반환
 - `/admin/artworks/new`, `/admin/artworks/[id]/edit` 폼에 드래그앤드롭 업로드 영역 있음 — 업로드하면 자동으로 `images` 배열에 URL 추가

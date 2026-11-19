@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { Resend } from "resend";
 import { artists, artworks, artFairs, exhibitions } from "@/lib/mockData";
+import { artworkPath } from "@/lib/artworkPath";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -87,7 +88,7 @@ ${VIRAL_RULES}
 - 재료/크기: ${work.medium ?? "불명"} / ${work.dimensions ?? "불명"}
 - 작품 설명: ${work.description_ko || work.description}
 - 판매 상태: ${soldNote}
-- 링크: https://www.foem.co.kr/shop/${work.id}
+- 링크: https://www.foem.co.kr${artworkPath(work)}
 
 아래 형식을 정확히 지켜서 출력하세요:
 

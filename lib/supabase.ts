@@ -9,6 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // DB 행 타입 — supabase/schema.sql의 컬럼 정의와 1:1로 맞출 것 (컬럼 추가 시 여기도 같이 추가)
 type DbArtworkRow = {
   id: string;
+  slug: string | null;
   title: string;
   title_ko: string | null;
   description: string | null;
@@ -92,6 +93,7 @@ export function mapDbArtworkToArtwork(dbArt: DbArtworkRow | null): Artwork {
   if (!dbArt) return {} as Artwork;
   return {
     id: dbArt.id,
+    slug: dbArt.slug || undefined,
     title: dbArt.title,
     title_ko: dbArt.title_ko || "",
     description: dbArt.description || "",

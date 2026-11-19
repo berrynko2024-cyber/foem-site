@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { type Artwork } from "@/lib/mockData";
+import { artworkPath } from "@/lib/artworkPath";
 
 function getArtworkPriceDisplay(work: Artwork): string {
   if (work.priceDisplay) return work.priceDisplay;
@@ -11,7 +12,7 @@ function getArtworkPriceDisplay(work: Artwork): string {
 // 샵/메인 공용 작품 카드 — 원본 비율 그대로(크롭 없음) + 제목/가격
 export default function ArtworkCard({ work }: { work: Artwork }) {
   return (
-    <Link href={`/shop/${work.id}`} className="group block">
+    <Link href={artworkPath(work)} className="group block">
       <div className="relative overflow-hidden bg-[#F2F2F2]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

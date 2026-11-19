@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
         price_display: body.price_display || null,
         series: body.series || null,
         fill_frame: body.fill_frame ?? null,
+        slug: body.slug ? String(body.slug).toLowerCase() : null,
       })
       .select()
       .single();

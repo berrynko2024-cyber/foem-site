@@ -19,6 +19,8 @@ export type Artist = {
 
 export type Artwork = {
   id: string;
+  /** 상세 URL용 (/shop/{slug}). 소문자·하이픈 없이 "작가-작품명" (예: bettymoon-murmur). 없으면 id 사용 */
+  slug?: string;
   title: string;
   title_ko: string;
   description: string;
@@ -559,6 +561,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w82",
+    "slug": "bettymoon-murmur",
     "title": "Mur Mur",
     "title_ko": "Mur Mur",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",
@@ -628,6 +631,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w83",
+    "slug": "bettymoon-beyondtheframefaded",
     "title": "Beyond the Frame (Faded)",
     "title_ko": "Beyond the Frame (Faded)",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",
@@ -651,6 +655,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w84",
+    "slug": "bettymoon-scenei",
     "title": "Scene I",
     "title_ko": "Scene I",
     "description": "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper.",
@@ -674,6 +679,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w85",
+    "slug": "bettymoon-sceneii",
     "title": "Scene II",
     "title_ko": "Scene II",
     "description": "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper.",
@@ -1019,6 +1025,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w27",
+    "slug": "bettymoon-tableisready",
     "title": "Table is Ready",
     "title_ko": "Table is Ready",
     "description": "Archival Pigment Print on Creamish Paper.",
@@ -1047,6 +1054,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w24",
+    "slug": "bettymoon-arrival",
     "title": "Arrival",
     "title_ko": "Arrival",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",
@@ -1075,6 +1083,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w22",
+    "slug": "bettymoon-returningtomyselfi",
     "title": "Returning to Myself I",
     "title_ko": "나 자신으로 돌아오며 I",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",
@@ -1919,6 +1928,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w25",
+    "slug": "bettymoon-lightandshadow",
     "title": "Light and Shadow",
     "title_ko": "Light and Shadow",
     "description": "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper.",
@@ -2224,6 +2234,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w23",
+    "slug": "bettymoon-mothernature",
     "title": "Mother Nature",
     "title_ko": "Mother Nature",
     "description": "Archival Pigment Print on Hahnemuhle Photo Rag Satin 310g Paper.",
@@ -2251,6 +2262,7 @@ export const artworks: Artwork[] = [
   },
   {
     "id": "w26",
+    "slug": "bettymoon-returningtomyselfii",
     "title": "Returning to Myself II",
     "title_ko": "Returning to Myself II",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",

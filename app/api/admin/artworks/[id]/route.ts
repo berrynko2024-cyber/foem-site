@@ -22,7 +22,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       "title", "title_ko", "description", "description_ko", "price", "currency",
       "category", "images", "artist_id", "artist_name", "stock", "is_sold",
       "year", "medium", "dimensions", "orientation", "price_display",
-      "series", "fill_frame",
+      "series", "fill_frame", "slug",
     ] as const;
 
     const patch: Record<string, unknown> = {};
