@@ -82,7 +82,7 @@ export default async function ArtworkPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: work.title,
-    description: work.description || `${work.title} by ${work.artistName}`,
+    description: work.description_ko || work.description || `${work.title} by ${work.artistName}`,
     image: work.images[0]?.startsWith("/")
       ? `https://www.foem.co.kr${work.images[0]}`
       : work.images[0] || undefined,
@@ -182,11 +182,18 @@ export default async function ArtworkPage({
             </div>
 
             {/* Description */}
-            {work.description && (
-              <div className="mb-6">
-                <p className="text-sm text-[#4A4A4A] leading-relaxed">
-                  {work.description}
-                </p>
+            {(work.description_ko || work.description) && (
+              <div className="mb-6 space-y-3">
+                {work.description_ko && (
+                  <p className="text-sm text-[#4A4A4A] leading-relaxed whitespace-pre-line">
+                    {work.description_ko}
+                  </p>
+                )}
+                {work.description && work.description !== work.description_ko && (
+                  <p className={`${work.description_ko ? "text-xs text-[#9A9A9A]" : "text-sm text-[#4A4A4A]"} leading-relaxed`}>
+                    {work.description}
+                  </p>
+                )}
               </div>
             )}
 

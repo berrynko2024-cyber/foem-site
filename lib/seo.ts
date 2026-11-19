@@ -123,10 +123,13 @@ export function artworkSeo(work: Artwork, artistSlug?: string) {
 
   const specs = [work.medium, work.dimensions].filter(Boolean).join(", ");
   const year = work.year ? `(${work.year})` : "";
+  const snippet = work.description_ko
+    ? `${work.description_ko.replace(/\n+/g, " ").slice(0, 110)}… `
+    : "";
 
   return {
     title: `${work.title} — ${byline} | FOEM 포엠`,
-    description: `${nameKo ?? nameEn} 작가의 「${work.title}」${year}.${specs ? ` ${specs}.` : ""} 정품 인증서 포함 원화 구매·문의는 FOEM.`,
+    description: `${snippet}${nameKo ?? nameEn} 작가의 「${work.title}」${year}.${specs ? ` ${specs}.` : ""} 정품 인증서 포함 원화 구매·문의는 FOEM.`,
   };
 }
 

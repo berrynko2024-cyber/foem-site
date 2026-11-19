@@ -565,7 +565,7 @@ export const artworks: Artwork[] = [
     "title": "Mur Mur",
     "title_ko": "Mur Mur",
     "description": "Archival Pigment Print on Korean Traditional Paper (Hanji).",
-    "description_ko": "한지에 아카이브 안료 프린트.",
+    "description_ko": "나는 모든 사물에는 저마다의 에너지가 흐른다고 믿는다.\n사진을 찍기 전, 그 에너지와 조용히 교감하는 순간을 기다린다. 공기의 결이 바뀌고 빛이 스며드는 찰나, 비로소 대상과 연결된다.\n제주 오름에서 마주한 말도 그랬다. 말없이 건네온 따뜻한 눈빛은 마치 나 자신을 마주하는 듯했다.\n수없이 셔터를 누른 끝에 남는 것은, 서로의 무드가 하나가 되는 단 한 순간.\n사진은 나와 세계가 가장 자연스럽게 교감하는 순간을 기록하는 일이다.",
     "price": 1200,
     "currency": "EUR",
     "category": "photo",
